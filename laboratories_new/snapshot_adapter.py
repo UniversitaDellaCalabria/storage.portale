@@ -12,6 +12,7 @@ class Snap(SimpleNamespace):
             raise AttributeError(name)
         return None
 
+
 def to_ns(value):
     if isinstance(value, dict):
         return Snap(**{k: to_ns(v) for k, v in value.items()})

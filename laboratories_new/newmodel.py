@@ -111,7 +111,7 @@ class LaboratorioAttrezzatureRischi(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
-        related_name="laboratories_new_attrezzaturerischi_set"
+        related_name="laboratories_new_attrezzaturerischi_set",
     )
 
     class Meta:
@@ -339,7 +339,7 @@ class LaboratorioDatiBase(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
-        related_name="laboratories_new_datibase_set"
+        related_name="laboratories_new_datibase_set",
     )
     tipologia_attivita = models.ManyToManyField(
         LaboratorioTipologiaAttivita, through="LaboratorioAttivita"
@@ -368,7 +368,7 @@ class LaboratorioDatiErc1(models.Model):
         db_column="ID_RICERCA_ERC1",
         blank=True,
         null=True,
-        related_name='laboratories_new_erc1',
+        related_name="laboratories_new_erc1",
     )
     dt_mod = models.DateField(db_column="DT_MOD", blank=True, null=True)
     id_user_mod = models.ForeignKey(
@@ -377,7 +377,7 @@ class LaboratorioDatiErc1(models.Model):
         db_column="id_user_mod",
         blank=True,
         null=True,
-        related_name="laboratories_new_datierc1_set"
+        related_name="laboratories_new_datierc1_set",
     )
 
     class Meta:
