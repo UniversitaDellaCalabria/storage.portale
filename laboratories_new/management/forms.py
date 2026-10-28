@@ -1,7 +1,9 @@
+import datetime
 from decimal import Decimal
 
 from django import forms
 from django.core.validators import MinValueValidator
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
@@ -45,33 +47,71 @@ YES_NO_CHOICES = (("SI", _("YES")), ("NO", _("NO")))
 
 
 class LaboratorioDatiBaseForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        operator_departments_codes = kwargs.pop("allowed_department_codes", [])
+    """
+    Dati base del laboratorio.
 
+    allowed_department_codes:
+        None  -> nessuna restrizione (tutti i dipartimenti sono selezionabili)
+        lista -> solo i dipartimenti con quei codici sono modificabili; con lista
+                 vuota l'operatore non può cambiare i dipartimenti (il campo
+                 viene mostrato ma disabilitato)
+    can_set_visibility:
+        solo superuser e validatori possono impostare "visibile"; per tutti gli
+        altri il campo viene rimosso (la visibilità passa dal flusso di approvazione)
+
+    Dopo l'init, `editable_department_ids` contiene gli id dei dipartimenti che
+    l'operatore può aggiungere/rimuovere.
+    """
+
+    def __init__(
+        self,
+        *args,
+        allowed_department_codes=None,
+        can_set_visibility=False,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
-        if operator_departments_codes:
-            department_choices = DidatticaDipartimento.objects.filter(
-                dip_cod__in=operator_departments_codes
-            ).values_list("dip_id", "dip_des_it")
-        else:
-            department_choices = DidatticaDipartimento.objects.all().values_list(
-                "dip_id", "dip_des_it"
+        departments = DidatticaDipartimento.objects.all()
+        if allowed_department_codes is not None:
+            departments = departments.filter(dip_cod__in=allowed_department_codes)
+        self.editable_department_ids = set(departments.values_list("pk", flat=True))
+
+        # Dipartimenti attualmente associati: restano sempre tra le scelte, così
+        # il form è valido anche se rientrano fuori dal perimetro dell'operatore
+        current_ids = set()
+        if self.instance.pk:
+            today = datetime.date.today()
+            current_ids = set(
+                LaboratorioDipartimenti.objects.filter(
+                    Q(data_fine__isnull=True) | Q(data_fine__gte=today),
+                    laboratorio_dati_base=self.instance,
+                ).values_list("didattica_dipartimento_id", flat=True)
             )
+
+        department_choices = (
+            DidatticaDipartimento.objects.filter(
+                Q(pk__in=self.editable_department_ids) | Q(pk__in=current_ids)
+            )
+            .order_by("dip_des_it")
+            .values_list("dip_id", "dip_des_it")
+        )
 
         self.fields["choosen_department_id"] = forms.MultipleChoiceField(
             label=_("Related Department"),
             choices=tuple(department_choices),
+            initial=sorted(current_ids),
             required=True,
+            disabled=bool(self.instance.pk) and not self.editable_department_ids,
         )
 
-        # self.fields['laboratorio_interdipartimentale'] = forms.ChoiceField(
-        #     label=_('Interdepartmental Laboratory'),
-        #     choices=(('SI', 'SI'),('NO', 'NO')),
-        # )
+        # Un ambito disattivato già assegnato al laboratorio resta selezionabile
         self.fields["ambito_s3_prevalente"].queryset = self.fields[
             "ambito_s3_prevalente"
-        ].queryset.filter(attivo=True)
+        ].queryset.filter(Q(attivo=True) | Q(pk=self.instance.ambito_s3_prevalente_id))
+
+        if not can_set_visibility:
+            self.fields.pop("visibile", None)
 
         self.order_fields(
             field_order=(
@@ -96,20 +136,11 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         fields = [
             "nome_laboratorio",
             "acronimo",
-            "logo_laboratorio",  # 'laboratorio_interdipartimentale',
+            "logo_laboratorio",
             "altre_strutture_riferimento",
             "descr_altre_strutture_riferimento_it",
-            "descr_altre_strutture_riferimento_en",  # 'ambito',
-            # "finalita_servizi_it",
-            # "finalita_servizi_en",
-            # "finalita_ricerca_it",
-            # "finalita_ricerca_en",
-            # "finalita_didattica_it",
-            # "finalita_didattica_en",
-            # 'sede_dimensione', 'sede_note_descrittive',
-            # 'strumentazione_descrizione', 'strumentazione_valore',
+            "descr_altre_strutture_riferimento_en",
             "infrastruttura_riferimento",
-            "sito_web",
             "nome_file_logo",
             "descrizione",
             "ambito_s3_prevalente",
@@ -142,6 +173,8 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
 
 
 class LaboratorioDatiBaseScientificDirectorForm(forms.Form):
+    """Responsabile scientifico esterno (solo nome e cognome)."""
+
     responsabile_scientifico = forms.CharField(
         label=_("Name and Surname"),
         max_length=200,
@@ -149,6 +182,8 @@ class LaboratorioDatiBaseScientificDirectorForm(forms.Form):
 
 
 class LaboratorioDatiBaseSafetyManagerForm(forms.Form):
+    """Preposto alla sicurezza esterno (solo nome e cognome)."""
+
     preposto_sicurezza = forms.CharField(
         label=_("Name and Surname"),
         max_length=200,
@@ -156,37 +191,16 @@ class LaboratorioDatiBaseSafetyManagerForm(forms.Form):
 
 
 class LaboratorioDatiBaseScientificDirectorChoosenPersonForm(forms.Form):
+    """Responsabile scientifico interno, scelto dalla rubrica."""
+
     choosen_scientific_director = forms.CharField(
         label=_("Scientific Director"), widget=forms.HiddenInput(), required=False
     )
 
-    def __init__(self, *args, **kwargs):
-        required = kwargs.pop("required", False)
-        super(LaboratorioDatiBaseScientificDirectorChoosenPersonForm, self).__init__(
-            *args, **kwargs
-        )
+    def __init__(self, *args, required=False, **kwargs):
+        super().__init__(*args, **kwargs)
         if required:
             self.fields["choosen_scientific_director"].required = True
-
-
-class LaboratorioDatiBaseSafetyManagerChoosenPersonForm(forms.Form):
-    choosen_safety_manager = forms.CharField(
-        label=_("Safety Manager"), widget=forms.HiddenInput(), required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        required = kwargs.pop("required", False)
-        super(LaboratorioDatiBaseSafetyManagerChoosenPersonForm, self).__init__(
-            *args, **kwargs
-        )
-        if required:
-            self.fields["choosen_safety_manager"].required = True
-
-
-class LaboratorioDatiBaseDipartimentoForm(forms.Form):
-    choosen_department = forms.CharField(
-        label=_("Department"), widget=forms.HiddenInput(), required=True
-    )
 
 
 class LaboratorioAltriDipartimentiForm(forms.Form):
@@ -196,13 +210,14 @@ class LaboratorioAltriDipartimentiForm(forms.Form):
 
 
 class LaboratorioPersonaleTecnicoForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["ruolo"] = forms.CharField(required=True, label=_("Role"))
+    """Ruolo (testo libero) del personale tecnico."""
 
-        self.fields["percentuale_impegno"] = forms.FloatField(
-            required=True, label=_("Commitment %"), min_value=0, max_value=100
-        )
+    ruolo = forms.CharField(
+        label=_("Role"),
+        # allineato a LaboratorioRuolo.descr_ruolo_it
+        max_length=2000,
+        required=True,
+    )
 
 
 class LaboratorioDatiErc1Form(forms.Form):
@@ -247,14 +262,11 @@ class LaboratorioDatiErc1Form(forms.Form):
 
 
 class LaboratorioUbicazioneForm(DateRangeValidationMixin, forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["sede_principale"] = forms.ChoiceField(
-            label=_("Main Location"),
-            choices=YES_NO_CHOICES,
-            required=True,
-        )
+    sede_principale = forms.ChoiceField(
+        label=_("Main Location"),
+        choices=YES_NO_CHOICES,
+        required=True,
+    )
 
     class Meta:
         model = LaboratorioUbicazione
@@ -305,19 +317,22 @@ class LaboratorioAnagraficaUbicazioniForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["superficie_mq"].validators.append(MinValueValidator(Decimal(0)))
+        self.fields["superficie_mq"].widget.attrs["min"] = 0
 
 
 class LaboratorioServiziForm(DateRangeValidationMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Una traiettoria disattivata già assegnata al servizio resta selezionabile,
+        # altrimenti non sarebbe più possibile modificare quel servizio
         self.fields["traiettoria_s3"].queryset = TraiettorieS3.objects.filter(
-            attiva=True
+            Q(attiva=True) | Q(pk=self.instance.traiettoria_s3_id)
         ).order_by("codice")
 
-        for cost_field in ("costo_interni", "costo_esterni"):
-            self.fields[cost_field].min_value = 0
-            self.fields[cost_field].validators.append(MinValueValidator(Decimal(0)))
+        for name in ("costo_interni", "costo_esterni"):
+            self.fields[name].validators.append(MinValueValidator(Decimal(0)))
+            self.fields[name].widget.attrs["min"] = 0
 
     class Meta:
         model = LaboratorioServizi
@@ -421,14 +436,14 @@ class LaboratorioRuoloForm(forms.ModelForm):
 
 
 class LaboratorioDipartimentiForm(DateRangeValidationMixin, forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        operator_departments_codes = kwargs.pop("allowed_department_codes", [])
+    def __init__(self, *args, allowed_department_codes=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if operator_departments_codes:
+        # None -> nessuna restrizione; lista (anche vuota) -> solo quei codici
+        if allowed_department_codes is not None:
             self.fields["didattica_dipartimento"].queryset = (
                 DidatticaDipartimento.objects.filter(
-                    dip_cod__in=operator_departments_codes
+                    dip_cod__in=allowed_department_codes
                 )
             )
 
