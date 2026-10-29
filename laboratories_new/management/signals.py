@@ -4,27 +4,22 @@ from laboratories.models import LaboratorioDatiBase
 
 
 @receiver(post_delete, sender=LaboratorioDatiBase)
-def post_save_image(sender, instance, *args, **kwargs):
-    """Clean Old Image file"""
-    try:
+def delete_logo_on_laboratory_delete(sender, instance, **kwargs):
+    """Rimuove il file del logo quando il laboratorio viene eliminato."""
+    if instance.nome_file_logo:
         instance.nome_file_logo.delete(save=False)
-    except Exception:
-        pass
 
 
 @receiver(pre_save, sender=LaboratorioDatiBase)
-def pre_save_image(sender, instance, *args, **kwargs):
-    """instance old image file will delete from os"""
-    try:
-        old = instance.__class__.objects.get(id=instance.id).nome_file_logo.path
-        try:
-            new = instance.nome_file_logo.path
-        except Exception:
-            new = None
-        if new != old:
-            import os
+def delete_old_logo_on_change(sender, instance, **kwargs):
+    """Rimuove il vecchio logo quando viene sostituito o cancellato."""
+    if not instance.pk:
+        return
 
-            if os.path.exists(old):
-                os.remove(old)
-    except Exception:
-        pass
+    old_name = (
+        sender.objects.filter(pk=instance.pk)
+        .values_list("nome_file_logo", flat=True)
+        .first()
+    )
+    if old_name and old_name != instance.nome_file_logo.name:
+        instance.nome_file_logo.storage.delete(old_name)

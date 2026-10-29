@@ -1,38 +1,32 @@
-from addressbook.models import Personale
+from functools import wraps
+
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from generics.utils import custom_message
-from laboratories.models import LaboratorioDatiBase
+from laboratories.models import LaboratorioDatiBase, LaboratorioDipartimenti
 from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from .utils import _is_user_scientific_director
+
+from .utils import (
+    _is_user_scientific_director,
+    _is_user_scientific_director_of_any,
+    _still_valid,
+)
 
 
 def can_manage_laboratories(func_to_decorate):
+    @wraps(func_to_decorate)
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-
-        is_scientific_director = False
 
         if original_kwargs.get("laboratory_id"):
             laboratory = get_object_or_404(
                 LaboratorioDatiBase, pk=original_kwargs["laboratory_id"]
             )
             original_kwargs["laboratory"] = laboratory
-
             is_scientific_director = _is_user_scientific_director(request, laboratory)
-
         else:
-            if request.user.taxpayer_id is not None:
-                user_profile = Personale.objects.filter(
-                    cod_fis=request.user.taxpayer_id
-                ).first()
-                is_scientific_director = (
-                    user_profile is not None
-                    and LaboratorioDatiBase.objects.filter(
-                        matricola_responsabile_scientifico=user_profile
-                    ).exists()
-                )
+            is_scientific_director = _is_user_scientific_director_of_any(request)
 
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -60,6 +54,7 @@ def can_manage_laboratories(func_to_decorate):
 
 # Does not prevent POST from validator users
 def can_view_laboratories(func_to_decorate):
+    @wraps(func_to_decorate)
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
         laboratory = original_kwargs["laboratory"]
@@ -67,11 +62,14 @@ def can_view_laboratories(func_to_decorate):
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
 
-        my_offices = original_kwargs["my_offices"]
-        department_id = laboratory.dipartimento_riferimento
+        # Un laboratorio può avere più dipartimenti: l'operatore lo vede se il
+        # suo ufficio appartiene a uno di quelli attualmente associati
+        department_codes = LaboratorioDipartimenti.objects.filter(
+            _still_valid(), laboratorio_dati_base=laboratory
+        ).values_list("didattica_dipartimento__dip_cod", flat=True)
 
-        my_offices = my_offices.filter(
-            office__organizational_structure__unique_code=department_id.dip_cod
+        my_offices = original_kwargs["my_offices"].filter(
+            office__organizational_structure__unique_code__in=list(department_codes)
         )
         original_kwargs["my_offices"] = my_offices
 
@@ -88,6 +86,7 @@ def can_view_laboratories(func_to_decorate):
 
 
 def check_if_superuser(func_to_decorate):
+    @wraps(func_to_decorate)
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
 
@@ -100,6 +99,7 @@ def check_if_superuser(func_to_decorate):
 
 
 def can_edit_laboratories(func_to_decorate):
+    @wraps(func_to_decorate)
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
         laboratory = original_kwargs["laboratory"]
