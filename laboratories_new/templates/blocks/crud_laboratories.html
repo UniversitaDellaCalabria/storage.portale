@@ -28,10 +28,11 @@
 
                                 {% block filters %}
                                 <div class="form-group mb-0">
-                                    <!-- Areas & Department -->
 
+                                    <!-- Prevalent S3 Area & Department -->
                                     <div class="row">
 
+                                        {% block filter_s3_area %}
                                         <div class="col-sm form-group mb-0">
                                             <loading-icon
                                                 v-if="is_loading_areas"
@@ -39,7 +40,7 @@
                                             </loading-icon>
                                             <div v-else>
                                                 <label for="{{ id }}_area_input">
-                                                    {% trans "Area" %}
+                                                    {% trans "Prevalent S3 Area" %}
                                                 </label>
                                                 <div class="w-30 mt-5">
                                                     <select id="{{ id }}_area_input"
@@ -47,16 +48,17 @@
                                                             name="{{ id }}_area_input"
                                                             class="form-control"
                                                             @change="{{ id }}.search()">
-                                                      <option value="">- {% trans 'Choose an option' %} -</option>
-                                                      <option v-for="item in areas"
-                                                              :value="item.Area"
-                                                              :selected="item.Area == selected_area">
-                                                          [[ item.Area ]]
-                                                      </option>
+                                                        <option value="">- {% trans 'Choose an option' %} -</option>
+                                                        <option v-for="item in areas"
+                                                                :value="item.Area"
+                                                                :selected="item.Area == selected_area">
+                                                            [[ item.Area ]]
+                                                        </option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endblock filter_s3_area %}
 
                                         <div class="col-sm form-group mb-0">
                                             <loading-icon
@@ -84,6 +86,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Reference Infrastructure & S3 Trajectory -->
                                     <div class="row">
                                         {% block filter_infrastructure %}
                                         <div class="col-sm form-group mb-0">
@@ -93,11 +97,11 @@
                                             </loading-icon>
                                             <div class="mt-5" v-else>
                                                 <label for="{{ id }}_infrastructure_input">
-                                                    {% trans "Infastructure" %}
+                                                    {% trans "Reference Infrastructure" %}
                                                 </label>
                                                 <select id="{{ id }}_infrastructure_input"
                                                         class="form-control"
-                                                        name="{{ id }}_scope_input"
+                                                        name="{{ id }}_infrastructure_input"
                                                         title="{% trans 'Choose an option' %}"
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Clear all' %} -</option>
@@ -112,6 +116,7 @@
                                         </div>
                                         {% endblock filter_infrastructure %}
 
+                                        {% block filter_s3_trajectory %}
                                         <div class="col-sm form-group mb-0">
                                             <loading-icon
                                                 v-if="is_loading_scopes"
@@ -119,7 +124,7 @@
                                             </loading-icon>
                                             <div class="mt-5" v-else>
                                                 <label for="{{ id }}_scope_input">
-                                                    {% trans "Scopes" %}
+                                                    {% trans "S3 Trajectory" %}
                                                 </label>
                                                 <select id="{{ id }}_scope_input"
                                                         class="form-control"
@@ -136,7 +141,10 @@
                                               </select>
                                             </div>
                                         </div>
+                                        {% endblock filter_s3_trajectory %}
                                     </div>
+
+                                    <!-- ERC 1 -->
                                     <div class="row">
                                         <div class="col-sm form-group mb-0">
                                             <loading-icon
@@ -197,20 +205,20 @@
                                     </div>
                                     <div class="col">
                                         <div class="row pl-1 pr-1">
-                                        <h5>
-                                            <a :href="item.LaboratoryId+'/'" class="no-color">
-                                                <b>[[ item.LaboratoryName ]]</b>
-                                            </a>
-                                        </h5>
-                                        <div class="h5 align-self-center ml-auto">
-                                            {% trans "Active"%}
-                                            <svg class="icon icon-sm icon-success" v-if="item.Visible">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
-                                            </svg>
-                                            <svg class="icon icon-sm icon-danger" v-else>
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
-                                            </svg>
-                                        </div>
+                                            <h5>
+                                                <a :href="item.LaboratoryId+'/'" class="no-color">
+                                                    <b>[[ item.LaboratoryName ]]</b>
+                                                </a>
+                                            </h5>
+                                            <div class="h5 align-self-center ml-auto">
+                                                {% trans "Active"%}
+                                                <svg class="icon icon-sm icon-success" v-if="item.Visible">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                                </svg>
+                                                <svg class="icon icon-sm icon-danger" v-else>
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                                </svg>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
@@ -220,7 +228,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <small>
-                                                    [[ labels['Area'] ]] >
+                                                    {% trans "Prevalent S3 Area" %} >
                                                     <b>[[ item.Area ]]</b>
                                                 </small>
                                             </div>
@@ -230,9 +238,9 @@
                                                     <b>[[ item.ScientificDirector ]]</b>
                                                 </small>
                                             </div>
-                                            <div class="col-12" v-if="item.LaboratoryScopes.length">
+                                            <div class="col-12" v-if="item.LaboratoryScopes && item.LaboratoryScopes.length">
                                                 <small>
-                                                    [[ labels['LaboratoryScopes'] ]] >
+                                                    {% trans "S3 Trajectory" %} >
                                                     <b v-for="(scope, index) in item.LaboratoryScopes">
                                                         [[ scope.ScopeDescription ]]
                                                         <span v-if="index < (item.LaboratoryScopes.length - 1)">,&nbsp;</span>
@@ -241,10 +249,8 @@
                                             </div>
                                             <div class="col-12" v-if="item.InfrastructureName">
                                                 <small>
-                                                    [[ labels['InfrastructureName'] ]] >
-                                                    <b>
-                                                        [[ item.InfrastructureName ]]
-                                                    </b>
+                                                    {% trans "Reference Infrastructure" %} >
+                                                    <b>[[ item.InfrastructureName ]]</b>
                                                 </small>
                                             </div>
                                             <div class="col-12" v-if="item.Interdepartmental != 'NO'">
@@ -301,7 +307,7 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
     {% block laboratory_filter_script %}
 
-        // area
+        // prevalent S3 area
         let area = document.getElementById('{{ id }}_area_input')
         if (area && area.value) dict['area'] = area.value
 
@@ -309,27 +315,27 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
         let department = document.getElementById('{{ id }}_department_input')
         if (department && department.value) dict['department'] = department.value
 
-        // scope
+        // S3 trajectory
         let scope = document.getElementById('{{ id }}_scope_input')
         if (scope && scope.value) dict['scope'] = scope.value
 
         {% block filter_infrastructure_script %}
-        // infrastructure
+        // reference infrastructure
         let infrastructure = document.getElementById('{{ id }}_infrastructure_input')
         if (infrastructure && infrastructure.value) dict['infrastructure'] = infrastructure.value
         {% endblock filter_infrastructure_script %}
 
         // erc1
         let erc1 = document.getElementById('{{ id }}_erc1_input')
-        let erc1_selected = [];
-        for (var option of erc1.options)
-        {
-            if (option.selected) {
-                erc1_selected.push(option.value);
+        if (erc1) {
+            let erc1_selected = []
+            for (let option of erc1.options) {
+                if (option.selected && option.value) {
+                    erc1_selected.push(option.value)
+                }
             }
+            if (erc1_selected.length) dict['erc1'] = erc1_selected
         }
-        let erc1_values = erc1_selected.join(",")
-        if(erc1_selected) dict['erc1'] = erc1_selected
 
     {% endblock laboratory_filter_script %}
 
@@ -423,7 +429,7 @@ this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
                 this.is_loading_departments = false
             })
     },
-    callERC1List(params) {
+    callERC1List() {
         axios
             .get(this.loader_source_erc1)
             .then(response => {
@@ -434,4 +440,3 @@ this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
     {% endblock laboratory_call_method %}
 
 {% endblock extra_methods %}
-</script>
