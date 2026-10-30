@@ -1,4 +1,3 @@
-import datetime
 from decimal import Decimal
 
 from django import forms
@@ -22,6 +21,8 @@ from laboratories.models import (
 )
 from research_lines.models import RicercaErc0, RicercaErc1
 from structures.models import DidatticaDipartimento
+
+from .utils import RESERVED_ROLES, _still_valid
 
 
 def _date_widget():
@@ -81,10 +82,9 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
         # il form è valido anche se rientrano fuori dal perimetro dell'operatore
         current_ids = set()
         if self.instance.pk:
-            today = datetime.date.today()
             current_ids = set(
                 LaboratorioDipartimenti.objects.filter(
-                    Q(data_fine__isnull=True) | Q(data_fine__gte=today),
+                    _still_valid(),
                     laboratorio_dati_base=self.instance,
                 ).values_list("didattica_dipartimento_id", flat=True)
             )
@@ -94,7 +94,7 @@ class LaboratorioDatiBaseForm(forms.ModelForm):
                 Q(pk__in=self.editable_department_ids) | Q(pk__in=current_ids)
             )
             .order_by("dip_des_it")
-            .values_list("dip_id", "dip_des_it")
+            .values_list("pk", "dip_des_it")
         )
 
         self.fields["choosen_department_id"] = forms.MultipleChoiceField(
@@ -219,6 +219,13 @@ class LaboratorioPersonaleTecnicoForm(forms.Form):
         required=True,
     )
 
+    def clean_ruolo(self):
+        ruolo = self.cleaned_data["ruolo"].strip()
+        reserved = {r.lower() for pair in RESERVED_ROLES for r in pair}
+        if ruolo.lower() in reserved:
+            raise forms.ValidationError(_("This role is reserved"))
+        return ruolo
+
 
 class LaboratorioDatiErc1Form(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -267,6 +274,23 @@ class LaboratorioUbicazioneForm(DateRangeValidationMixin, forms.ModelForm):
         choices=YES_NO_CHOICES,
         required=True,
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["edificio"].required = False
+        self.fields["piano"].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        registered = cleaned_data.get("anagrafica_ubicazione")
+        if registered:
+            cleaned_data["edificio"] = registered.edificio
+            cleaned_data["piano"] = registered.piano
+        else:
+            for name in ("edificio", "piano"):
+                if not cleaned_data.get(name):
+                    self.add_error(name, _("This field is required."))
+        return cleaned_data
 
     class Meta:
         model = LaboratorioUbicazione
@@ -323,6 +347,9 @@ class LaboratorioAnagraficaUbicazioniForm(forms.ModelForm):
 class LaboratorioServiziForm(DateRangeValidationMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        for name in ("laboratorio_anagrafica_servizi", "data_inizio"):
+            self.fields[name].required = True
 
         # Una traiettoria disattivata già assegnata al servizio resta selezionabile,
         # altrimenti non sarebbe più possibile modificare quel servizio
@@ -436,8 +463,9 @@ class LaboratorioRuoloForm(forms.ModelForm):
 
 
 class LaboratorioDipartimentiForm(DateRangeValidationMixin, forms.ModelForm):
-    def __init__(self, *args, allowed_department_codes=None, **kwargs):
+    def __init__(self, *args, allowed_department_codes=None, laboratory=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.laboratory = laboratory
 
         # None -> nessuna restrizione; lista (anche vuota) -> solo quei codici
         if allowed_department_codes is not None:
@@ -446,6 +474,23 @@ class LaboratorioDipartimentiForm(DateRangeValidationMixin, forms.ModelForm):
                     dip_cod__in=allowed_department_codes
                 )
             )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("principale") and self.laboratory is not None:
+            others = LaboratorioDipartimenti.objects.filter(
+                _still_valid(),
+                laboratorio_dati_base=self.laboratory,
+                principale=True,
+            )
+            if self.instance.pk:
+                others = others.exclude(pk=self.instance.pk)
+            if others.exists():
+                self.add_error(
+                    "principale",
+                    _("The laboratory already has a main department"),
+                )
+        return cleaned_data
 
     class Meta:
         model = LaboratorioDipartimenti
