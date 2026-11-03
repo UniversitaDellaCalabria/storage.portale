@@ -3,8 +3,8 @@ from functools import wraps
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from generics.utils import custom_message
-from laboratories.models import LaboratorioDatiBase, LaboratorioDipartimenti
-from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
+from laboratories_new.models import LaboratorioDatiBase, LaboratorioDipartimenti
+from laboratories_new.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 from .utils import (

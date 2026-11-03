@@ -1,6 +1,6 @@
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from laboratories.models import LaboratorioDatiBase
+from laboratories_new.models import LaboratorioDatiBase
 
 
 @receiver(post_delete, sender=LaboratorioDatiBase)

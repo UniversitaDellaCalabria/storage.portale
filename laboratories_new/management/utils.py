@@ -1,7 +1,7 @@
 import datetime
 
 from django.db.models import Q
-from laboratories.models import LaboratorioResponsabile
+from laboratories_new.models import LaboratorioResponsabile
 
 ROLE_SCIENTIFIC_DIRECTOR = ("Responsabile scientifico", "Scientific director")
 ROLE_SAFETY_MANAGER = ("Preposto alla sicurezza", "Safety manager")

@@ -6,12 +6,6 @@
 
 {% block content %}
 
-
-{#{% settings_value "CMS_PATH_PREFIX" as cms_path_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_BASE_PATH" as base_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_LABORATORY_VIEW_PREFIX_PATH" as laboratory_prefix %}#}
-{#{% storage_settings_value "CMS_STORAGE_STRUCTURE_VIEW_PREFIX_PATH" as structures_prefix %}#}
-
 {% block storage_block_top %}
 {% include "blocks/includes/vue_check.html" %}
 {% endblock storage_block_top %}
@@ -50,9 +44,9 @@
                                                             @change="{{ id }}.search()">
                                                         <option value="">- {% trans 'Choose an option' %} -</option>
                                                         <option v-for="item in areas"
-                                                                :value="item.Area"
-                                                                :selected="item.Area == selected_area">
-                                                            [[ item.Area ]]
+                                                                :value="item.id"
+                                                                :selected="item.id == selected_area">
+                                                            [[ item.area ]]
                                                         </option>
                                                     </select>
                                                 </div>
@@ -106,9 +100,9 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Clear all' %} -</option>
                                                     <option v-for="item in infrastructures"
-                                                            :value="item.InfrastructureId"
-                                                            :selected="item.InfrastructureId == selected_infrastructure">
-                                                        [[ item.InfrastructureDescription ]]
+                                                            :value="item.id"
+                                                            :selected="item.id == selected_infrastructure">
+                                                        [[ item.description ]]
                                                     </option>
 
                                               </select>
@@ -133,9 +127,9 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Clear all' %} -</option>
                                                     <option v-for="item in scopes"
-                                                            :value="item.ScopeID"
-                                                            :selected="item.ScopeID == selected_scope">
-                                                        [[ item.ScopeDescription ]]
+                                                            :value="item.id"
+                                                            :selected="item.id == selected_scope">
+                                                        [[ item.description ]]
                                                     </option>
 
                                               </select>
@@ -163,12 +157,12 @@
                                                         @change="{{ id }}.search()">
                                                     <option value="">- {% trans 'Clear all' %} -</option>
                                                     <optgroup v-for="item in erc1_list"
-                                                              :label="item.Description"
+                                                              :label="item.description"
                                                               style="font-weight: bold">
-                                                        <option v-for="erc1_item in item.Erc1List"
-                                                                :value="erc1_item.IdErc1"
-                                                                :selected="selected_erc1.includes(erc1_item.IdErc1)">
-                                                            [[ erc1_item.Description ]]
+                                                        <option v-for="erc1_item in item.erc1List"
+                                                                :value="erc1_item.codErc1"
+                                                                :selected="selected_erc1.includes(erc1_item.codErc1)">
+                                                            [[ erc1_item.description ]]
                                                         </option>
                                                     </optgroup>
 
@@ -193,26 +187,26 @@
         </loading-icon>
 
         <div v-else>
-            <div class="row mb-3" v-for="item in items.results" v-if="item.LaboratoryName != '' && item.LaboratoryName">
+            <div class="row mb-3" v-for="item in items.results" v-if="item.name != '' && item.name">
                 <div class="col-12">
                     <!--start card-->
                     <div class="card-wrapper pb-0">
                         <div class="card no-after" style="border:1px solid #b71918">
                             <div class="card-body p-3">
                                 <div class="row">
-                                    <div class="col-12 col-lg-2 me-lg-3 mb-3 mb-lg-0" v-if="item.LaboratoryLogo">
-                                        <img :src="item.LaboratoryLogo" class="w-100"/>
+                                    <div class="col-12 col-lg-2 me-lg-3 mb-3 mb-lg-0" v-if="item.logo">
+                                        <img :src="item.logo" class="w-100"/>
                                     </div>
                                     <div class="col">
                                         <div class="row pl-1 pr-1">
                                             <h5>
-                                                <a :href="item.LaboratoryId+'/'" class="no-color">
-                                                    <b>[[ item.LaboratoryName ]]</b>
+                                                <a :href="item.id+'/'" class="no-color">
+                                                    <b>[[ item.name ]]</b>
                                                 </a>
                                             </h5>
                                             <div class="h5 align-self-center ml-auto">
                                                 {% trans "Active"%}
-                                                <svg class="icon icon-sm icon-success" v-if="item.Visible">
+                                                <svg class="icon icon-sm icon-success" v-if="isVisible(item.visible)">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
                                                 </svg>
                                                 <svg class="icon icon-sm icon-danger" v-else>
@@ -223,46 +217,46 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <small>
-                                                    <b>[[ item.DepartmentName ]]</b>
+                                                    <b>[[ item.departmentName ]]</b>
                                                 </small>
                                             </div>
                                             <div class="col-12">
                                                 <small>
                                                     {% trans "Prevalent S3 Area" %} >
-                                                    <b>[[ item.Area ]]</b>
+                                                    <b>[[ item.area ]]</b>
                                                 </small>
                                             </div>
                                             <div class="col-12">
                                                 <small>
                                                     {% trans "Manager" %} >
-                                                    <b>[[ item.ScientificDirector ]]</b>
+                                                    <b>[[ item.scientificDirector ]]</b>
                                                 </small>
                                             </div>
-                                            <div class="col-12" v-if="item.LaboratoryScopes && item.LaboratoryScopes.length">
+                                            <div class="col-12" v-if="item.scopes && item.scopes.length">
                                                 <small>
                                                     {% trans "S3 Trajectory" %} >
-                                                    <b v-for="(scope, index) in item.LaboratoryScopes">
-                                                        [[ scope.ScopeDescription ]]
-                                                        <span v-if="index < (item.LaboratoryScopes.length - 1)">,&nbsp;</span>
+                                                    <b v-for="(scope, index) in item.scopes">
+                                                        [[ scope.description ]]
+                                                        <span v-if="index < (item.scopes.length - 1)">,&nbsp;</span>
                                                     </b>
                                                 </small>
                                             </div>
-                                            <div class="col-12" v-if="item.InfrastructureName">
+                                            <div class="col-12" v-if="item.infrastructureName">
                                                 <small>
                                                     {% trans "Reference Infrastructure" %} >
-                                                    <b>[[ item.InfrastructureName ]]</b>
+                                                    <b>[[ item.infrastructureName ]]</b>
                                                 </small>
                                             </div>
-                                            <div class="col-12" v-if="item.Interdepartmental != 'NO'">
+                                            <div class="col-12" v-if="item.interdepartmental != 'NO'">
                                                 <small>
-                                                    [[ labels['Interdepartmental'] ]] >
-                                                    <b>[[ item.Interdepartmental ]]</b>
+                                                    {% trans "Interdepartmental" %} >
+                                                    <b>[[ item.interdepartmental ]]</b>
                                                 </small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <a :href="item.LaboratoryId+'/'" class="btn btn-sm btn-primary float-right">
+                                <a :href="item.id+'/'" class="btn btn-sm btn-primary float-right">
                                     <svg class="icon icon-xs icon-white">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
                                     </svg> {% trans "Edit" %}
@@ -307,13 +301,13 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
 
     {% block laboratory_filter_script %}
 
-        // prevalent S3 area
+        // prevalent S3 area (filtro API: ambito = id)
         let area = document.getElementById('{{ id }}_area_input')
-        if (area && area.value) dict['area'] = area.value
+        if (area && area.value) dict['ambito'] = area.value
 
-        // department
+        // department (filtro API: dip = dip_cod)
         let department = document.getElementById('{{ id }}_department_input')
-        if (department && department.value) dict['department'] = department.value
+        if (department && department.value) dict['dip'] = department.value
 
         // S3 trajectory
         let scope = document.getElementById('{{ id }}_scope_input')
@@ -325,7 +319,7 @@ function {{ id }}_get_form_paramenters(keyword=null, value=null) {
         if (infrastructure && infrastructure.value) dict['infrastructure'] = infrastructure.value
         {% endblock filter_infrastructure_script %}
 
-        // erc1
+        // erc1 (cod_erc1)
         let erc1 = document.getElementById('{{ id }}_erc1_input')
         if (erc1) {
             let erc1_selected = []
@@ -366,13 +360,13 @@ is_loading_infrastructures: true,
 
 
 loader_source_departments: '{% url 'structures:apiv1:departments-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_areas: '{% url 'laboratories:apiv1:laboratories-areas' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_erc1: '{% url 'laboratories:apiv1:erc1-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_scopes: '{% url 'laboratories:apiv1:laboratories-scopes' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
-loader_source_infrastructures: '{% url 'laboratories:apiv1:infrastructures' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_areas: '{% url 'laboratories:apiv2_new:laboratories-area-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_erc1: '{% url 'laboratories:apiv2_new:erclist-list' level=1 %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_scopes: '{% url 'laboratories:apiv2_new:laboratories-scopes-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
+loader_source_infrastructures: '{% url 'laboratories:apiv2_new:infrastructures-list' %}?lang={{ LANGUAGE_CODE }}&page_size=100',
 
-selected_area: this.getItemFromSession("{{ id }}", 'area'),
-selected_department: this.getItemFromSession("{{ id }}", 'department'),
+selected_area: this.getItemFromSession("{{ id }}", 'ambito'),
+selected_department: this.getItemFromSession("{{ id }}", 'dip'),
 selected_search: this.getItemFromSession("{{ id }}", 'search'),
 
 selected_erc1: (this.getItemFromSession("{{ id }}", 'erc1') || ""),
@@ -397,6 +391,10 @@ this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% block extra_methods %}
 
     {% block laboratory_call_method %}
+    // il serializer restituisce "visible" come stringa ("True"/"False")
+    isVisible(v) {
+        return v === true || String(v).toLowerCase() === 'true'
+    },
     callAreas() {
         axios
             .get(this.loader_source_areas)

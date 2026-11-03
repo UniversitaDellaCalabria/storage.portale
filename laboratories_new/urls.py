@@ -11,7 +11,7 @@ urlpatterns = [
     path("api/v2/", include(apiv2_urls)),
 ]
 
-# if __package__ not in getattr(settings, "DISABLED_MANAGEMENT_APPS", []):
-#     from .management import urls as management_urls
+if "laboratories_new" not in getattr(settings, "DISABLED_MANAGEMENT_APPS", []):
+    from .management import urls as management_urls
 
-#     urlpatterns += (path("", include(management_urls)),)
+    urlpatterns += [path("", include(management_urls))]

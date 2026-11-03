@@ -8,7 +8,7 @@ from .views import (
     LaboratoriesViewSet,
 )
 
-app_name = "apiv2"
+app_name = "apiv2_new"
 
 router = DefaultRouter()
 router.register(r"laboratories_new", LaboratoriesViewSet, basename="laboratories")

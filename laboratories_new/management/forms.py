@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from generics.widgets import RicercaCRUDCKEditor5EmptyContentWidget
-from laboratories.models import (
+from laboratories_new.models import (
     LaboratorioAffiliati,
     LaboratorioAnagraficaServizi,
     LaboratorioAnagraficaUbicazioni,
