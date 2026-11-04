@@ -20,7 +20,7 @@ from generics.api.pagination import PageNumberPagination
 from generics.views import ClearResponseViewSet
 
 from .filters import LaboratoriesFilters
-from laboratories.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
+from laboratories_new.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from .serializers import (
     Aster1ListSerializer,
     Aster2ListSerializer,

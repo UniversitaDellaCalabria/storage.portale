@@ -75,9 +75,9 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     }
     context = {
         "breadcrumbs": breadcrumbs,
-        "url": reverse("laboratories:apiv1:laboratories-list"),
+        "url": reverse("laboratories_new:apiv2_new:laboratories-list"),
     }
-    return render(request, "laboratories.html", context)
+    return render(request, "laboratories_new/laboratories.html", context)
 
 
 @login_required
@@ -181,7 +181,7 @@ def laboratory(
             )
 
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -197,7 +197,7 @@ def laboratory(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratory"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratory"),
         "#": laboratory.nome_laboratorio,
     }
 
@@ -388,7 +388,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                 ),
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory.pk
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory.pk
             )
         else:  # pragma: no cover
             for f in (form, scientific_director_form):
@@ -401,7 +401,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         "#": _("New"),
     }
     return render(
@@ -550,7 +550,7 @@ def laboratory_scientific_director_edit(
             )
 
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -561,13 +561,13 @@ def laboratory_scientific_director_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-scientific-director-edit",
+            "laboratories_new:management:laboratory-scientific-director-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Scientific Director"),
     }
@@ -722,7 +722,7 @@ def laboratory_safety_manager_edit(
             )
 
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -736,13 +736,13 @@ def laboratory_safety_manager_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-safety-manager-edit",
+            "laboratories_new:management:laboratory-safety-manager-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Safety Manager"),
     }
@@ -817,7 +817,7 @@ def laboratory_safety_manager_delete(
         )
 
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -832,7 +832,7 @@ def laboratory_delete(
         request, messages.SUCCESS, _("Laboratory removed successfully")
     )
 
-    return redirect("laboratories:management:laboratories")
+    return redirect("laboratories_new:management:laboratories")
 
 
 @login_required
@@ -897,7 +897,7 @@ def laboratory_extra_departments_new(
                     request, messages.SUCCESS, _("Extra department added successfully")
                 )
                 return redirect(
-                    "laboratories:management:laboratory-edit",
+                    "laboratories_new:management:laboratory-edit",
                     laboratory_id=laboratory_id,
                 )
 
@@ -909,13 +909,13 @@ def laboratory_extra_departments_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-extra-departments-new",
+            "laboratories_new:management:laboratory-extra-departments-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Extra Department"),
     }
@@ -975,7 +975,7 @@ def laboratory_extra_departments_delete(
         request, messages.SUCCESS, _("Extra department removed successfully")
     )
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1065,18 +1065,18 @@ def laboratory_researches_erc1_edit(
                 request, messages.SUCCESS, _("ERC classification edited successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-researches-erc1-edit",
+            "laboratories_new:management:laboratory-researches-erc1-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): _("ERC classification"),
     }
@@ -1146,7 +1146,7 @@ def laboratory_locations_edit(
                 request, messages.SUCCESS, _("Location edited successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1157,13 +1157,13 @@ def laboratory_locations_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-locations-edit",
+            "laboratories_new:management:laboratory-locations-edit",
             kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Location"),
     }
@@ -1216,7 +1216,7 @@ def laboratory_locations_new(
                 request, messages.SUCCESS, _("Location added successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1227,13 +1227,13 @@ def laboratory_locations_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-locations-new",
+            "laboratories_new:management:laboratory-locations-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Locations"),
     }
@@ -1283,7 +1283,7 @@ def laboratory_locations_delete(
 
     messages.add_message(request, messages.SUCCESS, _("Location removed successfully"))
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1364,7 +1364,7 @@ def laboratory_research_staff_new(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1375,13 +1375,13 @@ def laboratory_research_staff_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-research-staff-new",
+            "laboratories_new:management:laboratory-research-staff-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Research Staff"),
     }
@@ -1438,7 +1438,7 @@ def laboratory_research_staff_delete(
         request, messages.SUCCESS, _("Researcher removed successfully")
     )
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1521,7 +1521,7 @@ def laboratory_technical_staff_new(
                 request, messages.SUCCESS, _("technician added successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1535,13 +1535,13 @@ def laboratory_technical_staff_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-technical-staff-new",
+            "laboratories_new:management:laboratory-technical-staff-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Technical Staff"),
     }
@@ -1563,9 +1563,6 @@ def laboratory_technical_staff_new(
     )
 
 
-@login_required
-@can_manage_laboratories
-@can_view_laboratories
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -1598,7 +1595,7 @@ def laboratory_technical_staff_delete(
         request, messages.SUCCESS, _("Technician removed successfully")
     )
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1636,7 +1633,7 @@ def laboratory_services_new(
                 request, messages.SUCCESS, _("Service added successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1647,13 +1644,13 @@ def laboratory_services_new(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-services-new",
+            "laboratories_new:management:laboratory-services-new",
             kwargs={"laboratory_id": laboratory_id},
         ): _("Service"),
     }
@@ -1721,7 +1718,7 @@ def laboratory_services_edit(
                 request, messages.SUCCESS, _("Service edited successfully")
             )
             return redirect(
-                "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
             )
 
         else:  # pragma: no cover
@@ -1732,13 +1729,13 @@ def laboratory_services_edit(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories:management:laboratories"): _("Laboratories"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory_id},
         ): laboratory.nome_laboratorio,
         reverse(
-            "laboratories:management:laboratory-services-edit",
+            "laboratories_new:management:laboratory-services-edit",
             kwargs={"laboratory_id": laboratory_id, "data_id": data_id},
         ): _("Service"),
     }
@@ -1786,7 +1783,7 @@ def laboratory_services_delete(
 
     messages.add_message(request, messages.SUCCESS, _("Service removed successfully"))
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1810,7 +1807,7 @@ def laboratory_request_approval(
             _("Laboratory must have at least one Department"),
         )
         return redirect(
-            "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
         )
 
     # LaboratorioDatiErc1
@@ -1823,7 +1820,7 @@ def laboratory_request_approval(
             _("Laboratory must have at least one ERC 1 Research"),
         )
         return redirect(
-            "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
         )
 
     # LaboratorioUbicazione
@@ -1834,7 +1831,7 @@ def laboratory_request_approval(
             request, messages.ERROR, _("Laboratory must have at least one Location")
         )
         return redirect(
-            "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
         )
 
     validators = OrganizationalStructureOfficeEmployee.objects.filter(
@@ -1846,7 +1843,7 @@ def laboratory_request_approval(
     validators = list(set(validators))
     lab_url = request.build_absolute_uri(
         reverse(
-            "laboratories:management:laboratory-edit",
+            "laboratories_new:management:laboratory-edit",
             kwargs={"laboratory_id": laboratory.id},
         )
     )
@@ -1867,7 +1864,7 @@ def laboratory_request_approval(
         request, messages.SUCCESS, _("Request for approval sent successfully")
     )
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
 
 
@@ -1893,5 +1890,5 @@ def laboratory_approve(
         request, messages.SUCCESS, _("Laboratory approved successfully")
     )
     return redirect(
-        "laboratories:management:laboratory-edit", laboratory_id=laboratory_id
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
     )
