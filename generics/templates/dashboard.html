@@ -150,12 +150,14 @@
             {% endif %}
             <!-- /Attivita Dottorati -->
             <!-- Laboratori -->
-            {% if not disabled_management_apps or "laboratories" not in disabled_management_apps %}
-              {% trans "Laboratories" as title %}
-              {% trans "Manage Laboratories" as subtitle %}
-              {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="laboratories:management:laboratories" subtitle=subtitle %}
-              <hr />
-            {% endif %}
+            {% comment %}
+              {% if not disabled_management_apps or "laboratories" not in disabled_management_apps %}
+                {% trans "Laboratories" as title %}
+                {% trans "Manage Laboratories" as subtitle %}
+                {% include "blocks/includes/dashboard_item.html" with title=title redirect_url="laboratories:management:laboratories" subtitle=subtitle %}
+                <hr />
+              {% endif %}
+            {% endcomment %}
             <!-- Laboratori_new -->
             {% if not disabled_management_apps or "laboratories_new" not in disabled_management_apps %}
               {% trans "Laboratories (new)" as title %}

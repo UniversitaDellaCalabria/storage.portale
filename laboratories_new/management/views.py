@@ -80,6 +80,39 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     return render(request, "laboratories_new/laboratories.html", context)
 
 
+def _current_role_holder(laboratory, role_descr):
+    """Responsabile in corso per un ruolo: interno (Responsabile) o esterno (Affiliati)."""
+    today = datetime.date.today()
+    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+
+    internal = (
+        LaboratorioResponsabile.objects.filter(
+            still_valid,
+            laboratorio_dati_base=laboratory,
+            laboratorio_ruolo__descr_ruolo_it=role_descr,
+        )
+        .select_related("matricola_personale")
+        .order_by("-data_inizio", "-id")
+        .first()
+    )
+    if internal and internal.matricola_personale:
+        p = internal.matricola_personale
+        return {"label": f"{p.cognome} {p.nome}", "external": False}
+
+    external = (
+        LaboratorioAffiliati.objects.filter(
+            still_valid,
+            laboratorio_dati_base=laboratory,
+            laboratorio_ruolo__descr_ruolo_it=role_descr,
+        )
+        .order_by("-data_inizio", "-id")
+        .first()
+    )
+    if external:
+        return {"label": external.nome_cognome, "external": True}
+    return None
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -141,6 +174,21 @@ def laboratory(
         laboratorio_dati_base=laboratory_id
     ).select_related("matricola_personale", "laboratorio_ruolo")
 
+    reserved_roles = {ROLE_SCIENTIFIC_DIRECTOR[0], ROLE_SAFETY_MANAGER[0]}
+    research_staff = [
+        a
+        for a in affiliates
+        if a.laboratorio_ruolo
+        and a.laboratorio_ruolo.descr_ruolo_it == ROLE_RESEARCH_STAFF[0]
+    ]
+    technicians = [
+        a
+        for a in affiliates
+        if a.laboratorio_ruolo
+        and a.laboratorio_ruolo.descr_ruolo_it
+        not in reserved_roles | {ROLE_RESEARCH_STAFF[0]}
+    ]
+
     if request.POST:
         if not (
             request.user.is_superuser
@@ -181,7 +229,8 @@ def laboratory(
             )
 
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -203,7 +252,7 @@ def laboratory(
 
     return render(
         request,
-        "laboratory.html",
+        "laboratories_new/laboratory.html",
         {
             "breadcrumbs": breadcrumbs,
             "logs": logs,
@@ -213,8 +262,12 @@ def laboratory(
             "researches_erc1": researches_erc1,
             "locations": locations,
             "services": services,
-            "managers": managers,
-            "affiliates": affiliates,
+            "scientific_director": _current_role_holder(
+                laboratory, ROLE_SCIENTIFIC_DIRECTOR[0]
+            ),
+            "safety_manager": _current_role_holder(laboratory, ROLE_SAFETY_MANAGER[0]),
+            "research_staff": research_staff,
+            "technicians": technicians,
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -388,7 +441,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                 ),
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory.pk
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory.pk,
             )
         else:  # pragma: no cover
             for f in (form, scientific_director_form):
@@ -550,7 +604,8 @@ def laboratory_scientific_director_edit(
             )
 
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -722,7 +777,8 @@ def laboratory_safety_manager_edit(
             )
 
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1065,7 +1121,8 @@ def laboratory_researches_erc1_edit(
                 request, messages.SUCCESS, _("ERC classification edited successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
     breadcrumbs = {
@@ -1146,7 +1203,8 @@ def laboratory_locations_edit(
                 request, messages.SUCCESS, _("Location edited successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1216,7 +1274,8 @@ def laboratory_locations_new(
                 request, messages.SUCCESS, _("Location added successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1364,7 +1423,8 @@ def laboratory_research_staff_new(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1521,7 +1581,8 @@ def laboratory_technical_staff_new(
                 request, messages.SUCCESS, _("technician added successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1633,7 +1694,8 @@ def laboratory_services_new(
                 request, messages.SUCCESS, _("Service added successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
@@ -1718,7 +1780,8 @@ def laboratory_services_edit(
                 request, messages.SUCCESS, _("Service edited successfully")
             )
             return redirect(
-                "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+                "laboratories_new:management:laboratory-edit",
+                laboratory_id=laboratory_id,
             )
 
         else:  # pragma: no cover
