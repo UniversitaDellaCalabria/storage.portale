@@ -54,7 +54,7 @@ from .forms import (
     LaboratorioServiziForm,
     LaboratorioUbicazioneForm,
 )
-from .utils import _get_user_roles, _is_user_scientific_director
+from .utils import _get_user_roles, _is_user_scientific_director, _still_valid
 
 logger = logging.getLogger(__name__)
 
@@ -1862,7 +1862,7 @@ def laboratory_request_approval(
 
     # LaboratorioDipartimenti
     if not LaboratorioDipartimenti.objects.filter(
-        laboratorio_dati_base=laboratory_id
+        _still_valid(), laboratorio_dati_base=laboratory
     ).exists():
         messages.add_message(
             request,
@@ -1875,7 +1875,7 @@ def laboratory_request_approval(
 
     # LaboratorioDatiErc1
     if not LaboratorioDatiErc1.objects.filter(
-        laboratorio_dati_base=laboratory_id
+        laboratorio_dati_base=laboratory
     ).exists():
         messages.add_message(
             request,
@@ -1888,7 +1888,7 @@ def laboratory_request_approval(
 
     # LaboratorioUbicazione
     if not LaboratorioUbicazione.objects.filter(
-        laboratorio_dati_base=laboratory_id
+        _still_valid(), laboratorio_dati_base=laboratory
     ).exists():
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Location")

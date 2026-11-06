@@ -12,6 +12,7 @@
     <div class="card card-bg no-after">
       <div class="card-body">
         <form method="post" novalidate>
+          {% csrf_token %}
           <h4 style="font-weight: lighter">{% trans "Choose one technician" %}</h4>
           <div class="mt-5">
             <span class="choosen_person">
