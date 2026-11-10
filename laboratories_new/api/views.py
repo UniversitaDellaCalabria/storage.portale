@@ -45,6 +45,7 @@ from laboratories_new.models import (
     LaboratorioUbicazione,
     AmbitiS3,
     LaboratorioTipologiaAttivita,
+    TraiettorieS3,
 )
 from research_lines.models import (
     RicercaAster1,
@@ -132,7 +133,9 @@ class LaboratoriesViewSet(
         """{id_laboratorio: visibile} letto dal JSON degli snapshot aperti.
         Sono pochi (solo i laboratori in modifica), quindi si leggono in Python."""
         out = {}
-        qs = LaboratorioSnapshot.objects.filter(data_fine_validita__isnull=True).order_by("id")
+        qs = LaboratorioSnapshot.objects.filter(
+            data_fine_validita__isnull=True
+        ).order_by("id")
         for s in qs:
             try:
                 out[s.laboratorio_id] = bool(s.data.get("visibile"))
@@ -147,7 +150,9 @@ class LaboratoriesViewSet(
             data_fine_validita__isnull=True, laboratorio_id__in=lab_ids
         ).order_by("id")
         for s in qs:
-            snaps[s.laboratorio_id] = s  # se ce ne fosse più di uno vince il più recente
+            snaps[s.laboratorio_id] = (
+                s  # se ce ne fosse più di uno vince il più recente
+            )
         return snaps
 
     def _visibility_query(self):
@@ -187,7 +192,6 @@ class LaboratoriesViewSet(
                 return Response(self.get_serializer(snapshot_to_obj(data)).data)
         return super().retrieve(request, *args, **kwargs)
 
-
     def get_queryset(self):
         query_is_active = self._visibility_query()
 
@@ -201,7 +205,7 @@ class LaboratoriesViewSet(
                     Prefetch(
                         "laboratorioubicazione_set",
                         queryset=LaboratorioUbicazione.objects.only(
-                            "laboratorio_dati_base", 
+                            "laboratorio_dati_base",
                             # "superficie_mq"
                         ),
                         to_attr="ubicazione",
@@ -426,15 +430,12 @@ class LaboratoriesViewSet(
                     Prefetch(
                         "laboratorioservizi_set",
                         queryset=LaboratorioServizi.objects.select_related(
-                            "laboratorio_anagrafica_servizi"
+                            "traiettoria_s3"
                         ).only(
                             "laboratorio_dati_base",
-                            "descrizione_it",
-                            "descrizione_en",
-                            "laboratorio_anagrafica_servizi__nome_servizio_it",
-                            "laboratorio_anagrafica_servizi__nome_servizio_en",
-                            "laboratorio_anagrafica_servizi__descrizione_servizio_it",
-                            "laboratorio_anagrafica_servizi__descrizione_servizio_en",
+                            "traiettoria_s3__id",
+                            "traiettoria_s3__denominazione_it",
+                            "traiettoria_s3__denominazione_en",
                         ),
                         to_attr="servizi_offerti",
                     ),
@@ -512,9 +513,11 @@ class LaboratoriesScopesViewSet(
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesScopesSerializer
-    queryset = LaboratorioTipologiaAttivita.objects.only(
-        "id", "descrizione_it", "descrizione_en"
-    ).order_by("id")
+    queryset = (
+        TraiettorieS3.objects.filter(attiva=True)
+        .only("id", "denominazione_it", "denominazione_en")
+        .order_by("codice", "id")
+    )
 
 
 @extend_schema_view(

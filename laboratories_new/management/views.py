@@ -24,6 +24,7 @@ from laboratories_new.models import (
     LaboratorioResponsabile,
     LaboratorioRuolo,
     LaboratorioServizi,
+    LaboratorioSnapshot,
     LaboratorioUbicazione,
 )
 from laboratories_new.settings import (
@@ -32,6 +33,7 @@ from laboratories_new.settings import (
     TO_VALIDATORS_EMAIL_MESSAGE,
     TO_VALIDATORS_EMAIL_SUBJECT,
 )
+from laboratories_new.snapshot_service import end_edit
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.models import RicercaErc1
 from structures.models import DidatticaDipartimento
@@ -54,13 +56,40 @@ from .forms import (
     LaboratorioServiziForm,
     LaboratorioUbicazioneForm,
 )
-from .utils import _get_user_roles, _is_user_scientific_director, _still_valid
+from .utils import (
+    ROLE_RESEARCH_STAFF,
+    ROLE_SAFETY_MANAGER,
+    ROLE_SCIENTIFIC_DIRECTOR,
+    _get_allowed_department_codes,
+    _get_user_roles,
+    _is_user_scientific_director,
+    _still_valid,
+    edit_laboratory,
+)
 
 logger = logging.getLogger(__name__)
 
-ROLE_SCIENTIFIC_DIRECTOR = ("Responsabile scientifico", "Scientific director")
-ROLE_SAFETY_MANAGER = ("Preposto alla sicurezza", "Safety manager")
-ROLE_RESEARCH_STAFF = ("Personale di ricerca", "Research staff")
+
+def _show_form_errors(request, *forms):
+    for f in forms:
+        for k, v in f.errors.items():
+            field = f.fields.get(k)
+            label = field.label if field else _("Error")
+            messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+
+
+def _redirect_to_laboratory(laboratory_id):
+    return redirect(
+        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
+    )
+
+
+def _can_write(request, laboratory, my_offices):
+    return (
+        request.user.is_superuser
+        or (my_offices is not None and my_offices.exists())
+        or _is_user_scientific_director(request, laboratory)
+    )
 
 
 @login_required
@@ -113,6 +142,31 @@ def _current_role_holder(laboratory, role_descr):
     return None
 
 
+def _close_current_role_holders(request, laboratory, role, today):
+    """Chiude i titolari in corso di un ruolo (interni ed esterni)."""
+    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    closed = LaboratorioResponsabile.objects.filter(
+        still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
+    ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
+    closed += LaboratorioAffiliati.objects.filter(
+        still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
+    ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
+    return closed
+
+
+def _get_or_create_role(request, descr_it, descr_en=None, today=None):
+    today = today or datetime.date.today()
+    role = LaboratorioRuolo.objects.filter(descr_ruolo_it=descr_it).first()
+    if role is None:
+        role = LaboratorioRuolo.objects.create(
+            descr_ruolo_it=descr_it,
+            descr_ruolo_en=descr_en,
+            dt_mod=today,
+            id_user_mod=request.user,
+        )
+    return role
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -128,13 +182,9 @@ def laboratory(
         office__organizational_structure__is_active=True,
         office__name=OFFICE_LABORATORIES,
     )
-
-    allowed_related_departments_codes = (
-        []
-        if (not user_lab_offices.exists())
-        else user_lab_offices.values_list(
-            "office_id__organizational_structure_id__unique_code", flat=True
-        )
+    # None per il superuser (nessuna restrizione), altrimenti i codici dei suoi uffici
+    allowed_related_departments_codes = _get_allowed_department_codes(
+        request, user_lab_offices
     )
 
     lab_departments = LaboratorioDipartimenti.objects.filter(
@@ -165,10 +215,6 @@ def laboratory(
     services = LaboratorioServizi.objects.filter(
         laboratorio_dati_base=laboratory_id
     ).select_related("laboratorio_anagrafica_servizi", "traiettoria_s3")
-    # LaboratorioResponsabile
-    managers = LaboratorioResponsabile.objects.filter(
-        laboratorio_dati_base=laboratory_id
-    ).select_related("matricola_personale", "laboratorio_ruolo")
     # LaboratorioAffiliati
     affiliates = LaboratorioAffiliati.objects.filter(
         laboratorio_dati_base=laboratory_id
@@ -190,11 +236,7 @@ def laboratory(
     ]
 
     if request.POST:
-        if not (
-            request.user.is_superuser
-            or my_offices.exists()
-            or _is_user_scientific_director(request, laboratory)
-        ):
+        if not _can_write(request, laboratory, my_offices):
             return custom_message(request, _("Permission denied"))
 
         form = LaboratorioDatiBaseForm(
@@ -205,10 +247,9 @@ def laboratory(
         )
 
         if form.is_valid():
-            with transaction.atomic():
+            # snapshot della versione approvata, poi il laboratorio torna "non visibile"
+            with edit_laboratory(request, laboratory):
                 laboratory = form.save(commit=False)
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
                 laboratory.save()
 
                 _sync_laboratory_departments(request, form, laboratory)
@@ -227,17 +268,10 @@ def laboratory(
             messages.add_message(
                 request, messages.SUCCESS, _("Laboratory edited successfully")
             )
-
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, form)
 
     logs = LogEntry.objects.filter(
         content_type_id=ContentType.objects.get_for_model(laboratory).pk,
@@ -303,24 +337,31 @@ def _sync_laboratory_departments(request, form, laboratory):
             didattica_dipartimento=department,
             descr_dip_lab=department.dip_des_it,
             principale=not has_main,
+            data_inizio=datetime.date.today(),
             dt_mod=datetime.date.today(),
             id_user_mod=request.user,
         )
         has_main = True
 
+    # Se e' stato rimosso il principale e ne restano altri, ne promuovo uno
+    if not has_main:
+        first = current.order_by("id").first()
+        if first:
+            first.principale = True
+            first.save(update_fields=["principale"])
+
 
 @login_required
 @can_manage_laboratories
 def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False):
-    if not (request.user.is_superuser or my_offices.exists()):
+    if not (
+        request.user.is_superuser or (my_offices is not None and my_offices.exists())
+    ):
         return custom_message(request, _("Permission denied"))
 
-    allowed_related_departments_codes = (
-        []
-        if (not my_offices or not my_offices.exists())
-        else my_offices.values_list(
-            "office_id__organizational_structure_id__unique_code", flat=True
-        )
+    # None per il superuser (nessuna restrizione), altrimenti i codici dei suoi uffici
+    allowed_related_departments_codes = _get_allowed_department_codes(
+        request, my_offices
     )
 
     form = LaboratorioDatiBaseForm(
@@ -368,7 +409,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     d.pk: d
                     for d in DidatticaDipartimento.objects.filter(pk__in=department_ids)
                 }
-                for index, department_id in enumerate(department_ids):
+                is_first = True
+                for department_id in department_ids:
                     department = departments.get(department_id)
                     if department is None:
                         continue
@@ -376,29 +418,21 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                         laboratorio_dati_base=laboratory,
                         didattica_dipartimento=department,
                         descr_dip_lab=department.dip_des_it,
-                        principale=(index == 0),
+                        principale=is_first,
                         data_inizio=today,
                         dt_mod=today,
                         id_user_mod=request.user,
                     )
+                    is_first = False
 
                 # Ruoli (responsabile scientifico e preposto sicurezza)
-                roles = []
-                for descr_it, descr_en in (
-                    ROLE_SCIENTIFIC_DIRECTOR,
-                    ROLE_SAFETY_MANAGER,
-                ):
-                    role = LaboratorioRuolo.objects.filter(
-                        descr_ruolo_it=descr_it
-                    ).first()
-                    if role is None:
-                        role = LaboratorioRuolo.objects.create(
-                            descr_ruolo_it=descr_it,
-                            descr_ruolo_en=descr_en,
-                            dt_mod=today,
-                            id_user_mod=request.user,
-                        )
-                    roles.append(role)
+                roles = [
+                    _get_or_create_role(request, descr_it, descr_en, today)
+                    for descr_it, descr_en in (
+                        ROLE_SCIENTIFIC_DIRECTOR,
+                        ROLE_SAFETY_MANAGER,
+                    )
+                ]
 
                 # Persona: interna -> LaboratorioResponsabile, esterna -> LaboratorioAffiliati
                 chosen_code = scientific_director_form.cleaned_data.get(
@@ -440,18 +474,9 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     "Laboratory anagraphic created successfully, please fill in the other fields"
                 ),
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory.pk,
-            )
+            return _redirect_to_laboratory(laboratory.pk)
         else:  # pragma: no cover
-            for f in (form, scientific_director_form):
-                for k, v in f.errors.items():
-                    field = f.fields.get(k)
-                    label = field.label if field else _("Error")
-                    messages.add_message(
-                        request, messages.ERROR, f"<b>{label}</b>: {v}"
-                    )
+            _show_form_errors(request, form, scientific_director_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -527,32 +552,22 @@ def laboratory_scientific_director_edit(
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioDatiBaseScientificDirectorForm(data=request.POST)
 
-        if "choosen_person" in request.POST:
+        if request.POST.get("choosen_person"):
             form = internal_form
         else:
             form = external_form
 
         if form.is_valid():
-            with transaction.atomic():
-                if role is None:
-                    role = LaboratorioRuolo.objects.create(
-                        descr_ruolo_it=ROLE_SCIENTIFIC_DIRECTOR[0],
-                        descr_ruolo_en=ROLE_SCIENTIFIC_DIRECTOR[1],
-                        dt_mod=today,
-                        id_user_mod=request.user,
-                    )
+            with edit_laboratory(request, laboratory):
+                role = _get_or_create_role(
+                    request,
+                    ROLE_SCIENTIFIC_DIRECTOR[0],
+                    ROLE_SCIENTIFIC_DIRECTOR[1],
+                    today,
+                )
 
                 # Chiudo i responsabili scientifici in corso
-                LaboratorioResponsabile.objects.filter(
-                    still_valid,
-                    laboratorio_dati_base=laboratory,
-                    laboratorio_ruolo=role,
-                ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
-                LaboratorioAffiliati.objects.filter(
-                    still_valid,
-                    laboratorio_dati_base=laboratory,
-                    laboratorio_ruolo=role,
-                ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
+                _close_current_role_holders(request, laboratory, role, today)
 
                 # Creo il nuovo responsabile scientifico
                 if form.cleaned_data.get("choosen_person"):
@@ -584,11 +599,6 @@ def laboratory_scientific_director_edit(
                         id_user_mod=request.user,
                     )
 
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
-
             if old_label != new_label:
                 log_action(
                     user=request.user,
@@ -602,17 +612,10 @@ def laboratory_scientific_director_edit(
                 messages.SUCCESS,
                 _("Laboratory scientific director edited successfully"),
             )
-
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -702,32 +705,19 @@ def laboratory_safety_manager_edit(
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioDatiBaseSafetyManagerForm(data=request.POST)
 
-        if "choosen_person" in request.POST and request.POST["choosen_person"]:
+        if request.POST.get("choosen_person"):
             form = internal_form
         else:
             form = external_form
 
         if form.is_valid():
-            with transaction.atomic():
-                if role is None:
-                    role = LaboratorioRuolo.objects.create(
-                        descr_ruolo_it=ROLE_SAFETY_MANAGER[0],
-                        descr_ruolo_en=ROLE_SAFETY_MANAGER[1],
-                        dt_mod=today,
-                        id_user_mod=request.user,
-                    )
+            with edit_laboratory(request, laboratory):
+                role = _get_or_create_role(
+                    request, ROLE_SAFETY_MANAGER[0], ROLE_SAFETY_MANAGER[1], today
+                )
 
                 # Chiudo i preposti in corso
-                LaboratorioResponsabile.objects.filter(
-                    still_valid,
-                    laboratorio_dati_base=laboratory,
-                    laboratorio_ruolo=role,
-                ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
-                LaboratorioAffiliati.objects.filter(
-                    still_valid,
-                    laboratorio_dati_base=laboratory,
-                    laboratorio_ruolo=role,
-                ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
+                _close_current_role_holders(request, laboratory, role, today)
 
                 # Creo il nuovo preposto
                 if form.cleaned_data.get("choosen_person"):
@@ -757,11 +747,6 @@ def laboratory_safety_manager_edit(
                         id_user_mod=request.user,
                     )
 
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
-
             if old_label != new_label:
                 log_action(
                     user=request.user,
@@ -775,20 +760,10 @@ def laboratory_safety_manager_edit(
                 messages.SUCCESS,
                 _("Laboratory safety manager edited successfully"),
             )
-
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
-
-            external_form = LaboratorioDatiBaseSafetyManagerForm(initial=initial)
-            internal_form = ChoosenPersonForm(initial=initial, required=True)
+            _show_form_errors(request, form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -836,28 +811,21 @@ def laboratory_safety_manager_delete(
         descr_ruolo_it=ROLE_SAFETY_MANAGER[0]
     ).first()
 
-    closed = 0
-    if role:
-        with transaction.atomic():
-            # Chiudo i preposti in corso (interni ed esterni)
-            closed += LaboratorioResponsabile.objects.filter(
-                still_valid,
-                laboratorio_dati_base=laboratory,
-                laboratorio_ruolo=role,
-            ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
-            closed += LaboratorioAffiliati.objects.filter(
-                still_valid,
-                laboratorio_dati_base=laboratory,
-                laboratorio_ruolo=role,
-            ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
+    # Controllo prima se c'e' qualcosa da chiudere: solo allora si apre la modifica
+    # (e quindi lo snapshot) e il laboratorio torna "non visibile"
+    has_current = bool(role) and (
+        LaboratorioResponsabile.objects.filter(
+            still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
+        ).exists()
+        or LaboratorioAffiliati.objects.filter(
+            still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
+        ).exists()
+    )
 
-            if closed:
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
+    if has_current:
+        with edit_laboratory(request, laboratory):
+            _close_current_role_holders(request, laboratory, role, today)
 
-    if closed:
         log_action(
             user=request.user,
             obj=laboratory,
@@ -872,9 +840,7 @@ def laboratory_safety_manager_delete(
             request, messages.WARNING, _("No safety manager to remove")
         )
 
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -883,11 +849,14 @@ def laboratory_safety_manager_delete(
 def laboratory_delete(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
-    laboratory.delete()
+    with transaction.atomic():
+        # LaboratorioSnapshot non ha FK verso il laboratorio: va ripulito a mano
+        LaboratorioSnapshot.objects.filter(laboratorio_id=laboratory.pk).delete()
+        laboratory.delete()
+
     messages.add_message(
         request, messages.SUCCESS, _("Laboratory removed successfully")
     )
-
     return redirect("laboratories_new:management:laboratories")
 
 
@@ -926,7 +895,7 @@ def laboratory_extra_departments_new(
                     ),
                 )
             else:
-                with transaction.atomic():
+                with edit_laboratory(request, laboratory):
                     LaboratorioDipartimenti.objects.create(
                         laboratorio_dati_base=laboratory,
                         didattica_dipartimento=department,
@@ -936,11 +905,6 @@ def laboratory_extra_departments_new(
                         dt_mod=today,
                         id_user_mod=request.user,
                     )
-
-                    laboratory.user_mod = request.user
-                    laboratory.dt_mod = datetime.datetime.now()
-                    laboratory.visibile = False
-                    laboratory.save()
 
                 log_action(
                     user=request.user,
@@ -952,16 +916,10 @@ def laboratory_extra_departments_new(
                 messages.add_message(
                     request, messages.SUCCESS, _("Extra department added successfully")
                 )
-                return redirect(
-                    "laboratories_new:management:laboratory-edit",
-                    laboratory_id=laboratory_id,
-                )
+                return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in department_form.errors.items():
-                field = department_form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, department_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -975,7 +933,6 @@ def laboratory_extra_departments_new(
             kwargs={"laboratory_id": laboratory_id},
         ): _("Extra Department"),
     }
-    department_data = None
     return render(
         request,
         "laboratory_department.html",
@@ -983,7 +940,7 @@ def laboratory_extra_departments_new(
             "breadcrumbs": breadcrumbs,
             "form": department_form,
             "laboratory": laboratory,
-            "choosen_department": department_data,
+            "choosen_department": None,
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -1012,13 +969,8 @@ def laboratory_extra_departments_delete(
         principale=False,
     )
 
-    with transaction.atomic():
+    with edit_laboratory(request, laboratory):
         extra_department_lab.delete()
-
-        laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
-        laboratory.visibile = False
-        laboratory.save()
 
     log_action(
         user=request.user,
@@ -1030,9 +982,7 @@ def laboratory_extra_departments_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Extra department removed successfully")
     )
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1072,43 +1022,36 @@ def laboratory_researches_erc1_edit(
     research_erc1_form = LaboratorioDatiErc1Form(initial=initial)
 
     if request.POST:
-        if not (
-            request.user.is_superuser
-            or my_offices.exists()
-            or _is_user_scientific_director(request, laboratory)
-        ):
+        if not _can_write(request, laboratory, my_offices):
             return custom_message(request, _("Permission denied"))
 
         research_erc1_form = LaboratorioDatiErc1Form(data=request.POST)
         if research_erc1_form.is_valid():
-            erc0_selector = request.POST.get("erc0_selector")
+            erc0_selector = research_erc1_form.cleaned_data["erc0_selector"]
             selected_erc1_res_ids = research_erc1_form.cleaned_data.get(
                 f"id_ricerche_erc1_{erc0_selector.lower()}", []
             )
 
-            LaboratorioDatiErc1.objects.filter(
-                laboratorio_dati_base=laboratory_id
-            ).exclude(ricerca_erc1__in=selected_erc1_res_ids).delete()
+            with edit_laboratory(request, laboratory):
+                LaboratorioDatiErc1.objects.filter(
+                    laboratorio_dati_base=laboratory_id
+                ).exclude(ricerca_erc1__in=selected_erc1_res_ids).delete()
 
-            current_erc1_res_ids = LaboratorioDatiErc1.objects.filter(
-                laboratorio_dati_base=laboratory_id
-            ).values_list("ricerca_erc1", flat=True)
-            current_erc1_res_ids = map(str, current_erc1_res_ids)
+                current_erc1_res_ids = {
+                    str(i)
+                    for i in LaboratorioDatiErc1.objects.filter(
+                        laboratorio_dati_base=laboratory_id
+                    ).values_list("ricerca_erc1", flat=True)
+                }
 
-            current_erc1_res = list(
-                set(selected_erc1_res_ids) - set(current_erc1_res_ids)
-            )
-            erc1_researches = RicercaErc1.objects.filter(id__in=current_erc1_res)
-
-            for research in erc1_researches:
-                LaboratorioDatiErc1.objects.create(
-                    laboratorio_dati_base=laboratory, ricerca_erc1=research
-                )
-
-            laboratory.user_mod = request.user
-            laboratory.dt_mod = datetime.datetime.now()
-            laboratory.visibile = False
-            laboratory.save()
+                to_add = set(selected_erc1_res_ids) - current_erc1_res_ids
+                for research in RicercaErc1.objects.filter(id__in=to_add):
+                    LaboratorioDatiErc1.objects.create(
+                        laboratorio_dati_base=laboratory,
+                        ricerca_erc1=research,
+                        dt_mod=datetime.date.today(),
+                        id_user_mod=request.user,
+                    )
 
             log_action(
                 user=request.user,
@@ -1120,10 +1063,10 @@ def laboratory_researches_erc1_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("ERC classification edited successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
+
+        else:  # pragma: no cover
+            _show_form_errors(request, research_erc1_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1172,25 +1115,16 @@ def laboratory_locations_edit(
     location_form = LaboratorioUbicazioneForm(instance=location)
 
     if request.POST:
-        if not (
-            request.user.is_superuser
-            or my_offices.exists()
-            or _is_user_scientific_director(request, laboratory)
-        ):
+        if not _can_write(request, laboratory, my_offices):
             return custom_message(request, _("Permission denied"))
 
         location_form = LaboratorioUbicazioneForm(instance=location, data=request.POST)
         if location_form.is_valid():
-            with transaction.atomic():
+            with edit_laboratory(request, laboratory):
                 location = location_form.save(commit=False)
                 location.dt_mod = datetime.date.today()
                 location.id_user_mod = request.user
                 location.save()
-
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
 
             log_action(
                 user=request.user,
@@ -1202,16 +1136,10 @@ def laboratory_locations_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Location edited successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in location_form.errors.items():
-                field = location_form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, location_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1232,6 +1160,7 @@ def laboratory_locations_edit(
             "breadcrumbs": breadcrumbs,
             "forms": (location_form,),
             "item_label": _("Location"),
+            "edit": 1,
             "laboratory": laboratory,
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
@@ -1251,17 +1180,12 @@ def laboratory_locations_new(
     if request.POST:
         location_form = LaboratorioUbicazioneForm(data=request.POST)
         if location_form.is_valid():
-            with transaction.atomic():
+            with edit_laboratory(request, laboratory):
                 location = location_form.save(commit=False)
                 location.laboratorio_dati_base = laboratory
                 location.dt_mod = datetime.date.today()
                 location.id_user_mod = request.user
                 location.save()
-
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
 
             log_action(
                 user=request.user,
@@ -1273,16 +1197,10 @@ def laboratory_locations_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Location added successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in location_form.errors.items():
-                field = location_form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, location_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1304,7 +1222,7 @@ def laboratory_locations_new(
             "forms": (location_form,),
             "laboratory": laboratory,
             "item_label": _("Location"),
-            "edit": 1,
+            "edit": 0,
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -1328,22 +1246,15 @@ def laboratory_locations_delete(
         LaboratorioUbicazione, pk=data_id, laboratorio_dati_base=laboratory
     )
 
-    with transaction.atomic():
+    with edit_laboratory(request, laboratory):
         location.delete()
-
-        laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
-        laboratory.visibile = False
-        laboratory.save()
 
     log_action(
         user=request.user, obj=laboratory, flag=CHANGE, msg=_("Deleted location")
     )
 
     messages.add_message(request, messages.SUCCESS, _("Location removed successfully"))
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1360,7 +1271,7 @@ def laboratory_research_staff_new(
     if request.POST:
         internal_form = ChoosenPersonForm(data=request.POST, required=True)
         external_form = LaboratorioPersonaleForm(data=request.POST)
-        if "choosen_person" in request.POST and request.POST["choosen_person"]:
+        if request.POST.get("choosen_person"):
             form = internal_form
         else:
             form = external_form
@@ -1368,17 +1279,10 @@ def laboratory_research_staff_new(
         if form.is_valid():
             today = datetime.date.today()
 
-            with transaction.atomic():
-                role = LaboratorioRuolo.objects.filter(
-                    descr_ruolo_it=ROLE_RESEARCH_STAFF[0]
-                ).first()
-                if role is None:
-                    role = LaboratorioRuolo.objects.create(
-                        descr_ruolo_it=ROLE_RESEARCH_STAFF[0],
-                        descr_ruolo_en=ROLE_RESEARCH_STAFF[1],
-                        dt_mod=today,
-                        id_user_mod=request.user,
-                    )
+            with edit_laboratory(request, laboratory):
+                role = _get_or_create_role(
+                    request, ROLE_RESEARCH_STAFF[0], ROLE_RESEARCH_STAFF[1], today
+                )
 
                 if form.cleaned_data.get("choosen_person"):
                     researcher = get_object_or_404(
@@ -1407,11 +1311,6 @@ def laboratory_research_staff_new(
                         id_user_mod=request.user,
                     )
 
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
-
             log_action(
                 user=request.user,
                 obj=laboratory,
@@ -1422,16 +1321,10 @@ def laboratory_research_staff_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Researcher added successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1482,13 +1375,8 @@ def laboratory_research_staff_delete(
         laboratorio_ruolo__descr_ruolo_it=ROLE_RESEARCH_STAFF[0],
     )
 
-    with transaction.atomic():
+    with edit_laboratory(request, laboratory):
         researcher.delete()
-
-        laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
-        laboratory.visibile = False
-        laboratory.save()
 
     log_action(
         user=request.user, obj=laboratory, flag=CHANGE, msg=_("Deleted researcher")
@@ -1497,9 +1385,7 @@ def laboratory_research_staff_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Researcher removed successfully")
     )
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1517,7 +1403,7 @@ def laboratory_technical_staff_new(
     if request.POST:
         technician_form = LaboratorioPersonaleTecnicoForm(request.POST)
 
-        if "choosen_person" in request.POST and request.POST["choosen_person"]:
+        if request.POST.get("choosen_person"):
             person_form = ChoosenPersonForm(data=request.POST, required=True)
         else:
             person_form = LaboratorioPersonaleForm(data=request.POST)
@@ -1526,17 +1412,9 @@ def laboratory_technical_staff_new(
             today = datetime.date.today()
             role_descr = technician_form.cleaned_data["ruolo"]
 
-            with transaction.atomic():
+            with edit_laboratory(request, laboratory):
                 # Il ruolo è testo libero nel form: lo cerco o lo creo in anagrafica
-                role = LaboratorioRuolo.objects.filter(
-                    descr_ruolo_it=role_descr
-                ).first()
-                if role is None:
-                    role = LaboratorioRuolo.objects.create(
-                        descr_ruolo_it=role_descr,
-                        dt_mod=today,
-                        id_user_mod=request.user,
-                    )
+                role = _get_or_create_role(request, role_descr, None, today)
 
                 if person_form.cleaned_data.get("choosen_person"):
                     technician = get_object_or_404(
@@ -1565,11 +1443,6 @@ def laboratory_technical_staff_new(
                         id_user_mod=request.user,
                     )
 
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
-
             log_action(
                 user=request.user,
                 obj=laboratory,
@@ -1580,19 +1453,10 @@ def laboratory_technical_staff_new(
             messages.add_message(
                 request, messages.SUCCESS, _("technician added successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for f in (person_form, technician_form):
-                for k, v in f.errors.items():
-                    field = f.fields.get(k)
-                    label = field.label if field else _("Error")
-                    messages.add_message(
-                        request, messages.ERROR, f"<b>{label}</b>: {v}"
-                    )
+            _show_form_errors(request, person_form, technician_form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1636,17 +1500,21 @@ def laboratory_technical_staff_delete(
     my_offices=None,
     is_validator=False,
 ):
+    # Solo personale tecnico: escludo responsabile, preposto e personale di ricerca
+    reserved = [
+        r[0]
+        for r in (ROLE_SCIENTIFIC_DIRECTOR, ROLE_SAFETY_MANAGER, ROLE_RESEARCH_STAFF)
+    ]
     technician = get_object_or_404(
-        LaboratorioAffiliati, pk=data_id, laboratorio_dati_base=laboratory
+        LaboratorioAffiliati.objects.exclude(
+            laboratorio_ruolo__descr_ruolo_it__in=reserved
+        ),
+        pk=data_id,
+        laboratorio_dati_base=laboratory,
     )
 
-    with transaction.atomic():
+    with edit_laboratory(request, laboratory):
         technician.delete()
-
-        laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
-        laboratory.visibile = False
-        laboratory.save()
 
     log_action(
         user=request.user, obj=laboratory, flag=CHANGE, msg=_("Deleted technician")
@@ -1655,9 +1523,7 @@ def laboratory_technical_staff_delete(
     messages.add_message(
         request, messages.SUCCESS, _("Technician removed successfully")
     )
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1671,17 +1537,12 @@ def laboratory_services_new(
     if request.POST:
         form = LaboratorioServiziForm(data=request.POST)
         if form.is_valid():
-            with transaction.atomic():
+            with edit_laboratory(request, laboratory):
                 service = form.save(commit=False)
                 service.laboratorio_dati_base = laboratory
                 service.dt_mod = datetime.date.today()
                 service.id_user_mod = request.user
                 service.save()
-
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
 
             log_action(
                 user=request.user,
@@ -1693,16 +1554,10 @@ def laboratory_services_new(
             messages.add_message(
                 request, messages.SUCCESS, _("Service added successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1748,26 +1603,17 @@ def laboratory_services_edit(
     form = LaboratorioServiziForm(instance=service)
 
     if request.POST:
-        if not (
-            request.user.is_superuser
-            or my_offices.exists()
-            or _is_user_scientific_director(request, laboratory)
-        ):
+        if not _can_write(request, laboratory, my_offices):
             return custom_message(request, _("Permission denied"))
 
         form = LaboratorioServiziForm(data=request.POST, instance=service)
 
         if form.is_valid():
-            with transaction.atomic():
+            with edit_laboratory(request, laboratory):
                 service = form.save(commit=False)
                 service.dt_mod = datetime.date.today()
                 service.id_user_mod = request.user
                 service.save()
-
-                laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
-                laboratory.visibile = False
-                laboratory.save()
 
             log_action(
                 user=request.user,
@@ -1779,16 +1625,10 @@ def laboratory_services_edit(
             messages.add_message(
                 request, messages.SUCCESS, _("Service edited successfully")
             )
-            return redirect(
-                "laboratories_new:management:laboratory-edit",
-                laboratory_id=laboratory_id,
-            )
+            return _redirect_to_laboratory(laboratory_id)
 
         else:  # pragma: no cover
-            for k, v in form.errors.items():
-                field = form.fields.get(k)
-                label = field.label if field else _("Error")
-                messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
+            _show_form_errors(request, form)
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
@@ -1834,20 +1674,13 @@ def laboratory_services_delete(
         LaboratorioServizi, pk=data_id, laboratorio_dati_base=laboratory
     )
 
-    with transaction.atomic():
+    with edit_laboratory(request, laboratory):
         service.delete()
-
-        laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
-        laboratory.visibile = False
-        laboratory.save()
 
     log_action(user=request.user, obj=laboratory, flag=CHANGE, msg=_("Deleted service"))
 
     messages.add_message(request, messages.SUCCESS, _("Service removed successfully"))
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1869,9 +1702,7 @@ def laboratory_request_approval(
             messages.ERROR,
             _("Laboratory must have at least one Department"),
         )
-        return redirect(
-            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-        )
+        return _redirect_to_laboratory(laboratory_id)
 
     # LaboratorioDatiErc1
     if not LaboratorioDatiErc1.objects.filter(
@@ -1882,9 +1713,7 @@ def laboratory_request_approval(
             messages.ERROR,
             _("Laboratory must have at least one ERC 1 Research"),
         )
-        return redirect(
-            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-        )
+        return _redirect_to_laboratory(laboratory_id)
 
     # LaboratorioUbicazione
     if not LaboratorioUbicazione.objects.filter(
@@ -1893,9 +1722,7 @@ def laboratory_request_approval(
         messages.add_message(
             request, messages.ERROR, _("Laboratory must have at least one Location")
         )
-        return redirect(
-            "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-        )
+        return _redirect_to_laboratory(laboratory_id)
 
     validators = OrganizationalStructureOfficeEmployee.objects.filter(
         office__is_active=True,
@@ -1903,7 +1730,7 @@ def laboratory_request_approval(
         office__organizational_structure__is_active=True,
     ).values_list("employee_id__email", flat=True)
 
-    validators = list(set(validators))
+    validators = [v for v in set(validators) if v]
     lab_url = request.build_absolute_uri(
         reverse(
             "laboratories_new:management:laboratory-edit",
@@ -1911,13 +1738,20 @@ def laboratory_request_approval(
         )
     )
 
-    send_mail(
-        TO_VALIDATORS_EMAIL_SUBJECT,
-        f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio} {lab_url}",
-        settings.DEFAULT_FROM_EMAIL,
-        validators,
-        fail_silently=True,
-    )
+    if validators:
+        send_mail(
+            TO_VALIDATORS_EMAIL_SUBJECT,
+            f"{TO_VALIDATORS_EMAIL_MESSAGE} {laboratory.nome_laboratorio} {lab_url}",
+            settings.DEFAULT_FROM_EMAIL,
+            validators,
+            fail_silently=True,
+        )
+    else:
+        logger.warning(
+            "Nessun validatore a cui notificare la richiesta di approvazione "
+            "del laboratorio %s",
+            laboratory.pk,
+        )
 
     log_action(
         user=request.user, obj=laboratory, flag=CHANGE, msg=_("Requested approval")
@@ -1926,9 +1760,7 @@ def laboratory_request_approval(
     messages.add_message(
         request, messages.SUCCESS, _("Request for approval sent successfully")
     )
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)
 
 
 @login_required
@@ -1942,8 +1774,14 @@ def laboratory_approve(
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
 
-    laboratory.visibile = True
-    laboratory.save()
+    # Rendo visibile il laboratorio e chiudo lo snapshot nella stessa transazione:
+    # il pubblico passa dalla versione vecchia a quella nuova senza buchi
+    with transaction.atomic():
+        laboratory.visibile = True
+        laboratory.user_mod = request.user
+        laboratory.dt_mod = datetime.datetime.now()
+        laboratory.save()
+        end_edit(laboratory.pk, request.user)
 
     log_action(
         user=request.user, obj=laboratory, flag=CHANGE, msg=_("Approved Laboratory")
@@ -1952,6 +1790,4 @@ def laboratory_approve(
     messages.add_message(
         request, messages.SUCCESS, _("Laboratory approved successfully")
     )
-    return redirect(
-        "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
-    )
+    return _redirect_to_laboratory(laboratory_id)

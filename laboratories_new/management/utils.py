@@ -1,7 +1,10 @@
 import datetime
+from contextlib import contextmanager
 
+from django.db import transaction
 from django.db.models import Q
-from laboratories_new.models import LaboratorioResponsabile
+from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
+from laboratories_new.snapshot_service import start_edit
 
 ROLE_SCIENTIFIC_DIRECTOR = ("Responsabile scientifico", "Scientific director")
 ROLE_SAFETY_MANAGER = ("Preposto alla sicurezza", "Safety manager")
@@ -79,3 +82,30 @@ def _get_user_roles(request, laboratory, my_offices, is_validator):
     if is_validator:
         roles["validator"] = True
     return roles
+
+
+@contextmanager
+def edit_laboratory(request, laboratory):
+    """
+    Transazione di modifica di un laboratorio.
+
+    - se il laboratorio e' visibile (approvato), prima di toccare i dati
+      salva lo snapshot della versione approvata (start_edit e' idempotente:
+      se c'e' gia' uno snapshot aperto lo riusa);
+    - esegue il blocco `with`;
+    - a fine blocco rende il laboratorio NON visibile, cosi' serve
+      una nuova approvazione. L'API continua a servire lo snapshot.
+    """
+    with transaction.atomic():
+        # visibilita' letta dal DB, non dall'istanza (il form potrebbe averla
+        # gia' modificata in memoria)
+        was_visible = LaboratorioDatiBase.objects.filter(
+            pk=laboratory.pk, visibile=True
+        ).exists()
+        if was_visible:
+            start_edit(laboratory.pk, request.user)
+        yield
+        laboratory.user_mod = request.user
+        laboratory.dt_mod = datetime.datetime.now()
+        laboratory.visibile = False
+        laboratory.save()

@@ -10,6 +10,7 @@ from laboratories_new.models import (
     AmbitiS3,
     LaboratorioInfrastruttura,
     LaboratorioTipologiaAttivita,
+    TraiettorieS3,
 )
 from generics.utils import build_media_path
 
@@ -375,13 +376,27 @@ class LaboratoriesAreaSerializer(LanguageMixin, ReadOnlyModelSerializer):
 class LaboratoriesScopesSerializer(LanguageMixin, ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.SerializerMethodField()
+    scopes = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.CharField())
     def get_description(self, obj):
-        return _tr(self._lang(), obj.descrizione_it, obj.descrizione_en)
+        return _tr(self._lang(), obj.denominazione_it, obj.denominazione_en)
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_scopes(self, obj):
+        lang = self._lang()
+        seen = {}
+        for s in getattr(obj, "servizi_offerti", None) or []:
+            t = s.traiettoria_s3
+            if t and t.id not in seen:
+                seen[t.id] = {
+                    "id": t.id,
+                    "description": _tr(lang, t.denominazione_it, t.denominazione_en),
+                }
+        return list(seen.values())
 
     class Meta:
-        model = LaboratorioTipologiaAttivita
+        model = TraiettorieS3
         fields = ["id", "description"]
 
 

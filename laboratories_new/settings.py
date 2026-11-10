@@ -21,5 +21,5 @@ def laboratories_media_path(instance, filename):
 
 OFFICE_LABORATORIES = getattr(settings, "OFFICE_LABORATORIES", "laboratories")
 OFFICE_LABORATORY_VALIDATORS = getattr(
-    settings, "OFFICE_LABORATORIES", "laboratory_validators"
+    settings, "OFFICE_LABORATORY_VALIDATORS", "laboratory_validators"
 )

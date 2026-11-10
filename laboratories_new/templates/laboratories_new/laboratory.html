@@ -489,7 +489,7 @@
                             {% if user_roles.superuser or user_roles.operator %}
                               <a href="{% url 'laboratories_new:management:laboratory-safety-manager-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
                                 <svg class="icon icon-xs icon-white">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}0#it-pencil"></use>
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}00#it-pencil"></use>
                                 </svg>
                                 {% trans "Edit" %}
                               </a>
@@ -501,7 +501,7 @@
                                   data-target="#delete_safety_manager"
                                 >
                                   <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}3#it-delete"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}33#it-delete"></use>
                                   </svg>
                                   {% trans "Remove" %}
                                 </a>
