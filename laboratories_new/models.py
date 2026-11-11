@@ -1,9 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.translation import get_language
 from generics.validators import validate_file_size, validate_image_file_extension
 
 from .settings import laboratories_media_path
 import json
+
+
+def _by_lang(it, en):
+    """Testo nella lingua corrente, con fallback sull'italiano."""
+    lang = (get_language() or "it")[:2]
+    return en if lang != "it" and en else it
 
 
 class LaboratorioInfrastruttura(models.Model):
@@ -45,6 +52,9 @@ class LaboratorioTipologiaAttivita(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return _by_lang(self.descrizione_it, self.descrizione_en) or ""
+
     class Meta:
         managed = False
         db_table = "LABORATORIO_TIPO_ATTIVITA"
@@ -62,6 +72,9 @@ class AmbitiS3(models.Model):
     descrizione_it = models.TextField(db_column="DESCRIZIONE_IT", blank=True, null=True)
     descrizione_en = models.TextField(db_column="DESCRIZIONE_EN", blank=True, null=True)
     attivo = models.BooleanField(db_column="ATTIVO", default=True)
+
+    def __str__(self):
+        return _by_lang(self.denominazione_it, self.denominazione_en) or ""
 
     class Meta:
         managed = False
@@ -86,6 +99,10 @@ class TraiettorieS3(models.Model):
         db_column="DENOMINAZIONE_EN", max_length=500, blank=True, null=True
     )
     attiva = models.BooleanField(db_column="ATTIVA", default=True)
+
+    def __str__(self):
+        name = _by_lang(self.denominazione_it, self.denominazione_en) or ""
+        return f"{self.codice} - {name}" if self.codice else name
 
     class Meta:
         managed = False
@@ -206,6 +223,9 @@ class LaboratorioAnagraficaUbicazioni(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return f"{self.edificio} - {self.piano}"
 
     class Meta:
         managed = False
@@ -328,6 +348,9 @@ class LaboratorioRuolo(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return _by_lang(self.descr_ruolo_it, self.descr_ruolo_en) or ""
+
     class Meta:
         managed = False
         db_table = "LABORATORIO_RUOLO"
@@ -431,6 +454,10 @@ class LaboratorioAnagraficaServizi(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        name = _by_lang(self.nome_servizio_it, self.nome_servizio_en) or ""
+        return name if len(name) <= 120 else f"{name[:117]}..."
 
     class Meta:
         managed = False

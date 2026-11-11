@@ -169,14 +169,21 @@ class LaboratoriesViewSet(
         page = self.paginate_queryset(queryset)
         labs = page if page is not None else list(queryset)
 
-        snaps = (
-            {} if self._wants_live() else self._serving_snapshots([l.id for l in labs])
-        )
+        open_snaps = self._serving_snapshots([l.id for l in labs])
+        snaps = {} if self._wants_live() else open_snaps
         objs = [
             snapshot_to_obj(snaps[lab.id].data) if lab.id in snaps else lab
             for lab in labs
         ]
         serializer = self.get_serializer(objs, many=True)
+
+        # solo per chi vede i laboratori nascosti
+        if self._can_see_hidden():
+            serializer.context["live_visibility"] = {
+                lab.id: lab.visibile for lab in labs
+            }
+            serializer.context["snapshot_ids"] = set(open_snaps)
+
         if page is not None:
             return self.get_paginated_response(serializer.data)
         return Response(serializer.data)
@@ -289,6 +296,18 @@ class LaboratoriesViewSet(
                             .distinct()
                         ),
                         to_attr="other_dep",
+                    ),
+                    Prefetch(
+                        "laboratorioservizi_set",
+                        queryset=LaboratorioServizi.objects.select_related(
+                            "traiettoria_s3"
+                        ).only(
+                            "laboratorio_dati_base",
+                            "traiettoria_s3__id",
+                            "traiettoria_s3__denominazione_it",
+                            "traiettoria_s3__denominazione_en",
+                        ),
+                        to_attr="servizi_offerti",
                     ),
                 )
                 .only(
@@ -430,12 +449,15 @@ class LaboratoriesViewSet(
                     Prefetch(
                         "laboratorioservizi_set",
                         queryset=LaboratorioServizi.objects.select_related(
-                            "traiettoria_s3"
+                            "laboratorio_anagrafica_servizi"
                         ).only(
                             "laboratorio_dati_base",
-                            "traiettoria_s3__id",
-                            "traiettoria_s3__denominazione_it",
-                            "traiettoria_s3__denominazione_en",
+                            "descrizione_it",
+                            "descrizione_en",
+                            "laboratorio_anagrafica_servizi__nome_servizio_it",
+                            "laboratorio_anagrafica_servizi__nome_servizio_en",
+                            "laboratorio_anagrafica_servizi__descrizione_servizio_it",
+                            "laboratorio_anagrafica_servizi__descrizione_servizio_en",
                         ),
                         to_attr="servizi_offerti",
                     ),

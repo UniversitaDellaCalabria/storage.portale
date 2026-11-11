@@ -213,6 +213,15 @@
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
                                                 </svg>
                                             </div>
+                                            <div class="align-self-center ml-auto">
+                                                <span class="badge badge-success ml-1"
+                                                    v-if="isVisible(item.visible) && !item.inEdit">
+                                                    {% trans "Visible" %}
+                                                </span>
+                                                <span class="badge badge-danger ml-1" v-else>
+                                                    {% trans "Not visible" %}
+                                                </span>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">

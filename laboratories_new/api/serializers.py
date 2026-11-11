@@ -31,7 +31,9 @@ def _tr(lang, it, en):
     """Testo nella lingua richiesta, con fallback sull'italiano."""
     return en if lang != "it" and en else it
 
+
 _MISSING = object()
+
 
 def _email(pers):
     email = getattr(pers, "snapshot_email", _MISSING)
@@ -308,7 +310,13 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
     scientificDirectorId = serializers.SerializerMethodField()
     researchPersonnel = serializers.SerializerMethodField()
     techPersonnel = serializers.SerializerMethodField()
+    scopes = serializers.SerializerMethodField()
     visible = serializers.CharField(source="visibile")
+    inEdit = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.BooleanField())
+    def get_inEdit(self, obj):
+        return obj.id in self.context.get("snapshot_ids", ())
 
     def get_departmentName(self, obj):
         d = self._main_department(obj)
@@ -333,6 +341,19 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
         # total = sum(u.superficie_mq or 0 for u in ubic)
         total = sum(0 for u in ubic)
         return str(total) if total else None
+
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
+    def get_scopes(self, obj):
+        lang = self._lang()
+        seen = {}
+        for s in getattr(obj, "servizi_offerti", None) or []:
+            t = s.traiettoria_s3
+            if t and t.id not in seen:
+                seen[t.id] = {
+                    "id": t.id,
+                    "description": _tr(lang, t.denominazione_it, t.denominazione_en),
+                }
+        return list(seen.values())
 
     class Meta:
         model = LaboratorioDatiBase
@@ -372,28 +393,13 @@ class LaboratoriesAreaSerializer(LanguageMixin, ReadOnlyModelSerializer):
         fields = ["id", "area"]
 
 
-@extend_schema_serializer(examples=examples.LABORATORIES_SCOPES_SERIALIZER_EXAMPLE)
 class LaboratoriesScopesSerializer(LanguageMixin, ReadOnlyModelSerializer):
     id = serializers.IntegerField()
     description = serializers.SerializerMethodField()
-    scopes = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.CharField())
     def get_description(self, obj):
         return _tr(self._lang(), obj.denominazione_it, obj.denominazione_en)
-
-    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
-    def get_scopes(self, obj):
-        lang = self._lang()
-        seen = {}
-        for s in getattr(obj, "servizi_offerti", None) or []:
-            t = s.traiettoria_s3
-            if t and t.id not in seen:
-                seen[t.id] = {
-                    "id": t.id,
-                    "description": _tr(lang, t.denominazione_it, t.denominazione_en),
-                }
-        return list(seen.values())
 
     class Meta:
         model = TraiettorieS3
