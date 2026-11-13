@@ -313,6 +313,11 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
     scopes = serializers.SerializerMethodField()
     visible = serializers.CharField(source="visibile")
     inEdit = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.CharField())
+    def get_status(self, obj):
+        return getattr(obj, "lab_status", "visible")
 
     @extend_schema_field(serializers.BooleanField())
     def get_inEdit(self, obj):
@@ -376,6 +381,8 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
             "researchPersonnel",
             "techPersonnel",
             "visible",
+            "inEdit",
+            "status",
         ]
 
 

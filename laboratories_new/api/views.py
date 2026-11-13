@@ -57,6 +57,7 @@ from research_lines.models import (
 from django.db.models import Q, Prefetch
 
 from laboratories_new.snapshot_adapter import snapshot_to_obj
+from laboratories_new.management.utils import pending_approval_ids
 
 
 class LaboratoryAccessMixin:
@@ -179,6 +180,15 @@ class LaboratoriesViewSet(
 
         # solo per chi vede i laboratori nascosti
         if self._can_see_hidden():
+            approval_ids = pending_approval_ids([lab.id for lab in labs])
+            for lab, obj in zip(labs, objs):
+                if lab.id in approval_ids:
+                    obj.lab_status = "approval"
+                elif lab.id in open_snaps:
+                    obj.lab_status = "edit"
+                else:
+                    obj.lab_status = "visible" if lab.visibile else "hidden"
+
             serializer.context["live_visibility"] = {
                 lab.id: lab.visibile for lab in labs
             }

@@ -214,9 +214,14 @@
                                                 </svg>
                                             </div>
                                             <div class="align-self-center ml-auto">
-                                                <span class="badge badge-success ml-1"
-                                                    v-if="isVisible(item.visible) && !item.inEdit">
+                                                <span class="badge badge-success ml-1" v-if="item.status == 'visible'">
                                                     {% trans "Visible" %}
+                                                </span>
+                                                <span class="badge badge-info ml-1" v-else-if="item.status == 'approval'">
+                                                    {% trans "Pending approval" %}
+                                                </span>
+                                                <span class="badge badge-warning ml-1" v-else-if="item.status == 'edit'">
+                                                    {% trans "In edit" %}
                                                 </span>
                                                 <span class="badge badge-danger ml-1" v-else>
                                                     {% trans "Not visible" %}

@@ -17,6 +17,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from generics.forms import ChoosenPersonForm
 from generics.utils import custom_message, log_action
+from .utils import LOG_REQUESTED_APPROVAL, LOG_APPROVED, laboratory_status
 from laboratories_new.models import (
     LaboratorioAffiliati,
     LaboratorioDatiErc1,
@@ -302,6 +303,7 @@ def laboratory(
             "safety_manager": _current_role_holder(laboratory, ROLE_SAFETY_MANAGER[0]),
             "research_staff": research_staff,
             "technicians": technicians,
+            "status": laboratory_status(laboratory),
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -1754,7 +1756,7 @@ def laboratory_request_approval(
         )
 
     log_action(
-        user=request.user, obj=laboratory, flag=CHANGE, msg=_("Requested approval")
+        user=request.user, obj=laboratory, flag=CHANGE, msg=LOG_REQUESTED_APPROVAL
     )
 
     messages.add_message(
@@ -1783,9 +1785,7 @@ def laboratory_approve(
         laboratory.save()
         end_edit(laboratory.pk, request.user)
 
-    log_action(
-        user=request.user, obj=laboratory, flag=CHANGE, msg=_("Approved Laboratory")
-    )
+    log_action(user=request.user, obj=laboratory, flag=CHANGE, msg=LOG_APPROVED)
 
     messages.add_message(
         request, messages.SUCCESS, _("Laboratory approved successfully")

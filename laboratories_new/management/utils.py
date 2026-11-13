@@ -3,8 +3,10 @@ from contextlib import contextmanager
 
 from django.db import transaction
 from django.db.models import Q
-from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
+from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile, LaboratorioSnapshot
 from laboratories_new.snapshot_service import start_edit
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 
 ROLE_SCIENTIFIC_DIRECTOR = ("Responsabile scientifico", "Scientific director")
 ROLE_SAFETY_MANAGER = ("Preposto alla sicurezza", "Safety manager")
@@ -15,6 +17,51 @@ RESERVED_ROLES = (
     ROLE_SAFETY_MANAGER,
     ROLE_RESEARCH_STAFF,
 )
+LOG_REQUESTED_APPROVAL = "Requested approval"
+LOG_APPROVED = "Approved Laboratory"
+
+STATUS_VISIBLE = "visible"
+STATUS_EDIT = "edit"
+STATUS_APPROVAL = "approval"
+STATUS_HIDDEN = "hidden"
+
+
+def pending_approval_ids(lab_ids):
+    """Id dei laboratori con una richiesta di approvazione più recente dell'ultima approvazione."""
+    lab_ids = [str(i) for i in lab_ids]
+    if not lab_ids:
+        return set()
+    entries = LogEntry.objects.filter(
+        content_type=ContentType.objects.get_for_model(LaboratorioDatiBase),
+        object_id__in=lab_ids,
+        change_message__in=[LOG_REQUESTED_APPROVAL, LOG_APPROVED],
+    ).order_by("action_time", "id")
+
+    last_request, last_approval = {}, {}
+    for e in entries:
+        target = (
+            last_request
+            if e.change_message == LOG_REQUESTED_APPROVAL
+            else last_approval
+        )
+        target[int(e.object_id)] = e.action_time
+
+    return {
+        lab_id
+        for lab_id, requested_at in last_request.items()
+        if lab_id not in last_approval or requested_at > last_approval[lab_id]
+    }
+
+
+def laboratory_status(laboratory):
+    """Stato di un singolo laboratorio, per la pagina di dettaglio."""
+    if laboratory.pk in pending_approval_ids([laboratory.pk]):
+        return STATUS_APPROVAL
+    if LaboratorioSnapshot.objects.filter(
+        laboratorio_id=laboratory.pk, data_fine_validita__isnull=True
+    ).exists():
+        return STATUS_EDIT
+    return STATUS_VISIBLE if laboratory.visibile else STATUS_HIDDEN
 
 
 def _still_valid(today=None):
