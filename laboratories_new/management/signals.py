@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from laboratories_new.models import LaboratorioDatiBase, LaboratorioSnapshot
+from laboratories_new.models import LaboratorioDatiBase
 
 
 def _delete_file_on_commit(storage, name):
@@ -34,8 +34,6 @@ def delete_old_logo_on_change(sender, instance, **kwargs):
     if not old_name or old_name == instance.nome_file_logo.name:
         return
 
-    has_open_snapshot = LaboratorioSnapshot.objects.filter(
-        laboratorio_id=instance.pk, data_fine_validita__isnull=True
-    ).exists()
-    if not has_open_snapshot:
-        _delete_file_on_commit(instance.nome_file_logo.storage, old_name)
+    # lo snapshot viene rigenerato nella stessa transazione con il nuovo logo:
+    # il vecchio file non serve piu'
+    _delete_file_on_commit(instance.nome_file_logo.storage, old_name)

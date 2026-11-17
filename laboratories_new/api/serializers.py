@@ -321,7 +321,7 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
 
     @extend_schema_field(serializers.BooleanField())
     def get_inEdit(self, obj):
-        return obj.id in self.context.get("snapshot_ids", ())
+        return getattr(obj, "lab_status", None) == "edit"
 
     def get_departmentName(self, obj):
         d = self._main_department(obj)

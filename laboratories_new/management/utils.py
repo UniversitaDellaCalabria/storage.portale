@@ -3,8 +3,8 @@ from contextlib import contextmanager
 
 from django.db import transaction
 from django.db.models import Q
-from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile, LaboratorioSnapshot
-from laboratories_new.snapshot_service import start_edit
+from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
+from laboratories_new.snapshot_service import refresh_snapshot
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -26,18 +26,18 @@ STATUS_APPROVAL = "approval"
 STATUS_HIDDEN = "hidden"
 
 
-def pending_approval_ids(lab_ids):
-    """Id dei laboratori con una richiesta di approvazione più recente dell'ultima approvazione."""
+def _approval_log(lab_ids):
+    """({id: ultima richiesta di approvazione}, {id: ultima approvazione})."""
     lab_ids = [str(i) for i in lab_ids]
+    last_request, last_approval = {}, {}
     if not lab_ids:
-        return set()
+        return last_request, last_approval
     entries = LogEntry.objects.filter(
         content_type=ContentType.objects.get_for_model(LaboratorioDatiBase),
         object_id__in=lab_ids,
         change_message__in=[LOG_REQUESTED_APPROVAL, LOG_APPROVED],
     ).order_by("action_time", "id")
 
-    last_request, last_approval = {}, {}
     for e in entries:
         target = (
             last_request
@@ -45,7 +45,10 @@ def pending_approval_ids(lab_ids):
             else last_approval
         )
         target[int(e.object_id)] = e.action_time
+    return last_request, last_approval
 
+
+def _pending(last_request, last_approval):
     return {
         lab_id
         for lab_id, requested_at in last_request.items()
@@ -53,15 +56,38 @@ def pending_approval_ids(lab_ids):
     }
 
 
+def pending_approval_ids(lab_ids):
+    """Id dei laboratori con una richiesta di approvazione più recente dell'ultima approvazione."""
+    return _pending(*_approval_log(lab_ids))
+
+
+def laboratory_statuses(visibility):
+    """
+    {id: stato} a partire da {id: visibile}.
+
+    - approval: richiesta di approvazione in attesa
+    - visible:  laboratorio visibile
+    - edit:     non visibile, ma gia' approvato in passato (modificato dopo l'approvazione)
+    - hidden:   non visibile e mai approvato
+    """
+    last_request, last_approval = _approval_log(visibility)
+    pending = _pending(last_request, last_approval)
+    out = {}
+    for lab_id, visible in visibility.items():
+        if lab_id in pending:
+            out[lab_id] = STATUS_APPROVAL
+        elif visible:
+            out[lab_id] = STATUS_VISIBLE
+        elif lab_id in last_approval:
+            out[lab_id] = STATUS_EDIT
+        else:
+            out[lab_id] = STATUS_HIDDEN
+    return out
+
+
 def laboratory_status(laboratory):
     """Stato di un singolo laboratorio, per la pagina di dettaglio."""
-    if laboratory.pk in pending_approval_ids([laboratory.pk]):
-        return STATUS_APPROVAL
-    if LaboratorioSnapshot.objects.filter(
-        laboratorio_id=laboratory.pk, data_fine_validita__isnull=True
-    ).exists():
-        return STATUS_EDIT
-    return STATUS_VISIBLE if laboratory.visibile else STATUS_HIDDEN
+    return laboratory_statuses({laboratory.pk: laboratory.visibile})[laboratory.pk]
 
 
 def _still_valid(today=None):
@@ -136,23 +162,14 @@ def edit_laboratory(request, laboratory):
     """
     Transazione di modifica di un laboratorio.
 
-    - se il laboratorio e' visibile (approvato), prima di toccare i dati
-      salva lo snapshot della versione approvata (start_edit e' idempotente:
-      se c'e' gia' uno snapshot aperto lo riusa);
-    - esegue il blocco `with`;
-    - a fine blocco rende il laboratorio NON visibile, cosi' serve
-      una nuova approvazione. L'API continua a servire lo snapshot.
+    - esegue il blocco `with` (le modifiche vanno sulle tabelle);
+    - rende il laboratorio NON visibile, cosi' serve una nuova approvazione;
+    - crea un nuovo snapshot dai dati aggiornati (chiudendo il precedente).
     """
     with transaction.atomic():
-        # visibilita' letta dal DB, non dall'istanza (il form potrebbe averla
-        # gia' modificata in memoria)
-        was_visible = LaboratorioDatiBase.objects.filter(
-            pk=laboratory.pk, visibile=True
-        ).exists()
-        if was_visible:
-            start_edit(laboratory.pk, request.user)
         yield
         laboratory.user_mod = request.user
         laboratory.dt_mod = datetime.datetime.now()
         laboratory.visibile = False
         laboratory.save()
+        refresh_snapshot(laboratory.pk, request.user)

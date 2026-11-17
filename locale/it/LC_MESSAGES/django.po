@@ -4863,6 +4863,21 @@ msgstr "Modifica dati per"
 msgid "Add data set for"
 msgstr "Aggiungi set di dati per"
 
+#: laboratories_new/templates/laboratories_new/blocks/crud_laboratories.html
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "Pending approval"
+msgstr "In attesa di approvazione"
+
+#: laboratories_new/templates/laboratories_new/blocks/crud_laboratories.html
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "Modified - to be re-approved"
+msgstr "Modificato - da riapprovare"
+
+#: laboratories_new/templates/laboratories_new/blocks/crud_laboratories.html
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "Not visible"
+msgstr "Non visibile"
+
 #~ msgid "Structure selection"
 #~ msgstr "Seleziona procedura"
 

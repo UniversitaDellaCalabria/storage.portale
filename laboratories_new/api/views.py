@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -40,7 +41,6 @@ from laboratories_new.models import (
     LaboratorioInfrastruttura,
     LaboratorioResponsabile,
     LaboratorioServizi,
-    LaboratorioSnapshot,
     LaboratorioUbicazione,
     AmbitiS3,
     LaboratorioTipologiaAttivita,
@@ -56,10 +56,13 @@ from research_lines.models import (
 from django.db.models import Q, Prefetch
 
 from laboratories_new.snapshot_adapter import snapshot_to_obj
+from laboratories_new.snapshot_service import current_snapshots
 from laboratories_new.management.utils import (
     _scientific_directors,
-    pending_approval_ids,
+    laboratory_statuses,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class LaboratoryAccessMixin:
@@ -108,10 +111,6 @@ class LaboratoryAccessMixin:
         access = self._access()
         return access["staff"] or lab_id in access["director_lab_ids"]
 
-    def _wants_live(self):
-        """?live=1 salta gli snapshot: riservato a superuser/operatori/validatori."""
-        return self.request.query_params.get("live") == "1" and self._access()["staff"]
-
 
 @extend_schema_view(
     list=extend_schema(
@@ -136,79 +135,54 @@ class LaboratoriesViewSet(
     def get_serializer_class(self):
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
 
-    @staticmethod
-    def _open_snapshot_visibility():
-        """{id_laboratorio: visibile} letto dal JSON degli snapshot aperti.
-        Sono pochi (solo i laboratori in modifica), quindi si leggono in Python."""
-        out = {}
-        qs = LaboratorioSnapshot.objects.filter(
-            data_fine_validita__isnull=True
-        ).order_by("id")
-        for s in qs:
-            try:
-                out[s.laboratorio_id] = bool(s.data.get("visibile"))
-            except ValueError:  # JSON non valido: quel laboratorio resta sui dati live
-                out.pop(s.laboratorio_id, None)
-        return out
-
-    @staticmethod
-    def _serving_snapshots(lab_ids):
-        snaps = {}
-        qs = LaboratorioSnapshot.objects.filter(
-            data_fine_validita__isnull=True, laboratorio_id__in=lab_ids
-        ).order_by("id")
-        for s in qs:
-            snaps[s.laboratorio_id] = (
-                s  # se ce ne fosse più di uno vince il più recente
-            )
-        return snaps
-
     def _visibility_query(self):
+        # le tabelle e lo snapshot corrente sono sempre allineati: filtri e
+        # visibilita' si calcolano sulle tabelle, i dati si leggono dallo snapshot
         if self._can_see_all_hidden():
             return Q()
-        vis = self._open_snapshot_visibility()
-        in_edit = list(vis)
-        shown = [lab_id for lab_id, v in vis.items() if v]
-        # laboratori normali: visibile live; laboratori in modifica: visibile nello snapshot
-        public = (Q(visibile=True) & ~Q(id__in=in_edit)) | Q(id__in=shown)
+        public = Q(visibile=True)
         director_lab_ids = self._access()["director_lab_ids"]
         if director_lab_ids:
             return public | Q(id__in=director_lab_ids)
         return public
 
+    def _snapshot_objs(self, lab_ids):
+        """Oggetti da serializzare, letti dallo snapshot corrente.
+        Fallback sulle tabelle solo per i laboratori ancora senza snapshot."""
+        snaps = current_snapshots(lab_ids)
+        missing = [i for i in lab_ids if i not in snaps]
+        live = {}
+        if missing:
+            logger.warning("Laboratori senza snapshot: %s", missing)
+            live = {
+                lab.id: lab for lab in self.get_queryset().filter(id__in=missing)
+            }
+        objs = []
+        for lab_id in lab_ids:
+            if lab_id in snaps:
+                objs.append(snapshot_to_obj(snaps[lab_id]))
+            elif lab_id in live:
+                objs.append(live[lab_id])
+        return objs
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        labs = page if page is not None else list(queryset)
+        ids_qs = queryset.values_list("id", flat=True)
+        page = self.paginate_queryset(ids_qs)
+        lab_ids = list(page if page is not None else ids_qs)
 
-        open_snaps = self._serving_snapshots([l.id for l in labs])
-        snaps = {} if self._wants_live() else open_snaps
-        objs = [
-            snapshot_to_obj(snaps[lab.id].data) if lab.id in snaps else lab
-            for lab in labs
-        ]
+        objs = self._snapshot_objs(lab_ids)
         serializer = self.get_serializer(objs, many=True)
 
         # stato di lavorazione: solo per i laboratori nascosti che l'utente puo' vedere
-        hidden_ok = [lab for lab in labs if self._can_see_hidden(lab.id)]
-        if hidden_ok:
-            approval_ids = pending_approval_ids([lab.id for lab in hidden_ok])
-            for lab, obj in zip(labs, objs):
-                if not self._can_see_hidden(lab.id):
-                    continue
-                if lab.id in approval_ids:
-                    obj.lab_status = "approval"
-                elif lab.id in open_snaps:
-                    obj.lab_status = "edit"
-                else:
-                    obj.lab_status = "visible" if lab.visibile else "hidden"
-
-            serializer.context["live_visibility"] = {
-                lab.id: lab.visibile for lab in hidden_ok
-            }
-            serializer.context["snapshot_ids"] = {
-                lab.id for lab in hidden_ok if lab.id in open_snaps
-            }
+        visibility = {
+            obj.id: bool(obj.visibile) for obj in objs if self._can_see_hidden(obj.id)
+        }
+        if visibility:
+            statuses = laboratory_statuses(visibility)
+            for obj in objs:
+                if obj.id in statuses:
+                    obj.lab_status = statuses[obj.id]
 
         if page is not None:
             return self.get_paginated_response(serializer.data)
@@ -216,13 +190,13 @@ class LaboratoriesViewSet(
 
     def retrieve(self, request, *args, **kwargs):
         pk = kwargs.get(self.lookup_field)
-        if str(pk).isdigit() and not self._wants_live():
-            snap = self._serving_snapshots([int(pk)]).get(int(pk))
-            if snap:
-                data = snap.data
+        if str(pk).isdigit():
+            data = current_snapshots([int(pk)]).get(int(pk))
+            if data is not None:
                 if not (self._can_see_hidden(int(pk)) or data.get("visibile")):
                     raise Http404
                 return Response(self.get_serializer(snapshot_to_obj(data)).data)
+            logger.warning("Laboratorio %s senza snapshot", pk)
         return super().retrieve(request, *args, **kwargs)
 
     def get_queryset(self):

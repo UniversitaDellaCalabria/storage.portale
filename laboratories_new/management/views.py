@@ -35,7 +35,7 @@ from laboratories_new.settings import (
     TO_VALIDATORS_EMAIL_MESSAGE,
     TO_VALIDATORS_EMAIL_SUBJECT,
 )
-from laboratories_new.snapshot_service import end_edit
+from laboratories_new.snapshot_service import refresh_snapshot
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.models import RicercaErc1
 from structures.models import DidatticaDipartimento
@@ -466,6 +466,8 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                             dt_mod=today,
                             id_user_mod=request.user,
                         )
+
+                refresh_snapshot(laboratory.pk, request.user)
 
             log_action(
                 user=request.user, obj=laboratory, flag=ADDITION, msg=[{"added": {}}]
@@ -1787,14 +1789,13 @@ def laboratory_approve(
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
 
-    # Rendo visibile il laboratorio e chiudo lo snapshot nella stessa transazione:
-    # il pubblico passa dalla versione vecchia a quella nuova senza buchi
+    # Rendo visibile il laboratorio e ne creo il nuovo snapshot nella stessa transazione
     with transaction.atomic():
         laboratory.visibile = True
         laboratory.user_mod = request.user
         laboratory.dt_mod = datetime.datetime.now()
         laboratory.save()
-        end_edit(laboratory.pk, request.user)
+        refresh_snapshot(laboratory.pk, request.user)
 
     log_action(user=request.user, obj=laboratory, flag=CHANGE, msg=LOG_APPROVED)
 

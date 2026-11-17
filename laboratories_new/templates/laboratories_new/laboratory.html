@@ -94,6 +94,15 @@
                       {% trans "Visible" %}
                     </label>
                   </div>
+                  {% if status == "visible" %}
+                    <span class="badge badge-success">{% trans "Visible" %}</span>
+                  {% elif status == "approval" %}
+                    <span class="badge badge-info">{% trans "Pending approval" %}</span>
+                  {% elif status == "edit" %}
+                    <span class="badge badge-warning">{% trans "Modified - to be re-approved" %}</span>
+                  {% else %}
+                    <span class="badge badge-danger">{% trans "Not visible" %}</span>
+                  {% endif %}
                 </td>
               </tr>
             </tbody>
