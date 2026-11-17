@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from addressbook.models import Personale
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
     extend_schema,
@@ -57,7 +56,10 @@ from research_lines.models import (
 from django.db.models import Q, Prefetch
 
 from laboratories_new.snapshot_adapter import snapshot_to_obj
-from laboratories_new.management.utils import pending_approval_ids
+from laboratories_new.management.utils import (
+    _scientific_directors,
+    pending_approval_ids,
+)
 
 
 class LaboratoryAccessMixin:
@@ -69,7 +71,7 @@ class LaboratoryAccessMixin:
 
         user = self.request.user
         is_staff_role = False  # superuser, operatore, validatore
-        is_director = False
+        director_lab_ids = frozenset()
 
         if user.is_superuser:
             is_staff_role = True
@@ -83,23 +85,28 @@ class LaboratoryAccessMixin:
                 office__name__in=[OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS]
             ).exists()
 
-            if not is_staff_role and user.taxpayer_id is not None:
-                profile = Personale.objects.filter(cod_fis=user.taxpayer_id).first()
-                is_director = (
-                    profile is not None
-                    and LaboratorioResponsabile.objects.filter(
-                        matricola_personale=profile
-                    ).exists()
+            # Il responsabile scientifico (incarico in corso) vede i laboratori
+            # nascosti di cui e' responsabile, non tutti
+            taxpayer_id = getattr(user, "taxpayer_id", None)
+            if not is_staff_role and taxpayer_id:
+                director_lab_ids = frozenset(
+                    _scientific_directors(taxpayer_id).values_list(
+                        "laboratorio_dati_base_id", flat=True
+                    )
                 )
 
         self._access_cache = {
             "staff": is_staff_role,
-            "can_see_hidden": is_staff_role or is_director,
+            "director_lab_ids": director_lab_ids,
         }
         return self._access_cache
 
-    def _can_see_hidden(self):
-        return self._access()["can_see_hidden"]
+    def _can_see_all_hidden(self):
+        return self._access()["staff"]
+
+    def _can_see_hidden(self, lab_id):
+        access = self._access()
+        return access["staff"] or lab_id in access["director_lab_ids"]
 
     def _wants_live(self):
         """?live=1 salta gli snapshot: riservato a superuser/operatori/validatori."""
@@ -157,13 +164,17 @@ class LaboratoriesViewSet(
         return snaps
 
     def _visibility_query(self):
-        if self._can_see_hidden():
+        if self._can_see_all_hidden():
             return Q()
         vis = self._open_snapshot_visibility()
         in_edit = list(vis)
         shown = [lab_id for lab_id, v in vis.items() if v]
         # laboratori normali: visibile live; laboratori in modifica: visibile nello snapshot
-        return (Q(visibile=True) & ~Q(id__in=in_edit)) | Q(id__in=shown)
+        public = (Q(visibile=True) & ~Q(id__in=in_edit)) | Q(id__in=shown)
+        director_lab_ids = self._access()["director_lab_ids"]
+        if director_lab_ids:
+            return public | Q(id__in=director_lab_ids)
+        return public
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -178,10 +189,13 @@ class LaboratoriesViewSet(
         ]
         serializer = self.get_serializer(objs, many=True)
 
-        # solo per chi vede i laboratori nascosti
-        if self._can_see_hidden():
-            approval_ids = pending_approval_ids([lab.id for lab in labs])
+        # stato di lavorazione: solo per i laboratori nascosti che l'utente puo' vedere
+        hidden_ok = [lab for lab in labs if self._can_see_hidden(lab.id)]
+        if hidden_ok:
+            approval_ids = pending_approval_ids([lab.id for lab in hidden_ok])
             for lab, obj in zip(labs, objs):
+                if not self._can_see_hidden(lab.id):
+                    continue
                 if lab.id in approval_ids:
                     obj.lab_status = "approval"
                 elif lab.id in open_snaps:
@@ -190,9 +204,11 @@ class LaboratoriesViewSet(
                     obj.lab_status = "visible" if lab.visibile else "hidden"
 
             serializer.context["live_visibility"] = {
-                lab.id: lab.visibile for lab in labs
+                lab.id: lab.visibile for lab in hidden_ok
             }
-            serializer.context["snapshot_ids"] = set(open_snaps)
+            serializer.context["snapshot_ids"] = {
+                lab.id for lab in hidden_ok if lab.id in open_snaps
+            }
 
         if page is not None:
             return self.get_paginated_response(serializer.data)
@@ -204,7 +220,7 @@ class LaboratoriesViewSet(
             snap = self._serving_snapshots([int(pk)]).get(int(pk))
             if snap:
                 data = snap.data
-                if not (self._can_see_hidden() or data.get("visibile")):
+                if not (self._can_see_hidden(int(pk)) or data.get("visibile")):
                     raise Http404
                 return Response(self.get_serializer(snapshot_to_obj(data)).data)
         return super().retrieve(request, *args, **kwargs)

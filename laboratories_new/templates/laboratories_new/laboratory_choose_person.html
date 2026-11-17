@@ -23,7 +23,7 @@
             <hr />
           </span>
           {% if user_roles.superuser or user_roles.operator %}
-            {% include "form_submit_warning.html" with active=laboratory.visibile %}
+            {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
           {% endif %}
         </form>
       </div>

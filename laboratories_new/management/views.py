@@ -14,6 +14,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _
 from generics.forms import ChoosenPersonForm
 from generics.utils import custom_message, log_action
@@ -318,20 +319,21 @@ def _sync_laboratory_departments(request, form, laboratory):
     vedere/scegliere (così non tocca dipartimenti fuori dal suo perimetro).
     """
     selected_ids = {int(i) for i in form.cleaned_data["choosen_department_id"]}
-    selectable_ids = {
-        int(value) for value, _label in form.fields["choosen_department_id"].choices
-    }
+    # NB: non usare le choices del campo: includono anche i dipartimenti gia'
+    # associati fuori dal perimetro dell'operatore (mostrati ma non gestibili)
+    editable_ids = form.editable_department_ids
 
     current = LaboratorioDipartimenti.objects.filter(laboratorio_dati_base=laboratory)
 
     # Rimozione dei deselezionati (solo nel perimetro dell'operatore)
-    current.filter(didattica_dipartimento_id__in=selectable_ids - selected_ids).delete()
+    current.filter(didattica_dipartimento_id__in=editable_ids - selected_ids).delete()
 
     existing_ids = set(current.values_list("didattica_dipartimento_id", flat=True))
     has_main = current.filter(principale=True).exists()
 
+    # Aggiunta dei nuovi (solo nel perimetro dell'operatore)
     new_departments = DidatticaDipartimento.objects.filter(
-        pk__in=selected_ids - existing_ids
+        pk__in=(selected_ids - existing_ids) & editable_ids
     )
     for department in new_departments:
         LaboratorioDipartimenti.objects.create(
@@ -487,7 +489,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
     }
     return render(
         request,
-        "laboratory_new.html",
+        "laboratories_new/laboratory_new.html",
         {
             "breadcrumbs": breadcrumbs,
             "url": reverse("teachers:apiv1:teachers-list"),
@@ -634,7 +636,7 @@ def laboratory_scientific_director_edit(
 
     return render(
         request,
-        "laboratory_choose_person.html",
+        "laboratories_new/laboratory_choose_person.html",
         {
             "breadcrumbs": breadcrumbs,
             "laboratory": laboratory,
@@ -782,7 +784,7 @@ def laboratory_safety_manager_edit(
 
     return render(
         request,
-        "laboratory_choose_person.html",
+        "laboratories_new/laboratory_choose_person.html",
         {
             "breadcrumbs": breadcrumbs,
             "laboratory": laboratory,
@@ -800,6 +802,7 @@ def laboratory_safety_manager_edit(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -846,6 +849,7 @@ def laboratory_safety_manager_delete(
 
 
 @login_required
+@require_POST
 @check_if_superuser
 @can_manage_laboratories
 def laboratory_delete(
@@ -937,7 +941,7 @@ def laboratory_extra_departments_new(
     }
     return render(
         request,
-        "laboratory_department.html",
+        "laboratories_new/laboratory_department.html",
         {
             "breadcrumbs": breadcrumbs,
             "form": department_form,
@@ -952,6 +956,7 @@ def laboratory_extra_departments_new(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1084,7 +1089,7 @@ def laboratory_researches_erc1_edit(
     }
     return render(
         request,
-        "laboratory_unique_form.html",
+        "laboratories_new/laboratory_unique_form.html",
         {
             "breadcrumbs": breadcrumbs,
             "forms": (research_erc1_form,),
@@ -1157,7 +1162,7 @@ def laboratory_locations_edit(
     }
     return render(
         request,
-        "laboratory_unique_form.html",
+        "laboratories_new/laboratory_unique_form.html",
         {
             "breadcrumbs": breadcrumbs,
             "forms": (location_form,),
@@ -1218,7 +1223,7 @@ def laboratory_locations_new(
     }
     return render(
         request,
-        "laboratory_unique_form.html",
+        "laboratories_new/laboratory_unique_form.html",
         {
             "breadcrumbs": breadcrumbs,
             "forms": (location_form,),
@@ -1233,6 +1238,7 @@ def laboratory_locations_new(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1342,7 +1348,7 @@ def laboratory_research_staff_new(
     }
     return render(
         request,
-        "laboratory_choose_person.html",
+        "laboratories_new/laboratory_choose_person.html",
         {
             "breadcrumbs": breadcrumbs,
             "laboratory": laboratory,
@@ -1359,6 +1365,7 @@ def laboratory_research_staff_new(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1474,7 +1481,7 @@ def laboratory_technical_staff_new(
     }
     return render(
         request,
-        "laboratory_technician.html",
+        "laboratories_new/laboratory_technician.html",
         {
             "breadcrumbs": breadcrumbs,
             "laboratory": laboratory,
@@ -1491,6 +1498,7 @@ def laboratory_technical_staff_new(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1575,7 +1583,7 @@ def laboratory_services_new(
     }
     return render(
         request,
-        "laboratory_unique_form.html",
+        "laboratories_new/laboratory_unique_form.html",
         {
             "breadcrumbs": breadcrumbs,
             "forms": (form,),
@@ -1646,7 +1654,7 @@ def laboratory_services_edit(
     }
     return render(
         request,
-        "laboratory_unique_form.html",
+        "laboratories_new/laboratory_unique_form.html",
         {
             "breadcrumbs": breadcrumbs,
             "forms": (form,),
@@ -1661,6 +1669,7 @@ def laboratory_services_edit(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1686,6 +1695,7 @@ def laboratory_services_delete(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 @can_edit_laboratories
@@ -1766,6 +1776,7 @@ def laboratory_request_approval(
 
 
 @login_required
+@require_POST
 @can_manage_laboratories
 @can_view_laboratories
 def laboratory_approve(

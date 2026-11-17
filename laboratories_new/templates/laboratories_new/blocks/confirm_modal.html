@@ -25,7 +25,11 @@
         <p>{{ message }}</p>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-success btn-sm" href="{{ url }}">{% trans 'Yes, proceed' %}</a>
+        {# Azione che modifica dati: POST con token CSRF, mai un link GET #}
+        <form method="post" action="{{ url }}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-sm">{% trans 'Yes, proceed' %}</button>
+        </form>
       </div>
     </div>
   </div>

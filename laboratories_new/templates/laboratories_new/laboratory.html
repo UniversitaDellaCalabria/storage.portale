@@ -102,7 +102,7 @@
             {% include "form_template.html" with form=form %}
             <hr />
             {% if user_roles.superuser or user_roles.operator %}
-              {% include "form_submit_warning.html" with active=laboratory.visibile %}
+              {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
             {% endif %}
           </form>
         </div>
@@ -501,7 +501,7 @@
                                   data-target="#delete_safety_manager"
                                 >
                                   <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}33#it-delete"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
                                   </svg>
                                   {% trans "Remove" %}
                                 </a>
