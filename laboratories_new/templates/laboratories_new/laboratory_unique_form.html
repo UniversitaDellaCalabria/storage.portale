@@ -4,25 +4,31 @@
 {% load static %}
 
 {% block centered_container %}
-  <div>
-    <h3 style="font-weight: lighter" class="mb-4">
-      {% if edit|default:False %}
-        {% trans "Edit " %}
-      {% else %}
-        {% trans "New " %}
-      {% endif %}
-      {{item_label|default:"item"}}
-      {% trans " for " %}
-      {{ laboratory.nome_laboratorio }}
-    </h3>
-    <form method="post" novalidate>
-      {% for form in forms %}
-        {% include "form_template.html" with form=form %}
-      {% endfor %}
-      {% if user_roles.superuser or user_roles.operator %}
-        {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
-      {% endif %}
-    </form>
+  {% include "laboratories_new/blocks/styles.html" %}
+  <h2 class="lab-page-title mb-4">
+    {% if edit|default:False %}
+      {% trans "Edit " %}
+    {% else %}
+      {% trans "New " %}
+    {% endif %}
+    {{item_label|default:"item"}}
+    {% trans " for " %}
+    {{ laboratory.nome_laboratorio }}
+  </h2>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% for form in forms %}
+            {% include "form_template.html" with form=form %}
+          {% endfor %}
+          {% if user_roles.superuser or user_roles.operator %}
+            <hr />
+            {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
+          {% endif %}
+        </form>
+      </div>
+    </div>
   </div>
 
   {% if erc_form %}

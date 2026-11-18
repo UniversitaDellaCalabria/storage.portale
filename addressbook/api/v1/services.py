@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 
 from addressbook.models import (
     Personale,
@@ -319,7 +320,7 @@ class ServicePersonale:
                 query_search,
                 query_father,
                 query_type,
-                dt_fine_val__gte=datetime.datetime.today(),
+                dt_fine_val__gte=timezone.now(),
             )
             .values("uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo")
             .distinct()
@@ -339,7 +340,7 @@ class ServicePersonale:
                         query_search,
                         query_type,
                         uo_padre=q["uo"],
-                        dt_fine_val__gte=datetime.datetime.today(),
+                        dt_fine_val__gte=timezone.now(),
                     )
                     .values("uo", "denominazione", "ds_tipo_nodo", "cd_tipo_nodo")
                     .distinct()
@@ -579,7 +580,7 @@ class ServicePersonale:
     @staticmethod
     def getStructure(structureid):
         query = UnitaOrganizzativa.objects.filter(
-            uo__exact=structureid, dt_fine_val__gte=datetime.datetime.today()
+            uo__exact=structureid, dt_fine_val__gte=timezone.now()
         )
         contacts_to_take = [
             "EMAIL",
@@ -674,7 +675,7 @@ class ServicePersonale:
             query_search,
             query_father,
             query_type,
-            dt_fine_val__gte=datetime.datetime.today(),
+            dt_fine_val__gte=timezone.now(),
         ).extra(
             select={
                 "matricola": "PERSONALE.MATRICOLA",

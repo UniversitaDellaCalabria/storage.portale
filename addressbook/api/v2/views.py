@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from addressbook.models import (
     Personale,
@@ -452,7 +453,7 @@ class AddressbookStructuresViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     filterset_class = AddressbookStructuresFilter
     queryset = (
         UnitaOrganizzativa.objects.filter(
-            dt_fine_val__gte=datetime.datetime.today(),
+            dt_fine_val__gte=timezone.now(),
         )
         .only(
             "uo",

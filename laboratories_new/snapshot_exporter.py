@@ -44,8 +44,21 @@ def _missing_fields(model):
     return missing
 
 
+# Campi in piu' da caricare (non esportati) per i modelli in whitelist
+EXTRA_LOADED_FIELDS = {
+    Personale: {"cod_fis"},  # serve per snapshot_email
+}
+
+
 def _manager(model):
-    """Queryset che non seleziona le colonne inesistenti."""
+    """Queryset che non seleziona le colonne inesistenti.
+    Per i modelli in whitelist carica solo i campi necessari: per Personale
+    evita DT_INS/DT_MOD, che nel DB sono DATE ma nel modello DateTimeField."""
+    allowed = FIELD_WHITELIST.get(model)
+    if allowed is not None:
+        return model._default_manager.only(
+            *(allowed | EXTRA_LOADED_FIELDS.get(model, set()))
+        )
     return model._default_manager.defer(*_missing_fields(model))
 
 

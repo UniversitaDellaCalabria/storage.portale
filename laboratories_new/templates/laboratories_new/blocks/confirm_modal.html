@@ -1,5 +1,5 @@
 {% load i18n static %}
-{# Parametri: modal_id, modal_suffix (opzionale), message, url #}
+{# Parametri: modal_id, modal_suffix (opzionale), message, url, hide_warning (opzionale: il laboratorio verra' nascosto) #}
 <div
   class="modal fade"
   tabindex="-1"
@@ -23,6 +23,11 @@
       </div>
       <div class="modal-body">
         <p>{{ message }}</p>
+        {% if hide_warning %}
+          <div class="alert alert-warning mb-0" role="alert">
+            {% trans "The laboratory needs to be approved again." %}
+          </div>
+        {% endif %}
       </div>
       <div class="modal-footer">
         {# Azione che modifica dati: POST con token CSRF, mai un link GET #}

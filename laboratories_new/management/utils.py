@@ -1,7 +1,9 @@
 import datetime
 from contextlib import contextmanager
 
+from django.contrib import messages
 from django.db import transaction
+from django.utils.translation import gettext as _
 from django.db.models import Q
 from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
 from laboratories_new.snapshot_service import refresh_snapshot
@@ -24,6 +26,17 @@ STATUS_VISIBLE = "visible"
 STATUS_EDIT = "edit"
 STATUS_APPROVAL = "approval"
 STATUS_HIDDEN = "hidden"
+
+
+# DT_INS/DT_MOD della tabella PERSONALE sono DATE, ma il modello (InsModAbstract)
+# li dichiara DateTimeField: se caricati, il backend MySQL fallisce la conversione
+# ("'datetime.date' object has no attribute 'utcoffset'"). Vanno sempre esclusi.
+PERSONALE_BROKEN_DATE_FIELDS = ("dt_ins", "dt_mod")
+
+
+def defer_personale_dates(queryset, prefix="matricola_personale__"):
+    """Esclude i campi data non convertibili di Personale da un queryset che lo carica."""
+    return queryset.defer(*(prefix + f for f in PERSONALE_BROKEN_DATE_FIELDS))
 
 
 def _approval_log(lab_ids):
@@ -167,9 +180,20 @@ def edit_laboratory(request, laboratory):
     - crea un nuovo snapshot dai dati aggiornati (chiudendo il precedente).
     """
     with transaction.atomic():
+        # letta dal DB: il form potrebbe aver gia' modificato l'istanza in memoria
+        was_visible = LaboratorioDatiBase.objects.filter(
+            pk=laboratory.pk, visibile=True
+        ).exists()
         yield
         laboratory.user_mod = request.user
         laboratory.dt_mod = datetime.datetime.now()
         laboratory.visibile = False
         laboratory.save()
         refresh_snapshot(laboratory.pk, request.user)
+
+    if was_visible:
+        messages.add_message(
+            request,
+            messages.WARNING,
+            _("Request a new approval to publish the changes."),
+        )

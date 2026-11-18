@@ -59,6 +59,7 @@ from laboratories_new.snapshot_adapter import snapshot_to_obj
 from laboratories_new.snapshot_service import current_snapshots
 from laboratories_new.management.utils import (
     _scientific_directors,
+    defer_personale_dates,
     laboratory_statuses,
 )
 
@@ -219,10 +220,12 @@ class LaboratoriesViewSet(
                     ),
                     Prefetch(
                         "laboratorioaffiliati_set",
-                        queryset=LaboratorioAffiliati.objects.select_related(
-                            "matricola_personale", "laboratorio_ruolo"
-                        ).exclude(
-                            laboratorio_ruolo__descr_ruolo_it__icontains="tecnic"
+                        queryset=defer_personale_dates(
+                            LaboratorioAffiliati.objects.select_related(
+                                "matricola_personale", "laboratorio_ruolo"
+                            ).exclude(
+                                laboratorio_ruolo__descr_ruolo_it__icontains="tecnic"
+                            )
                         ),
                         to_attr="personale_ricerca",
                     ),

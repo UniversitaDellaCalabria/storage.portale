@@ -18,7 +18,12 @@ from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _
 from generics.forms import ChoosenPersonForm
 from generics.utils import custom_message, log_action
-from .utils import LOG_REQUESTED_APPROVAL, LOG_APPROVED, laboratory_status
+from .utils import (
+    LOG_REQUESTED_APPROVAL,
+    LOG_APPROVED,
+    PERSONALE_BROKEN_DATE_FIELDS,
+    laboratory_status,
+)
 from laboratories_new.models import (
     LaboratorioAffiliati,
     LaboratorioDatiErc1,
@@ -80,6 +85,21 @@ def _show_form_errors(request, *forms):
             messages.add_message(request, messages.ERROR, f"<b>{label}</b>: {v}")
 
 
+_PERSONALE_DEFER = tuple(
+    "matricola_personale__" + f for f in PERSONALE_BROKEN_DATE_FIELDS
+)
+
+
+def _personale_qs():
+    """
+    Personale con i soli campi che servono qui.
+    DT_INS/DT_MOD della tabella PERSONALE sono DATE, mentre il modello
+    (InsModAbstract) li dichiara DateTimeField: caricarli fa fallire la
+    conversione del backend MySQL ('datetime.date' has no attribute 'utcoffset').
+    """
+    return Personale.objects.only("matricola", "id_ab", "nome", "cognome")
+
+
 def _redirect_to_laboratory(laboratory_id):
     return redirect(
         "laboratories_new:management:laboratory-edit", laboratory_id=laboratory_id
@@ -123,6 +143,7 @@ def _current_role_holder(laboratory, role_descr):
             laboratorio_ruolo__descr_ruolo_it=role_descr,
         )
         .select_related("matricola_personale")
+        .defer(*_PERSONALE_DEFER)
         .order_by("-data_inizio", "-id")
         .first()
     )
@@ -175,9 +196,6 @@ def _get_or_create_role(request, descr_it, descr_en=None, today=None):
 def laboratory(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
-    if not laboratory.visibile and not request.POST:
-        messages.add_message(request, messages.WARNING, _("Laboratory NOT visible"))
-
     user_lab_offices = OrganizationalStructureOfficeEmployee.objects.filter(
         employee=request.user,
         office__is_active=True,
@@ -220,7 +238,7 @@ def laboratory(
     # LaboratorioAffiliati
     affiliates = LaboratorioAffiliati.objects.filter(
         laboratorio_dati_base=laboratory_id
-    ).select_related("matricola_personale", "laboratorio_ruolo")
+    ).select_related("matricola_personale", "laboratorio_ruolo").defer(*_PERSONALE_DEFER)
 
     reserved_roles = {ROLE_SCIENTIFIC_DIRECTOR[0], ROLE_SAFETY_MANAGER[0]}
     research_staff = [
@@ -282,9 +300,10 @@ def laboratory(
 
     breadcrumbs = {
         reverse("generics:dashboard"): _("Dashboard"),
-        reverse("laboratories_new:management:laboratories"): _("Laboratory"),
+        reverse("laboratories_new:management:laboratories"): _("Laboratories"),
         "#": laboratory.nome_laboratorio,
     }
+    user_roles = _get_user_roles(request, laboratory, my_offices, is_validator)
 
     return render(
         request,
@@ -305,9 +324,8 @@ def laboratory(
             "research_staff": research_staff,
             "technicians": technicians,
             "status": laboratory_status(laboratory),
-            "user_roles": _get_user_roles(
-                request, laboratory, my_offices, is_validator
-            ),
+            "user_roles": user_roles,
+            "can_edit": user_roles["superuser"] or user_roles["operator"],
         },
     )
 
@@ -443,7 +461,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     "choosen_scientific_director"
                 )
                 if chosen_code:
-                    person = get_object_or_404(Personale, id_ab=chosen_code)
+                    person = get_object_or_404(_personale_qs(), id_ab=chosen_code)
                     for role in roles:
                         LaboratorioResponsabile.objects.create(
                             laboratorio_dati_base=laboratory,
@@ -530,6 +548,7 @@ def laboratory_scientific_director_edit(
                 still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
             )
             .select_related("matricola_personale")
+        .defer(*_PERSONALE_DEFER)
             .order_by("-data_inizio", "-id")
             .first()
         )
@@ -578,7 +597,7 @@ def laboratory_scientific_director_edit(
                 # Creo il nuovo responsabile scientifico
                 if form.cleaned_data.get("choosen_person"):
                     scientific_director = get_object_or_404(
-                        Personale,
+                        _personale_qs(),
                         matricola=get_personale_matricola(
                             form.cleaned_data["choosen_person"]
                         ),
@@ -681,6 +700,7 @@ def laboratory_safety_manager_edit(
                 still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
             )
             .select_related("matricola_personale")
+        .defer(*_PERSONALE_DEFER)
             .order_by("-data_inizio", "-id")
             .first()
         )
@@ -728,7 +748,7 @@ def laboratory_safety_manager_edit(
                 # Creo il nuovo preposto
                 if form.cleaned_data.get("choosen_person"):
                     safety_manager = get_object_or_404(
-                        Personale,
+                        _personale_qs(),
                         matricola=get_personale_matricola(
                             form.cleaned_data["choosen_person"]
                         ),
@@ -1296,7 +1316,7 @@ def laboratory_research_staff_new(
 
                 if form.cleaned_data.get("choosen_person"):
                     researcher = get_object_or_404(
-                        Personale,
+                        _personale_qs(),
                         matricola=get_personale_matricola(
                             form.cleaned_data["choosen_person"]
                         ),
@@ -1429,7 +1449,7 @@ def laboratory_technical_staff_new(
 
                 if person_form.cleaned_data.get("choosen_person"):
                     technician = get_object_or_404(
-                        Personale,
+                        _personale_qs(),
                         matricola=get_personale_matricola(
                             person_form.cleaned_data["choosen_person"]
                         ),
@@ -1462,7 +1482,7 @@ def laboratory_technical_staff_new(
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _("technician added successfully")
+                request, messages.SUCCESS, _("Technician added successfully")
             )
             return _redirect_to_laboratory(laboratory_id)
 

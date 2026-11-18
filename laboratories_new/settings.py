@@ -6,7 +6,7 @@ TO_VALIDATORS_EMAIL_SUBJECT = getattr(
     settings, "TO_VALIDATORS_EMAIL_SUBJECT", _("Request for Laboratory Validation")
 )
 TO_VALIDATORS_EMAIL_MESSAGE = getattr(
-    settings, "TO_VALIDATORS_EMAIL_MESSAGE", _("Needed validaton for laboratory")
+    settings, "TO_VALIDATORS_EMAIL_MESSAGE", _("Approval requested for laboratory")
 )
 
 # Path to lab's logos

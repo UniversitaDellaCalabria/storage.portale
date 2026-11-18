@@ -4,16 +4,17 @@
 {% load static %}
 
 {% block centered_container %}
-  <h3 style="font-weight: lighter" class="mb-4">
+  {% include "laboratories_new/blocks/styles.html" %}
+  <h2 class="lab-page-title mb-4">
     {% trans "New Technical Staff Member for" %}
     {{ laboratory.nome_laboratorio }}
-  </h3>
+  </h2>
   <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
       <div class="card-body">
         <form method="post" novalidate>
           {% csrf_token %}
-          <h4 style="font-weight: lighter">{% trans "Choose one technician" %}</h4>
+          <h4 class="h5 font-weight-semibold mb-3">{% trans "Choose one technician" %}</h4>
           <div class="mt-5">
             <span class="choosen_person">
               {% include "blocks/includes/teacher_tabs.html" with required=1 exclude_forms=1 include_block="blocks/crud_addressbook.html" %}

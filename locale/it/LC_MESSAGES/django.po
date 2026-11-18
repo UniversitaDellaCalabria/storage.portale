@@ -876,7 +876,7 @@ msgstr ""
 #: teachers/templates/blocks/crud_teacher_news.html:112
 #: teachers/templates/teacher_detail.html:62
 msgid "Yes, proceed"
-msgstr "Si, procedi"
+msgstr "Sì, procedi"
 
 #: cds/templates/cds_detail.html:73 cds/templates/cds_regdid_other_data.html:92
 msgid "Import"
@@ -1934,7 +1934,7 @@ msgstr "Salva ordine"
 #: laboratories/templates/laboratory.html:392
 #: laboratories/templates/laboratory.html:870
 msgid "Do you want to confirm the entered data?"
-msgstr "Vuoi davvero confermare i dati immessi?"
+msgstr "Vuoi confermare i dati inseriti?"
 
 #: cds_websites/templates/cds_websites.html:8
 msgid "Courses of Study Websites pages"
@@ -2041,7 +2041,7 @@ msgstr ""
 #: companies/management/forms.py:49 laboratories/management/forms.py:126
 #: patents/management/forms.py:30
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: companies/management/forms.py:50
 msgid "CEO"
@@ -3573,7 +3573,7 @@ msgstr "Tipologie di Rischio modificate con successo"
 
 #: laboratories/management/views.py:2775 laboratories/management/views.py:2877
 msgid "Laboratory is already visible"
-msgstr "Il Laboratorio è già visibile"
+msgstr "Il laboratorio è già visibile"
 
 #: laboratories/management/views.py:2790
 msgid "Extra Departments specified for NON Interdepartmental Laboratory"
@@ -3583,11 +3583,11 @@ msgstr ""
 
 #: laboratories/management/views.py:2804
 msgid "Laboratory must have at least one ERC 1 Research"
-msgstr "I Laboratorio deve possedere almeno una Ricerca ERC 1"
+msgstr "Il laboratorio deve avere almeno una classificazione ERC 1"
 
 #: laboratories/management/views.py:2816
 msgid "Laboratory must have at least one Location"
-msgstr "Il Laboratorio deve possedere almeno una sede"
+msgstr "Il laboratorio deve avere almeno un'ubicazione"
 
 #: laboratories/management/views.py:2828
 msgid "Laboratory must have at least one Activity"
@@ -3638,7 +3638,7 @@ msgstr "Ambiti"
 
 #: laboratories/templates/blocks/crud_laboratories.html:148
 msgid "ERC 1"
-msgstr ""
+msgstr "ERC 1"
 
 #: laboratories/templates/blocks/crud_laboratories.html:229
 msgid "Manager"
@@ -3676,7 +3676,7 @@ msgstr ""
 
 #: laboratories/templates/laboratory.html:140
 msgid "Request for Approval"
-msgstr "Richiedi Approvazione"
+msgstr "Richiedi approvazione"
 
 #: laboratories/templates/laboratory.html:149
 #: regdid/templates/regdid_articles.html:89
@@ -4873,10 +4873,253 @@ msgstr "In attesa di approvazione"
 msgid "Modified - to be re-approved"
 msgstr "Modificato - da riapprovare"
 
-#: laboratories_new/templates/laboratories_new/blocks/crud_laboratories.html
-#: laboratories_new/templates/laboratories_new/laboratory.html
-msgid "Not visible"
-msgstr "Non visibile"
+#: laboratories_new/templates/laboratories_new
+msgid "Manage laboratories, their staff and the approval workflow"
+msgstr "Gestisci i laboratori, il loro personale e il flusso di approvazione"
+
+#: laboratories_new/templates/laboratories_new
+msgid "An approval request has been sent."
+msgstr "La richiesta di approvazione è stata inviata."
+
+#: laboratories_new/templates/laboratories_new
+msgid "The laboratory has been modified after its approval. Request a new approval to publish it again."
+msgstr "Il laboratorio è stato modificato dopo l'approvazione. Richiedi una nuova approvazione per pubblicarlo di nuovo."
+
+#: laboratories_new/templates/laboratories_new
+msgid "Sections"
+msgstr "Sezioni"
+
+#: laboratories_new/templates/laboratories_new
+msgid "Anagraphic"
+msgstr "Anagrafica"
+
+#: laboratories_new/templates/laboratories_new
+msgid "Logs"
+msgstr "Log"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No departments"
+msgstr "Nessun dipartimento"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No ERC classification"
+msgstr "Nessuna classificazione ERC"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No scientific director"
+msgstr "Nessun responsabile scientifico"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No research staff"
+msgstr "Nessun personale di ricerca"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No technical staff"
+msgstr "Nessun personale tecnico"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No locations"
+msgstr "Nessuna ubicazione"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No offered services"
+msgstr "Nessun servizio offerto"
+
+#: laboratories_new/templates/laboratories_new
+msgid "No safety manager"
+msgstr "Nessun preposto alla sicurezza"
+
+#: laboratories_new/templates/laboratories_new
+msgid "Do you want to continue?"
+msgstr "Vuoi continuare con il salvataggio dei dati?"
+
+#: laboratories_new/templates/laboratories_new
+msgid "The laboratory needs to be approved again."
+msgstr "Il laboratorio dev'essere approvato di nuovo."
+
+#: laboratories_new
+msgid "Laboratory must have at least one Department"
+msgstr "Il laboratorio deve avere almeno un dipartimento"
+
+#: laboratories_new
+msgid "Not yet approved"
+msgstr "Non ancora approvato"
+
+#: laboratories_new
+msgid "The laboratory has never been approved. Request approval to publish it."
+msgstr "Il laboratorio non è mai stato approvato. Richiedi l'approvazione per pubblicarlo."
+
+#: laboratories_new
+msgid "Request a new approval to publish the changes."
+msgstr "Richiedi una nuova approvazione per pubblicare le modifiche."
+
+#: laboratories_new
+msgid "Do you want to permanently delete this laboratory? All its data and snapshots will be removed."
+msgstr "Vuoi eliminare definitivamente questo laboratorio? Tutti i suoi dati e i suoi snapshot verranno rimossi."
+
+#: laboratories_new
+msgid "Do you want to request approval for this laboratory? The validators will be notified."
+msgstr "Vuoi richiedere l'approvazione di questo laboratorio? I validatori riceveranno una notifica."
+
+#: laboratories_new
+msgid "Do you want to approve this laboratory? It will be visible to the public with its current data."
+msgstr "Vuoi approvare questo laboratorio? Sarà visibile al pubblico con i dati attuali."
+
+#: laboratories_new
+msgid "Technician added successfully"
+msgstr "Tecnico aggiunto con successo"
+
+#: laboratories_new
+msgid "Approval requested for laboratory"
+msgstr "Richiesta di approvazione per il laboratorio"
+
+#: laboratories_new
+msgid "Add extra department"
+msgstr "Aggiungi dipartimento extra"
+
+#: laboratories_new
+msgid "Added service"
+msgstr "Aggiunto servizio"
+
+#: laboratories_new
+msgid "Deleted service"
+msgstr "Eliminato servizio"
+
+#: laboratories_new
+msgid "Department Description"
+msgstr "Descrizione dipartimento"
+
+#: laboratories_new
+msgid "Do you want to delete the safety manager?"
+msgstr "Vuoi rimuovere il preposto alla sicurezza?"
+
+#: laboratories_new
+msgid "Edited service"
+msgstr "Modificato servizio"
+
+#: laboratories_new
+msgid "End Date"
+msgstr "Data fine"
+
+#: laboratories_new
+msgid "Error"
+msgstr "Errore"
+
+#: laboratories_new
+msgid "External Cost"
+msgstr "Costo esterno"
+
+#: laboratories_new
+msgid "Extra departments must be different from the departments already associated with the Laboratory"
+msgstr "I dipartimenti extra devono essere diversi da quelli già associati al laboratorio"
+
+#: laboratories_new
+msgid "Floor Plan Path"
+msgstr "Percorso planimetria"
+
+#: laboratories_new
+msgid "Home Institution"
+msgstr "Ente di provenienza"
+
+#: laboratories_new
+msgid "Interdepartmental"
+msgstr "Interdipartimentale"
+
+#: laboratories_new
+msgid "Internal Cost"
+msgstr "Costo interno"
+
+#: laboratories_new
+msgid "Keywords"
+msgstr "Parole chiave"
+
+#: laboratories_new
+msgid "Main Department"
+msgstr "Dipartimento principale"
+
+#: laboratories_new
+msgid "NO"
+msgstr "NO"
+
+#: laboratories_new
+msgid "Name (en)"
+msgstr "Nome (en)"
+
+#: laboratories_new
+msgid "Name (it)"
+msgstr "Nome (it)"
+
+#: laboratories_new
+msgid "New Extra Department for"
+msgstr "Nuovo dipartimento extra per"
+
+#: laboratories_new
+msgid "No safety manager to remove"
+msgstr "Nessun preposto alla sicurezza da rimuovere"
+
+#: laboratories_new
+msgid "Prevalent S3 Area"
+msgstr "Ambito S3 prevalente"
+
+#: laboratories_new
+msgid "Reference Infrastructure"
+msgstr "Infrastruttura di riferimento"
+
+#: laboratories_new
+msgid "Registered Location"
+msgstr "Ubicazione censita"
+
+#: laboratories_new
+msgid "Role (en)"
+msgstr "Ruolo (en)"
+
+#: laboratories_new
+msgid "Role (it)"
+msgstr "Ruolo (it)"
+
+#: laboratories_new
+msgid "S3 Trajectory"
+msgstr "Traiettoria S3"
+
+#: laboratories_new
+msgid "Service"
+msgstr "Servizio"
+
+#: laboratories_new
+msgid "Service added successfully"
+msgstr "Servizio aggiunto con successo"
+
+#: laboratories_new
+msgid "Service edited successfully"
+msgstr "Servizio modificato con successo"
+
+#: laboratories_new
+msgid "Service removed successfully"
+msgstr "Servizio rimosso con successo"
+
+#: laboratories_new
+msgid "Start Date"
+msgstr "Data inizio"
+
+#: laboratories_new
+msgid "Surface (sqm)"
+msgstr "Superficie (mq)"
+
+#: laboratories_new
+msgid "The end date cannot be earlier than the start date"
+msgstr "La data di fine non può essere precedente alla data di inizio"
+
+#: laboratories_new
+msgid "The laboratory already has a main department"
+msgstr "Il laboratorio ha già un dipartimento principale"
+
+#: laboratories_new
+msgid "This field is required."
+msgstr "Questo campo è obbligatorio."
+
+#: laboratories_new
+msgid "This role is reserved"
+msgstr "Questo ruolo è riservato"
 
 #~ msgid "Structure selection"
 #~ msgstr "Seleziona procedura"

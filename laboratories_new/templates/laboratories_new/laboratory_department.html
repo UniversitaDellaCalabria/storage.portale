@@ -3,10 +3,11 @@
 {% load i18n %}
 
 {% block centered_container %}
-  <h3 style="font-weight: lighter" class="mb-4">
+  {% include "laboratories_new/blocks/styles.html" %}
+  <h2 class="lab-page-title mb-4">
     {% trans "New Extra Department for" %}
     {{ laboratory.nome_laboratorio }}
-  </h3>
+  </h2>
   <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
       <div class="card-body">

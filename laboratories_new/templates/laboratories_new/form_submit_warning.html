@@ -4,7 +4,7 @@
 
 {% block message %}
   {% if active %}
-    {% trans "This action will make the laboratory NOT visible untill it has been approved again. Do you want to confirm the entered data?" %}
+    {% trans "The laboratory needs to be approved again." %} {% trans "Do you want to continue?" %}
   {% else %}
     {% trans "Do you want to confirm the entered data?" %}
   {% endif %}

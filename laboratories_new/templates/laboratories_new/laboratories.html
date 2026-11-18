@@ -3,19 +3,18 @@
 {% load static %}
 
 {% block centered_container %}
-  <a href="{% url 'laboratories_new:management:laboratory-new' %}" class="btn btn-success btn-xs">
-    <svg class="icon icon-xs icon-white">
-      <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-    </svg>
-    {% trans "Add new" %}
-  </a>
-  <hr />
-  <h3 style="font-weight: lighter" class="mb-4">{% trans "Laboratories" %}</h3>
-  <div class="card-wrapper card-space">
-    <div class="card card-bg no-after">
-      <div class="card-body">
-        {% include "laboratories_new/blocks/crud_laboratories.html" with id="id_1" %}
-      </div>
+  {% include "laboratories_new/blocks/styles.html" %}
+  <div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap: 1rem">
+    <div>
+      <h2 class="lab-page-title">{% trans "Laboratories" %}</h2>
+      <p class="lab-page-subtitle mb-0">{% trans "Manage laboratories, their staff and the approval workflow" %}</p>
     </div>
+    <a href="{% url 'laboratories_new:management:laboratory-new' %}" class="btn btn-success btn-sm">
+      <svg class="icon icon-xs icon-white" aria-hidden="true">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+      </svg>
+      {% trans "Add new" %}
+    </a>
   </div>
+  {% include "laboratories_new/blocks/crud_laboratories.html" with id="id_1" %}
 {% endblock centered_container %}

@@ -6,6 +6,7 @@ from addressbook.settings import (
     PERSON_CONTACTS_TO_TAKE,
 )
 import datetime
+from django.utils import timezone
 
 from structures.models import UnitaOrganizzativa
 
@@ -123,7 +124,7 @@ class AddressbookFilter(filters.FilterSet):
 
     def getStructureChilds(self, structureid=None):
         child = UnitaOrganizzativa.objects.filter(
-            uo_padre=structureid, dt_fine_val__gte=datetime.datetime.today()
+            uo_padre=structureid, dt_fine_val__gte=timezone.now()
         ).values_list("uo", flat=True)
         result = [structureid]
         for c in child:

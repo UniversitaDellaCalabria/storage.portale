@@ -4,129 +4,140 @@
 {% load static %}
 
 {% block centered_container %}
+  {% include "laboratories_new/blocks/styles.html" %}
 
   {% url 'laboratories_new:management:laboratory-delete' laboratory_id=laboratory.pk as delete_url %}
   {% url 'laboratories_new:management:laboratory-request-approval' laboratory_id=laboratory.pk as request_approval_url %}
   {% url 'laboratories_new:management:laboratory-approve' laboratory_id=laboratory.pk as approve_url %}
 
-  {% trans "Do you want to delete chosen laboratory?" as msg_delete_lab %}
-  {% trans "Do you want to ask for approval for chosen laboratory? This laboratory will be visible once it will get approved" as msg_request_approval %}
-  {% trans "Do you want to approve this laboratory? Performing this action will make it visible" as msg_approve %}
+  {% trans "Do you want to permanently delete this laboratory? All its data and snapshots will be removed." as msg_delete_lab %}
+  {% trans "Do you want to request approval for this laboratory? The validators will be notified." as msg_request_approval %}
+  {% trans "Do you want to approve this laboratory? It will be visible to the public with its current data." as msg_approve %}
 
   {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_laboratory" message=msg_delete_lab url=delete_url %}
   {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="ask_to_approve_laboratory" message=msg_request_approval url=request_approval_url %}
   {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="approve_laboratory" message=msg_approve url=approve_url %}
 
-  <!-- Top Buttons -->
-  <table class="table">
-    <tbody>
-      <tr>
-        <td class="text-left">
-          {% if user_roles.superuser %}
-            <a
-              href=""
-              class="btn btn-danger btn-xs"
-              data-toggle="modal"
-              data-target="#delete_laboratory"
-            >
-              <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-              </svg>
-              {% trans "Remove" %}
-            </a>
-          {% endif %}
-        </td>
-        <td class="text-right">
-          {% if not laboratory.visibile %}
-            {% if user_roles.superuser or user_roles.operator %}
-              <a
-                href=""
-                class="btn btn-warning btn-xs"
-                data-toggle="modal"
-                data-target="#ask_to_approve_laboratory"
-              >
-                <svg class="icon icon-xs icon-white">
-                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
-                </svg>
-                {% trans "Request for Approval" %}
-              </a>
-            {% endif %}
-            {% if user_roles.superuser or user_roles.validator %}
-              <a
-                href=""
-                class="btn btn-success btn-xs"
-                data-toggle="modal"
-                data-target="#approve_laboratory"
-              >
-                <svg class="icon icon-xs icon-white">
-                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
-                </svg>
-                {% trans "Approve" %}
-              </a>
-            {% endif %}
-          {% endif %}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <!-- /Top Buttons -->
+  <!-- Header -->
+  <div class="lab-header">
+    <div class="lab-header-logo">
+      {% if laboratory.nome_file_logo %}
+        <img src="{{ laboratory.nome_file_logo.url }}" alt="{% trans 'Logo' %} {{ laboratory.nome_laboratorio }}" />
+      {% else %}
+        <svg class="icon icon-lg icon-secondary" aria-hidden="true">
+          <use xlink:href="{% static 'svg/sprite.svg' %}#it-presentation"></use>
+        </svg>
+      {% endif %}
+    </div>
+    <div class="lab-header-body">
+      <h2>{{ laboratory.nome_laboratorio }}</h2>
+      <div class="d-flex flex-wrap align-items-center" style="gap: .5rem">
+        {% if laboratory.acronimo %}
+          <span class="text-muted font-weight-semibold">{{ laboratory.acronimo }}</span>
+        {% endif %}
+        {% include "laboratories_new/blocks/status_badge.html" with status=status %}
+      </div>
+    </div>
+    <div class="lab-header-actions">
+      {% if not laboratory.visibile %}
+        {% if can_edit and status != "approval" %}
+          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ask_to_approve_laboratory">
+            <svg class="icon icon-xs icon-white" aria-hidden="true">
+              <use xlink:href="{% static 'svg/sprite.svg' %}#it-horn"></use>
+            </svg>
+            {% trans "Request for Approval" %}
+          </button>
+        {% endif %}
+        {% if user_roles.superuser or user_roles.validator %}
+          <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#approve_laboratory">
+            <svg class="icon icon-xs icon-white" aria-hidden="true">
+              <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+            </svg>
+            {% trans "Approve" %}
+          </button>
+        {% endif %}
+      {% endif %}
+      {% if user_roles.superuser %}
+        <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#delete_laboratory">
+          <svg class="icon icon-xs icon-danger" aria-hidden="true">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
+          </svg>
+          {% trans "Remove" %}
+        </button>
+      {% endif %}
+    </div>
+  </div>
 
-  <!-- Anagraphic (nome, acronimo, logo, dipartimenti, infrastruttura, ambito S3, tipologia, descrizione) -->
+  {% if status == "approval" %}
+    <div class="alert alert-info" role="alert">
+      {% trans "An approval request has been sent." %}
+    </div>
+  {% elif status == "edit" %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "The laboratory has been modified after its approval. Request a new approval to publish it again." %}
+    </div>
+  {% elif status == "hidden" %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "The laboratory has never been approved. Request approval to publish it." %}
+    </div>
+  {% endif %}
+
+  <!-- Section nav -->
+  <nav class="lab-section-nav" aria-label="{% trans 'Sections' %}">
+    <a href="#anagraphic">{% trans "Anagraphic" %}</a>
+    <a href="#departments">{% trans "Departments" %}</a>
+    <a href="#scope">{% trans "ERC Classification" %}</a>
+    <a href="#staff">{% trans "Staff" %}</a>
+    <a href="#locations">{% trans "Locations" %}</a>
+    <a href="#services">{% trans "Offered Services" %}</a>
+    <a href="#risks">{% trans "Laboratory Safety" %}</a>
+    <a href="#logs">{% trans "Logs" %}</a>
+  </nav>
+
+  <!-- Anagraphic -->
+  <a id="anagraphic" class="lab-anchor"></a>
   <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
       <div class="card-body">
-        <table class="table">
-          <tbody>
-            <tr>
-              <td class="text-left">
-                <h3 style="font-weight: normal" class="mb-4">{% trans "Laboratory Anagraphic" %}</h3>
-              </td>
-              <td class="text-right">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="visibleCheckBox"
-                    disabled
-                    {% if laboratory.visibile %}checked{% endif %}
-                    />
-                    <label class="form-check-label" for="visibleCheckBox">
-                      {% trans "Visible" %}
-                    </label>
-                  </div>
-                  {% if status == "visible" %}
-                    <span class="badge badge-success">{% trans "Visible" %}</span>
-                  {% elif status == "approval" %}
-                    <span class="badge badge-info">{% trans "Pending approval" %}</span>
-                  {% elif status == "edit" %}
-                    <span class="badge badge-warning">{% trans "Modified - to be re-approved" %}</span>
-                  {% else %}
-                    <span class="badge badge-danger">{% trans "Not visible" %}</span>
-                  {% endif %}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <form method="post" enctype="multipart/form-data" novalidate>
-            {% include "form_template.html" with form=form %}
-            <hr />
-            {% if user_roles.superuser or user_roles.operator %}
-              {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
-            {% endif %}
-          </form>
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-info-circle"></use></svg>
+            {% trans "Laboratory Anagraphic" %}
+          </h3>
         </div>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% include "form_template.html" with form=form %}
+          {% if can_edit %}
+            <hr />
+            {% include "laboratories_new/form_submit_warning.html" with active=laboratory.visibile %}
+          {% endif %}
+        </form>
       </div>
     </div>
-    <!-- /Anagraphic -->
+  </div>
+  <!-- /Anagraphic -->
 
-    <!-- Departments -->
-    <a id="departments"></a>
-    <div class="card-wrapper card-space">
-      <div class="card card-bg no-after">
-        <div class="card-body">
-          <h4 class="mb-3" style="font-weight: lighter">{% trans "Departments" %}</h4>
+  <!-- Departments -->
+  <a id="departments" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pa"></use></svg>
+            {% trans "Departments" %}
+            <span class="badge badge-pill badge-secondary lab-count">{{ departments|length }}</span>
+          </h3>
+          {% if can_edit %}
+            <a href="{% url 'laboratories_new:management:laboratory-extra-departments-new' laboratory_id=laboratory.pk %}" class="btn btn-success btn-xs">
+              <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use></svg>
+              {% trans "Add extra department" %}
+            </a>
+          {% endif %}
+        </div>
+        {% if departments %}
           <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-hover lab-table">
               <tbody>
                 {% for department in departments %}
                   <tr>
@@ -136,22 +147,15 @@
                         <span class="badge badge-primary ml-2">{% trans "Main Department" %}</span>
                       {% endif %}
                     </td>
-                    <td class="text-right">
-                      {% if not department.principale and user_roles.superuser or not department.principale and user_roles.operator %}
-                        <a
-                          href=""
-                          class="btn btn-danger btn-xs"
-                          data-toggle="modal"
-                          data-target="#delete_extra_department_{{ department.id }}"
-                        >
-                          <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                          </svg>
+                    <td class="lab-row-actions">
+                      {% if can_edit and not department.principale %}
+                        <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_extra_department_{{ department.id }}">
+                          <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
                           {% trans "Remove" %}
-                        </a>
+                        </button>
                         {% url 'laboratories_new:management:laboratory-extra-departments-delete' laboratory_id=laboratory.pk data_id=department.id as url_del_dep %}
                         {% trans "Do you want to delete this department?" as msg_del_dep %}
-                        {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_extra_department_" modal_suffix=department.id message=msg_del_dep url=url_del_dep %}
+                        {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_extra_department_" modal_suffix=department.id message=msg_del_dep url=url_del_dep hide_warning=laboratory.visibile %}
                       {% endif %}
                     </td>
                   </tr>
@@ -159,386 +163,375 @@
               </tbody>
             </table>
           </div>
-          {% if user_roles.superuser or user_roles.operator %}
-            <a href="{% url 'laboratories_new:management:laboratory-extra-departments-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
-              <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-              </svg>
-              {% trans "Add extra department" %}
-            </a>
-          {% endif %}
-        </div>
+        {% else %}
+          <div class="lab-empty">{% trans "No departments" %}</div>
+        {% endif %}
       </div>
     </div>
-    <!-- /Departments -->
+  </div>
+  <!-- /Departments -->
 
-    <!-- ERC -->
-    <a id="scope"></a>
-    <div class="card-wrapper card-space">
-      <div class="card card-bg no-after">
-        <div class="card-body">
-          <h3 style="font-weight: normal">{% trans "ERC Classification" %}</h3>
-          <hr />
-          <table class="table table-striped table-hover">
-            <tbody>
-              {% for research_erc1 in researches_erc1 %}
-                <tr>
-                  <td>{{ research_erc1.ricerca_erc1__descrizione|default:"-" }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <a href="{% url 'laboratories_new:management:laboratory-researches-erc1-edit' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
-            <svg class="icon icon-xs icon-white">
-              <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-            </svg>
-            {% if user_roles.superuser or user_roles.operator %}
-              {% trans "Manage" %}
-            {% else %}
-              {% trans "View" %}
-            {% endif %}
+  <!-- ERC -->
+  <a id="scope" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-list"></use></svg>
+            {% trans "ERC Classification" %}
+            <span class="badge badge-pill badge-secondary lab-count">{{ researches_erc1|length }}</span>
+          </h3>
+          <a href="{% url 'laboratories_new:management:laboratory-researches-erc1-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
+            <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use></svg>
+            {% if can_edit %}{% trans "Manage" %}{% else %}{% trans "View" %}{% endif %}
           </a>
         </div>
+        {% if researches_erc1 %}
+          <ul class="list-unstyled mb-0">
+            {% for research_erc1 in researches_erc1 %}
+              <li class="py-2{% if not forloop.last %} border-bottom{% endif %}">
+                {{ research_erc1.ricerca_erc1__descrizione|default:"-" }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="lab-empty">{% trans "No ERC classification" %}</div>
+        {% endif %}
       </div>
     </div>
-    <!-- /ERC -->
+  </div>
+  <!-- /ERC -->
 
-    <!-- Staff -->
-    <a id="staff"></a>
-    <div class="card-wrapper card-space">
-      <div class="card card-bg no-after">
-        <div class="card-body">
-          <h3 style="font-weight: normal">{% trans "Staff" %}</h3>
-          <hr />
+  <!-- Staff -->
+  <a id="staff" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use></svg>
+            {% trans "Staff" %}
+          </h3>
+        </div>
 
-          <!-- Scientific Director -->
-          <h4 style="font-weight: lighter">{% trans "Scientific Director" %}</h4>
-          <div class="table-responsive">
-            <table class="table table-striped table-hover">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ scientific_director.label|default:"-" }}
-                    {% if scientific_director.external %}({% trans "External" %}){% endif %}
-                    </td>
-                    <td class="text-right">
-                      {% if user_roles.superuser or user_roles.operator %}
-                        <a href="{% url 'laboratories_new:management:laboratory-scientific-director-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
-                          <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                          </svg>
-                          {% trans "Edit" %}
-                        </a>
-                      {% endif %}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <hr />
+        <!-- Scientific Director -->
+        <div class="lab-subsection">
+          <div class="lab-section-header">
+            <h4>{% trans "Scientific Director" %}</h4>
+            {% if can_edit %}
+              <a href="{% url 'laboratories_new:management:laboratory-scientific-director-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
+                <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use></svg>
+                {% trans "Edit" %}
+              </a>
+            {% endif %}
+          </div>
+          {% if scientific_director %}
+            <p class="mb-0">
+              <strong>{{ scientific_director.label }}</strong>
+              {% if scientific_director.external %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+            </p>
+          {% else %}
+            <div class="lab-empty">{% trans "No scientific director" %}</div>
+          {% endif %}
+        </div>
 
-            <!-- Research Staff -->
-            <h4 style="font-weight: lighter">{% trans "Research Staff" %}</h4>
+        <!-- Research Staff -->
+        <div class="lab-subsection">
+          <div class="lab-section-header">
+            <h4>
+              {% trans "Research Staff" %}
+              <span class="badge badge-pill badge-secondary lab-count">{{ research_staff|length }}</span>
+            </h4>
+            {% if can_edit %}
+              <a href="{% url 'laboratories_new:management:laboratory-research-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-success btn-xs">
+                <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use></svg>
+                {% trans "Add new" %}
+              </a>
+            {% endif %}
+          </div>
+          {% if research_staff %}
             <div class="table-responsive">
-              <table class="table table-striped table-hover">
+              <table class="table table-hover lab-table">
                 <tbody>
                   {% for researcher in research_staff %}
                     <tr>
                       <td>
                         {{ researcher.nome_cognome|default:"-" }}
-                        {% if not researcher.matricola_personale_id %}({% trans "External" %}){% endif %}
-                        </td>
-                        <td class="text-right">
-                          {% if user_roles.superuser or user_roles.operator %}
-                            <a
-                              href=""
-                              class="btn btn-danger btn-xs"
-                              data-toggle="modal"
-                              data-target="#delete_researcher_{{ researcher.id }}"
-                            >
-                              <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                              </svg>
-                              {% trans "Remove" %}
-                            </a>
-                            {% url 'laboratories_new:management:laboratory-research-staff-delete' laboratory_id=laboratory.pk data_id=researcher.id as url_del_res %}
-                            {% trans "Do you want to delete this researcher?" as msg_del_res %}
-                            {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_researcher_" modal_suffix=researcher.id message=msg_del_res url=url_del_res %}
-                          {% endif %}
-                        </td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-              {% if user_roles.superuser or user_roles.operator %}
-                <a href="{% url 'laboratories_new:management:laboratory-research-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
-                  <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                  </svg>
-                  {% trans "Add new" %}
-                </a>
-              {% endif %}
-              <hr />
-
-              <!-- Technical Staff -->
-              <h4 style="font-weight: lighter">{% trans "Technical Staff" %}</h4>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>{% trans "Name and Surname" %}</th>
-                      <th>{% trans "Role" %}</th>
-                      <th></th>
+                        {% if not researcher.matricola_personale_id %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+                      </td>
+                      <td class="lab-row-actions">
+                        {% if can_edit %}
+                          <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_researcher_{{ researcher.id }}">
+                            <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
+                            {% trans "Remove" %}
+                          </button>
+                          {% url 'laboratories_new:management:laboratory-research-staff-delete' laboratory_id=laboratory.pk data_id=researcher.id as url_del_res %}
+                          {% trans "Do you want to delete this researcher?" as msg_del_res %}
+                          {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_researcher_" modal_suffix=researcher.id message=msg_del_res url=url_del_res hide_warning=laboratory.visibile %}
+                        {% endif %}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {% for technician in technicians %}
-                      <tr>
-                        <td>
-                          {{ technician.nome_cognome|default:"-" }}
-                          {% if not technician.matricola_personale_id %}({% trans "External" %}){% endif %}
-                          </td>
-                          <td>{{ technician.laboratorio_ruolo.descr_ruolo_it|default:"-" }}</td>
-                          <td class="text-right">
-                            {% if user_roles.superuser or user_roles.operator %}
-                              <a
-                                href=""
-                                class="btn btn-danger btn-xs"
-                                data-toggle="modal"
-                                data-target="#delete_technician_{{ technician.id }}"
-                              >
-                                <svg class="icon icon-xs icon-white">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg>
-                                {% trans "Remove" %}
-                              </a>
-                              {% url 'laboratories_new:management:laboratory-technical-staff-delete' laboratory_id=laboratory.pk data_id=technician.id as url_del_tech %}
-                              {% trans "Do you want to delete this technician?" as msg_del_tech %}
-                              {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_technician_" modal_suffix=technician.id message=msg_del_tech url=url_del_tech %}
-                            {% endif %}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-                {% if user_roles.superuser or user_roles.operator %}
-                  <a href="{% url 'laboratories_new:management:laboratory-technical-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
-                    <svg class="icon icon-xs icon-white">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                    </svg>
-                    {% trans "Add new" %}
-                  </a>
-                {% endif %}
-              </div>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
+          {% else %}
+            <div class="lab-empty">{% trans "No research staff" %}</div>
+          {% endif %}
+        </div>
+
+        <!-- Technical Staff -->
+        <div class="lab-subsection">
+          <div class="lab-section-header">
+            <h4>
+              {% trans "Technical Staff" %}
+              <span class="badge badge-pill badge-secondary lab-count">{{ technicians|length }}</span>
+            </h4>
+            {% if can_edit %}
+              <a href="{% url 'laboratories_new:management:laboratory-technical-staff-new' laboratory_id=laboratory.pk %}" class="btn btn-success btn-xs">
+                <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use></svg>
+                {% trans "Add new" %}
+              </a>
+            {% endif %}
           </div>
-          <!-- /Staff -->
-
-          <!-- Locations -->
-          <a id="locations"></a>
-          <div class="card-wrapper card-space">
-            <div class="card card-bg no-after">
-              <div class="card-body">
-                <h3 style="font-weight: normal">{% trans "Locations" %}</h3>
-                <hr />
-                <div class="table-responsive">
-                  <table class="table table-striped table-hover">
-                    <thead>
-                      <tr>
-                        <th>{% trans "Building" %}</th>
-                        <th>{% trans "Floor" %}</th>
-                        <th>{% trans "Main Location" %}</th>
-                        <th>{% trans "Notes" %}</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for location in locations %}
-                        <tr>
-                          <td>{{ location.edificio|default:"-" }}</td>
-                          <td>{{ location.piano|default:"-" }}</td>
-                          <td>{{ location.sede_principale|default:"-" }}</td>
-                          <td>{{ location.note|default:"" }}</td>
-                          <td class="text-right">
-                            <a href="{% url 'laboratories_new:management:laboratory-locations-edit' laboratory_id=laboratory.pk data_id=location.id %}" class="btn btn-primary btn-xs">
-                              <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                              </svg>
-                              {% if user_roles.superuser or user_roles.operator %}
-                                {% trans "Edit" %}
-                              {% else %}
-                                {% trans "View" %}
-                              {% endif %}
-                            </a>
-                            {% if user_roles.superuser or user_roles.operator %}
-                              <a
-                                href=""
-                                class="btn btn-danger btn-xs"
-                                data-toggle="modal"
-                                data-target="#delete_location_{{ location.id }}"
-                              >
-                                <svg class="icon icon-xs icon-white">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg>
-                                {% trans "Remove" %}
-                              </a>
-                              {% url 'laboratories_new:management:laboratory-locations-delete' laboratory_id=laboratory.pk data_id=location.id as url_del_loc %}
-                              {% trans "Do you want to delete this location?" as msg_del_loc %}
-                              {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_location_" modal_suffix=location.id message=msg_del_loc url=url_del_loc %}
-                            {% endif %}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-                {% if user_roles.superuser or user_roles.operator %}
-                  <a href="{% static 'svg/sprite.svg' %}7" class="btn btn-block btn-success">
-                    <svg class="icon icon-xs icon-white">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}8#it-plus-circle"></use>
-                    </svg>
-                    {% trans "Add new" %}
-                  </a>
-                {% endif %}
-              </div>
+          {% if technicians %}
+            <div class="table-responsive">
+              <table class="table table-hover lab-table">
+                <thead>
+                  <tr>
+                    <th>{% trans "Name and Surname" %}</th>
+                    <th>{% trans "Role" %}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for technician in technicians %}
+                    <tr>
+                      <td>
+                        {{ technician.nome_cognome|default:"-" }}
+                        {% if not technician.matricola_personale_id %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+                      </td>
+                      <td>{{ technician.laboratorio_ruolo.descr_ruolo_it|default:"-" }}</td>
+                      <td class="lab-row-actions">
+                        {% if can_edit %}
+                          <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_technician_{{ technician.id }}">
+                            <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
+                            {% trans "Remove" %}
+                          </button>
+                          {% url 'laboratories_new:management:laboratory-technical-staff-delete' laboratory_id=laboratory.pk data_id=technician.id as url_del_tech %}
+                          {% trans "Do you want to delete this technician?" as msg_del_tech %}
+                          {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_technician_" modal_suffix=technician.id message=msg_del_tech url=url_del_tech hide_warning=laboratory.visibile %}
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
+          {% else %}
+            <div class="lab-empty">{% trans "No technical staff" %}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Staff -->
+
+  <!-- Locations -->
+  <a id="locations" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-map-marker"></use></svg>
+            {% trans "Locations" %}
+            <span class="badge badge-pill badge-secondary lab-count">{{ locations|length }}</span>
+          </h3>
+          {% if can_edit %}
+            <a href="{% url 'laboratories_new:management:laboratory-locations-new' laboratory_id=laboratory.pk %}" class="btn btn-success btn-xs">
+              <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use></svg>
+              {% trans "Add new" %}
+            </a>
+          {% endif %}
+        </div>
+        {% if locations %}
+          <div class="table-responsive">
+            <table class="table table-hover lab-table">
+              <thead>
+                <tr>
+                  <th>{% trans "Building" %}</th>
+                  <th>{% trans "Floor" %}</th>
+                  <th>{% trans "Main Location" %}</th>
+                  <th>{% trans "Notes" %}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for location in locations %}
+                  <tr>
+                    <td>{{ location.edificio|default:"-" }}</td>
+                    <td>{{ location.piano|default:"-" }}</td>
+                    <td>{{ location.sede_principale|default:"-" }}</td>
+                    <td>{{ location.note|default:"" }}</td>
+                    <td class="lab-row-actions">
+                      <a href="{% url 'laboratories_new:management:laboratory-locations-edit' laboratory_id=laboratory.pk data_id=location.id %}" class="btn btn-outline-primary btn-xs">
+                        <svg class="icon icon-xs icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use></svg>
+                        {% if can_edit %}{% trans "Edit" %}{% else %}{% trans "View" %}{% endif %}
+                      </a>
+                      {% if can_edit %}
+                        <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_location_{{ location.id }}">
+                          <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
+                          {% trans "Remove" %}
+                        </button>
+                        {% url 'laboratories_new:management:laboratory-locations-delete' laboratory_id=laboratory.pk data_id=location.id as url_del_loc %}
+                        {% trans "Do you want to delete this location?" as msg_del_loc %}
+                        {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_location_" modal_suffix=location.id message=msg_del_loc url=url_del_loc hide_warning=laboratory.visibile %}
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-          <!-- /Locations -->
+        {% else %}
+          <div class="lab-empty">{% trans "No locations" %}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- /Locations -->
 
-          <!-- Services -->
-          <a id="services"></a>
-          <div class="card-wrapper card-space">
-            <div class="card card-bg no-after">
-              <div class="card-body">
-                <h3 style="font-weight: normal">{% trans "Offered Services" %}</h3>
-                <hr />
-                <div class="table-responsive">
-                  <table class="table table-striped table-hover">
-                    <thead>
-                      <tr>
-                        <th>{% trans "Service" %}</th>
-                        <th>{% trans "S3 Trajectory" %}</th>
-                        <th>{% trans "Start Date" %}</th>
-                        <th>{% trans "End Date" %}</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for service in services %}
-                        <tr>
-                          <td>{{ service.laboratorio_anagrafica_servizi.nome_servizio_it|default:"-" }}</td>
-                          <td>{{ service.traiettoria_s3.denominazione_it|default:"-" }}</td>
-                          <td>{{ service.data_inizio|date:"d/m/Y"|default:"-" }}</td>
-                          <td>{{ service.data_fine|date:"d/m/Y"|default:"-" }}</td>
-                          <td class="text-right">
-                            <a href="{% url 'laboratories_new:management:laboratory-services-edit' laboratory_id=laboratory.pk data_id=service.id %}" class="btn btn-primary btn-xs">
-                              <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                              </svg>
-                              {% if user_roles.superuser or user_roles.operator %}
-                                {% trans "Edit" %}
-                              {% else %}
-                                {% trans "View" %}
-                              {% endif %}
-                            </a>
-                            {% if user_roles.superuser or user_roles.operator %}
-                              <a
-                                href=""
-                                class="btn btn-danger btn-xs"
-                                data-toggle="modal"
-                                data-target="#delete_service_{{ service.id }}"
-                              >
-                                <svg class="icon icon-xs icon-white">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                </svg>
-                                {% trans "Remove" %}
-                              </a>
-                              {% url 'laboratories_new:management:laboratory-services-delete' laboratory_id=laboratory.pk data_id=service.id as url_del_srv %}
-                              {% trans "Do you want to delete this offered service?" as msg_del_srv %}
-                              {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_service_" modal_suffix=service.id message=msg_del_srv url=url_del_srv %}
-                            {% endif %}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-                {% if user_roles.superuser or user_roles.operator %}
-                  <a href="{% url 'laboratories_new:management:laboratory-services-new' laboratory_id=laboratory.pk %}" class="btn btn-block btn-success">
-                    <svg class="icon icon-xs icon-white">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                    </svg>
-                    {% trans "Add new" %}
-                  </a>
-                {% endif %}
-              </div>
-            </div>
+  <!-- Services -->
+  <a id="services" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-tool"></use></svg>
+            {% trans "Offered Services" %}
+            <span class="badge badge-pill badge-secondary lab-count">{{ services|length }}</span>
+          </h3>
+          {% if can_edit %}
+            <a href="{% url 'laboratories_new:management:laboratory-services-new' laboratory_id=laboratory.pk %}" class="btn btn-success btn-xs">
+              <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use></svg>
+              {% trans "Add new" %}
+            </a>
+          {% endif %}
+        </div>
+        {% if services %}
+          <div class="table-responsive">
+            <table class="table table-hover lab-table">
+              <thead>
+                <tr>
+                  <th>{% trans "Service" %}</th>
+                  <th>{% trans "S3 Trajectory" %}</th>
+                  <th>{% trans "Start Date" %}</th>
+                  <th>{% trans "End Date" %}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for service in services %}
+                  <tr>
+                    <td>{{ service.laboratorio_anagrafica_servizi.nome_servizio_it|default:"-" }}</td>
+                    <td>{{ service.traiettoria_s3.denominazione_it|default:"-" }}</td>
+                    <td>{{ service.data_inizio|date:"d/m/Y"|default:"-" }}</td>
+                    <td>{{ service.data_fine|date:"d/m/Y"|default:"-" }}</td>
+                    <td class="lab-row-actions">
+                      <a href="{% url 'laboratories_new:management:laboratory-services-edit' laboratory_id=laboratory.pk data_id=service.id %}" class="btn btn-outline-primary btn-xs">
+                        <svg class="icon icon-xs icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use></svg>
+                        {% if can_edit %}{% trans "Edit" %}{% else %}{% trans "View" %}{% endif %}
+                      </a>
+                      {% if can_edit %}
+                        <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_service_{{ service.id }}">
+                          <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
+                          {% trans "Remove" %}
+                        </button>
+                        {% url 'laboratories_new:management:laboratory-services-delete' laboratory_id=laboratory.pk data_id=service.id as url_del_srv %}
+                        {% trans "Do you want to delete this offered service?" as msg_del_srv %}
+                        {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_service_" modal_suffix=service.id message=msg_del_srv url=url_del_srv hide_warning=laboratory.visibile %}
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-          <!-- /Services -->
+        {% else %}
+          <div class="lab-empty">{% trans "No offered services" %}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- /Services -->
 
-          <!-- Safety Manager -->
-          <a id="risks"></a>
-          <div class="card-wrapper card-space">
-            <div class="card card-bg no-after">
-              <div class="card-body">
-                <h3 style="font-weight: normal">{% trans "Laboratory Safety" %}</h3>
-                <hr />
-                <h4 style="font-weight: lighter">{% trans "Safety Manager" %}</h4>
-                <div class="table-responsive mb-1">
-                  <table class="table table-striped table-hover mb-2">
-                    <tbody>
-                      <tr>
-                        <td>
-                          {{ safety_manager.label|default:"-" }}
-                          {% if safety_manager.external %}({% trans "External" %}){% endif %}
-                          </td>
-                          <td class="text-right">
-                            {% if user_roles.superuser or user_roles.operator %}
-                              <a href="{% url 'laboratories_new:management:laboratory-safety-manager-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
-                                <svg class="icon icon-xs icon-white">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}00#it-pencil"></use>
-                                </svg>
-                                {% trans "Edit" %}
-                              </a>
-                              {% if safety_manager %}
-                                <a
-                                  href=""
-                                  class="btn btn-danger btn-xs"
-                                  data-toggle="modal"
-                                  data-target="#delete_safety_manager"
-                                >
-                                  <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use>
-                                  </svg>
-                                  {% trans "Remove" %}
-                                </a>
-                                {% url 'laboratories_new:management:laboratory-safety-manager-delete' laboratory_id=laboratory.pk as url_del_sm %}
-                                {% trans "Do you want to delete the safety manager?" as msg_del_sm %}
-                                {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_safety_manager" message=msg_del_sm url=url_del_sm %}
-                              {% endif %}
-                            {% endif %}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <small class="form-text text-muted">
-                      {% trans "Provide only if different from Scientific Director" %}
-                    </small>
-                  </div>
-                </div>
-              </div>
+  <!-- Safety Manager -->
+  <a id="risks" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-locked"></use></svg>
+            {% trans "Laboratory Safety" %}
+          </h3>
+        </div>
+        <div class="lab-section-header">
+          <h4>{% trans "Safety Manager" %}</h4>
+          {% if can_edit %}
+            <div class="lab-row-actions">
+              <a href="{% url 'laboratories_new:management:laboratory-safety-manager-edit' laboratory_id=laboratory.pk %}" class="btn btn-primary btn-xs">
+                <svg class="icon icon-xs icon-white" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use></svg>
+                {% trans "Edit" %}
+              </a>
+              {% if safety_manager %}
+                <button type="button" class="btn btn-outline-danger btn-xs" data-toggle="modal" data-target="#delete_safety_manager">
+                  <svg class="icon icon-xs icon-danger" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-delete"></use></svg>
+                  {% trans "Remove" %}
+                </button>
+              {% endif %}
             </div>
-            <!-- /Safety Manager -->
+            {% if safety_manager %}
+              {% url 'laboratories_new:management:laboratory-safety-manager-delete' laboratory_id=laboratory.pk as url_del_sm %}
+              {% trans "Do you want to delete the safety manager?" as msg_del_sm %}
+              {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_safety_manager" message=msg_del_sm url=url_del_sm hide_warning=laboratory.visibile %}
+            {% endif %}
+          {% endif %}
+        </div>
+        {% if safety_manager %}
+          <p class="mb-2">
+            <strong>{{ safety_manager.label }}</strong>
+            {% if safety_manager.external %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+          </p>
+        {% else %}
+          <div class="lab-empty mb-2">{% trans "No safety manager" %}</div>
+        {% endif %}
+        <small class="form-text text-muted">
+          {% trans "Provide only if different from Scientific Director" %}
+        </small>
+      </div>
+    </div>
+  </div>
+  <!-- /Safety Manager -->
 
-            <div class="card-wrapper card-space">
-              <div class="card card-bg no-after">
-                <div class="card-body">
-                  <h4 style="font-weight: lighter">Logs</h4>
-                  {% include "obj_logs.html" with logs=logs %}
-                </div>
-              </div>
-            </div>
+  <!-- Logs -->
+  <a id="logs" class="lab-anchor"></a>
+  <div class="card-wrapper card-space">
+    <div class="card card-bg no-after">
+      <div class="card-body">
+        <div class="lab-section-header">
+          <h3>
+            <svg class="icon icon-primary" aria-hidden="true"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
+            {% trans "Logs" %}
+          </h3>
+        </div>
+        {% include "obj_logs.html" with logs=logs %}
+      </div>
+    </div>
+  </div>
+  <!-- /Logs -->
 
-          {% endblock centered_container %}
+{% endblock centered_container %}
