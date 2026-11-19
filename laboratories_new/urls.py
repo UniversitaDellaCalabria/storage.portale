@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import include, path
-from generics.settings import RICERCA_API_URL
 
 from .api import urls as apiv2_urls
 

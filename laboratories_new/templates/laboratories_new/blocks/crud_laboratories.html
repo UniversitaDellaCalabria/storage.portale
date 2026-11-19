@@ -188,7 +188,7 @@
 
         <div v-else>
             <div class="mb-3" v-for="item in items.results" v-if="item.name != '' && item.name">
-                <div class="lab-card" :class="'lab-status-' + (item.status || 'visible')">
+                <div class="lab-card" :class="'lab-status-' + (item.status || 'approved')">
                     <div class="lab-card-logo" v-if="item.logo">
                         <img :src="item.logo" :alt="item.name"/>
                     </div>
@@ -197,20 +197,11 @@
                             <h5>
                                 <a :href="item.id+'/'">[[ item.name ]]</a>
                             </h5>
-                            <span class="badge badge-success" v-if="item.status == 'visible'">
-                                {% trans "Visible" %}
+                            <span class="badge badge-success" v-if="item.status == 'approved'">
+                                {% trans "Approved" %}
                             </span>
-                            <span class="badge badge-info" v-else-if="item.status == 'approval'">
-                                {% trans "Pending approval" %}
-                            </span>
-                            <span class="badge badge-warning" v-else-if="item.status == 'edit'">
-                                {% trans "Modified - to be re-approved" %}
-                            </span>
-                            <span class="badge badge-success" v-else-if="!item.status && isVisible(item.visible)">
-                                {% trans "Visible" %}
-                            </span>
-                            <span class="badge badge-danger" v-else>
-                                {% trans "Not yet approved" %}
+                            <span class="badge badge-warning" v-else>
+                                {% trans "To be approved" %}
                             </span>
                         </div>
                         <dl class="lab-card-meta">
@@ -373,10 +364,6 @@ this.parameters = {{ id }}_encodeQueryData(this.getItemsFromSession("{{ id }}"))
 {% block extra_methods %}
 
     {% block laboratory_call_method %}
-    // il serializer restituisce "visible" come stringa ("True"/"False")
-    isVisible(v) {
-        return v === true || String(v).toLowerCase() === 'true'
-    },
     scopesText(scopes) {
         return (scopes || []).map(function (s) { return s.description }).join(', ')
     },

@@ -4882,8 +4882,16 @@ msgid "An approval request has been sent."
 msgstr "La richiesta di approvazione è stata inviata."
 
 #: laboratories_new/templates/laboratories_new
-msgid "The laboratory has been modified after its approval. Request a new approval to publish it again."
-msgstr "Il laboratorio è stato modificato dopo l'approvazione. Richiedi una nuova approvazione per pubblicarlo di nuovo."
+msgid "There are changes to be approved: until approval the currently published version remains visible."
+msgstr "Ci sono modifiche da approvare: fino all'approvazione resta visibile la versione attualmente pubblicata."
+
+#: laboratories_new/templates/laboratories_new
+msgid "The laboratory is not published yet: it will be visible after approval."
+msgstr "Il laboratorio non è ancora pubblicato: sarà visibile dopo l'approvazione."
+
+#: laboratories_new/templates/laboratories_new
+msgid "To be approved"
+msgstr "Da approvare"
 
 #: laboratories_new/templates/laboratories_new
 msgid "Sections"
@@ -5549,3 +5557,7 @@ msgstr "Questo ruolo è riservato"
 
 #~ msgid "Label"
 #~ msgstr "Etichetta"
+
+#: laboratories_new/templates/laboratories_new
+msgid "Approved"
+msgstr "Approvato"

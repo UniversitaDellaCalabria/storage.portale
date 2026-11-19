@@ -40,7 +40,7 @@
     </div>
     <div class="lab-header-actions">
       {% if not laboratory.visibile %}
-        {% if can_edit and status != "approval" %}
+        {% if can_edit and not approval_requested %}
           <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ask_to_approve_laboratory">
             <svg class="icon icon-xs icon-white" aria-hidden="true">
               <use xlink:href="{% static 'svg/sprite.svg' %}#it-horn"></use>
@@ -68,17 +68,18 @@
     </div>
   </div>
 
-  {% if status == "approval" %}
-    <div class="alert alert-info" role="alert">
-      {% trans "An approval request has been sent." %}
-    </div>
-  {% elif status == "edit" %}
+  {% if status == "to_approve" %}
+    {% if approval_requested %}
+      <div class="alert alert-info" role="alert">
+        {% trans "An approval request has been sent." %}
+      </div>
+    {% endif %}
     <div class="alert alert-warning" role="alert">
-      {% trans "The laboratory has been modified after its approval. Request a new approval to publish it again." %}
-    </div>
-  {% elif status == "hidden" %}
-    <div class="alert alert-warning" role="alert">
-      {% trans "The laboratory has never been approved. Request approval to publish it." %}
+      {% if published %}
+        {% trans "There are changes to be approved: until approval the currently published version remains visible." %}
+      {% else %}
+        {% trans "The laboratory is not published yet: it will be visible after approval." %}
+      {% endif %}
     </div>
   {% endif %}
 

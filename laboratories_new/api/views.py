@@ -12,7 +12,6 @@ from api_docs import responses
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from django.http import Http404
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
@@ -43,7 +42,6 @@ from laboratories_new.models import (
     LaboratorioServizi,
     LaboratorioUbicazione,
     AmbitiS3,
-    LaboratorioTipologiaAttivita,
     TraiettorieS3,
 )
 from research_lines.models import (
@@ -56,7 +54,7 @@ from research_lines.models import (
 from django.db.models import Q, Prefetch
 
 from laboratories_new.snapshot_adapter import snapshot_to_obj
-from laboratories_new.snapshot_service import current_snapshots
+from laboratories_new.snapshot_service import current_snapshots, published_lab_ids
 from laboratories_new.management.utils import (
     _scientific_directors,
     defer_personale_dates,
@@ -137,31 +135,33 @@ class LaboratoriesViewSet(
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
 
     def _visibility_query(self):
-        # le tabelle e lo snapshot corrente sono sempre allineati: filtri e
-        # visibilita' si calcolano sulle tabelle, i dati si leggono dallo snapshot
+        # Un laboratorio e' visibile se ha uno snapshot in corso, anche mentre e'
+        # da approvare (nelle tabelle in quel momento ha visibile=False).
+        # I dati si leggono dallo snapshot; i filtri di ricerca restano sulle
+        # tabelle.
         if self._can_see_all_hidden():
             return Q()
-        public = Q(visibile=True)
+        public = Q(id__in=published_lab_ids())
         director_lab_ids = self._access()["director_lab_ids"]
         if director_lab_ids:
             return public | Q(id__in=director_lab_ids)
         return public
 
     def _snapshot_objs(self, lab_ids):
-        """Oggetti da serializzare, letti dallo snapshot corrente.
-        Fallback sulle tabelle solo per i laboratori ancora senza snapshot."""
+        """Oggetti da serializzare, letti dallo snapshot in corso.
+        Fallback sulle tabelle per i laboratori senza snapshot (creati dopo lo
+        snapshot iniziale e non ancora approvati), visibili solo a chi li gestisce."""
         snaps = current_snapshots(lab_ids)
         missing = [i for i in lab_ids if i not in snaps]
         live = {}
         if missing:
-            logger.warning("Laboratori senza snapshot: %s", missing)
             live = {
                 lab.id: lab for lab in self.get_queryset().filter(id__in=missing)
             }
         objs = []
         for lab_id in lab_ids:
             if lab_id in snaps:
-                objs.append(snapshot_to_obj(snaps[lab_id]))
+                objs.append(snapshot_to_obj(snaps[lab_id], published=True))
             elif lab_id in live:
                 objs.append(live[lab_id])
         return objs
@@ -175,10 +175,15 @@ class LaboratoriesViewSet(
         objs = self._snapshot_objs(lab_ids)
         serializer = self.get_serializer(objs, many=True)
 
-        # stato di lavorazione: solo per i laboratori nascosti che l'utente puo' vedere
-        visibility = {
-            obj.id: bool(obj.visibile) for obj in objs if self._can_see_hidden(obj.id)
-        }
+        # stato di lavorazione (approvato / da approvare): solo per i laboratori
+        # che l'utente puo' gestire. Si calcola sulle tabelle, dove ci sono le
+        # modifiche non ancora approvate; lo snapshot e' la versione visibile
+        manageable = [obj.id for obj in objs if self._can_see_hidden(obj.id)]
+        visibility = dict(
+            LaboratorioDatiBase.objects.filter(id__in=manageable).values_list(
+                "id", "visibile"
+            )
+        ) if manageable else {}
         if visibility:
             statuses = laboratory_statuses(visibility)
             for obj in objs:
@@ -194,10 +199,10 @@ class LaboratoriesViewSet(
         if str(pk).isdigit():
             data = current_snapshots([int(pk)]).get(int(pk))
             if data is not None:
-                if not (self._can_see_hidden(int(pk)) or data.get("visibile")):
-                    raise Http404
-                return Response(self.get_serializer(snapshot_to_obj(data)).data)
-            logger.warning("Laboratorio %s senza snapshot", pk)
+                # snapshot in corso = versione visibile a tutti
+                obj = snapshot_to_obj(data, published=True)
+                return Response(self.get_serializer(obj).data)
+        # senza snapshot: mai approvato, visibile solo a chi vede i nascosti
         return super().retrieve(request, *args, **kwargs)
 
     def get_queryset(self):

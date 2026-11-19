@@ -67,6 +67,8 @@ USER_MODEL = get_user_model()
 
 def _serialize(obj, depth=MAX_DEPTH):
     """Dizionario con i campi concreti; le FK vengono espanse fino a `depth`."""
+    if isinstance(obj, USER_MODEL):
+        return {"id": obj.pk}
     data = {}
     missing = set(_missing_fields(type(obj)))
     allowed = FIELD_WHITELIST.get(type(obj))

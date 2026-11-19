@@ -44,10 +44,10 @@ class LaboratoriesFilters(filters.FilterSet):
     def filter_teacher(self, queryset, name, value):
         today = date.today()
         active_resp = Q(laboratorioresponsabile__data_fine__isnull=True) | Q(
-            laboratorioresponsabile__data_fine__gte=today
+            laboratorioresponsabile__data_fine__gt=today
         )
         active_aff = Q(laboratorioaffiliati__data_fine__isnull=True) | Q(
-            laboratorioaffiliati__data_fine__gte=today
+            laboratorioaffiliati__data_fine__gt=today
         )
         return queryset.filter(
             (Q(laboratorioresponsabile__matricola_personale__id_ab=value) & active_resp)

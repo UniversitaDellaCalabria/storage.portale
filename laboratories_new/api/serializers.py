@@ -9,13 +9,19 @@ from laboratories_new.models import (
     LaboratorioDatiBase,
     AmbitiS3,
     LaboratorioInfrastruttura,
-    LaboratorioTipologiaAttivita,
     TraiettorieS3,
 )
 from generics.utils import build_media_path
 
 from addressbook.utils import add_email_addresses
 from datetime import date
+
+from laboratories_new.management.utils import (
+    ROLE_SCIENTIFIC_DIRECTOR,
+    STATUS_APPROVED,
+    STATUS_TO_APPROVE,
+    is_still_valid,
+)
 
 
 class LanguageMixin:
@@ -46,12 +52,34 @@ class LaboratoryCommonMixin:
 
     # --- helper interni ---
     def _director(self, obj):
-        """Primo responsabile attivo (vedi nota sui ruoli)."""
+        """
+        Responsabile scientifico (interno) in corso.
+
+        LaboratorioResponsabile contiene anche altri ruoli (es. il preposto alla
+        sicurezza): si filtra per ruolo e, se ce n'e' piu' di uno, vince il piu'
+        recente. Il risultato e' messo in cache sull'oggetto: viene chiesto da
+        piu' campi dello stesso serializer.
+        """
+        # vars(): Snap restituisce None per gli attributi mancanti, getattr no
+        cached = vars(obj).get("_api_director", _MISSING)
+        if cached is not _MISSING:
+            return cached
         today = date.today()
-        for r in getattr(obj, "responsabili", []):
-            if r.matricola_personale and (r.data_fine is None or r.data_fine >= today):
-                return r.matricola_personale
-        return None
+        candidates = [
+            r
+            for r in getattr(obj, "responsabili", None) or []
+            if r.matricola_personale
+            and r.laboratorio_ruolo
+            and r.laboratorio_ruolo.descr_ruolo_it == ROLE_SCIENTIFIC_DIRECTOR[0]
+            and is_still_valid(r, today)
+        ]
+        candidates.sort(key=lambda r: (r.data_inizio or date.min, r.id or 0))
+        director = candidates[-1].matricola_personale if candidates else None
+        try:
+            obj._api_director = director
+        except AttributeError:  # pragma: no cover
+            pass
+        return director
 
     def _main_department(self, obj):
         deps = getattr(obj, "dipartimento_principale", [])
@@ -91,6 +119,12 @@ class LaboratoryCommonMixin:
                     }
                 )
         return out
+
+    @extend_schema_field(serializers.CharField())
+    def get_visible(self, obj):
+        # visibile = servito dallo snapshot in corso (anche se da approvare).
+        # Stringa "True"/"False" come prima, per compatibilita' con i client
+        return str(bool(vars(obj).get("published")))
 
     @extend_schema_field(serializers.CharField())
     def get_logo(self, obj):
@@ -174,7 +208,7 @@ class LaboratorySerializer(LaboratoryCommonMixin, serializers.ModelSerializer):
     offeredServices = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
     URL = serializers.SerializerMethodField()
-    visible = serializers.CharField(source="visibile")
+    visible = serializers.SerializerMethodField()
 
     # campi senza equivalente nel nuovo schema
     def get_completionReferentId(self, obj):
@@ -311,17 +345,19 @@ class LaboratoriesSerializer(LaboratoryCommonMixin, serializers.Serializer):
     researchPersonnel = serializers.SerializerMethodField()
     techPersonnel = serializers.SerializerMethodField()
     scopes = serializers.SerializerMethodField()
-    visible = serializers.CharField(source="visibile")
+    visible = serializers.SerializerMethodField()
     inEdit = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.CharField())
     def get_status(self, obj):
-        return getattr(obj, "lab_status", "visible")
+        # chi non gestisce il laboratorio vede solo lo snapshot in corso, che e'
+        # per definizione la versione approvata
+        return getattr(obj, "lab_status", None) or STATUS_APPROVED
 
     @extend_schema_field(serializers.BooleanField())
     def get_inEdit(self, obj):
-        return getattr(obj, "lab_status", None) == "edit"
+        return getattr(obj, "lab_status", None) == STATUS_TO_APPROVE
 
     def get_departmentName(self, obj):
         d = self._main_department(obj)

@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -22,6 +21,7 @@ from .utils import (
     LOG_REQUESTED_APPROVAL,
     LOG_APPROVED,
     PERSONALE_BROKEN_DATE_FIELDS,
+    approval_requested,
     laboratory_status,
 )
 from laboratories_new.models import (
@@ -70,6 +70,7 @@ from .utils import (
     _get_allowed_department_codes,
     _get_user_roles,
     _is_user_scientific_director,
+    _not_ended,
     _still_valid,
     edit_laboratory,
 )
@@ -134,7 +135,7 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
 def _current_role_holder(laboratory, role_descr):
     """Responsabile in corso per un ruolo: interno (Responsabile) o esterno (Affiliati)."""
     today = datetime.date.today()
-    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    still_valid = _still_valid(today)
 
     internal = (
         LaboratorioResponsabile.objects.filter(
@@ -167,7 +168,7 @@ def _current_role_holder(laboratory, role_descr):
 
 def _close_current_role_holders(request, laboratory, role, today):
     """Chiude i titolari in corso di un ruolo (interni ed esterni)."""
-    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    still_valid = _not_ended(today)
     closed = LaboratorioResponsabile.objects.filter(
         still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
     ).update(data_fine=today, dt_mod=today, id_user_mod=request.user)
@@ -267,7 +268,8 @@ def laboratory(
         )
 
         if form.is_valid():
-            # snapshot della versione approvata, poi il laboratorio torna "non visibile"
+            # salva le modifiche e rende il laboratorio "non visibile"; lo snapshot
+            # (versione pubblicata) resta quello dell'ultima approvazione
             with edit_laboratory(request, laboratory):
                 laboratory = form.save(commit=False)
                 laboratory.save()
@@ -324,6 +326,11 @@ def laboratory(
             "research_staff": research_staff,
             "technicians": technicians,
             "status": laboratory_status(laboratory),
+            "approval_requested": approval_requested(laboratory),
+            # ha uno snapshot in corso, cioe' una versione visibile all'esterno
+            "published": LaboratorioSnapshot.objects.filter(
+                laboratorio_id=laboratory.pk, data_fine_validita__isnull=True
+            ).exists(),
             "user_roles": user_roles,
             "can_edit": user_roles["superuser"] or user_roles["operator"],
         },
@@ -484,8 +491,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                             dt_mod=today,
                             id_user_mod=request.user,
                         )
-
-                refresh_snapshot(laboratory.pk, request.user)
+                # nessuno snapshot: il laboratorio sara' pubblicato all'approvazione
 
             log_action(
                 user=request.user, obj=laboratory, flag=ADDITION, msg=[{"added": {}}]
@@ -537,8 +543,8 @@ def laboratory_scientific_director_edit(
         descr_ruolo_it=ROLE_SCIENTIFIC_DIRECTOR[0]
     ).first()
 
-    # Record attualmente in corso (senza data_fine o con data_fine futura)
-    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    # Record attualmente in corso (gia iniziati e non ancora chiusi)
+    still_valid = _still_valid(today)
 
     current_internal = None
     current_external = None
@@ -548,7 +554,7 @@ def laboratory_scientific_director_edit(
                 still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
             )
             .select_related("matricola_personale")
-        .defer(*_PERSONALE_DEFER)
+            .defer(*_PERSONALE_DEFER)
             .order_by("-data_inizio", "-id")
             .first()
         )
@@ -689,8 +695,8 @@ def laboratory_safety_manager_edit(
         descr_ruolo_it=ROLE_SAFETY_MANAGER[0]
     ).first()
 
-    # Record attualmente in corso (senza data_fine o con data_fine futura)
-    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    # Record attualmente in corso (gia iniziati e non ancora chiusi)
+    still_valid = _still_valid(today)
 
     current_internal = None
     current_external = None
@@ -700,7 +706,7 @@ def laboratory_safety_manager_edit(
                 still_valid, laboratorio_dati_base=laboratory, laboratorio_ruolo=role
             )
             .select_related("matricola_personale")
-        .defer(*_PERSONALE_DEFER)
+            .defer(*_PERSONALE_DEFER)
             .order_by("-data_inizio", "-id")
             .first()
         )
@@ -832,7 +838,7 @@ def laboratory_safety_manager_delete(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     today = datetime.date.today()
-    still_valid = Q(data_fine__isnull=True) | Q(data_fine__gte=today)
+    still_valid = _not_ended(today)
 
     role = LaboratorioRuolo.objects.filter(
         descr_ruolo_it=ROLE_SAFETY_MANAGER[0]
@@ -909,7 +915,7 @@ def laboratory_extra_departments_new(
 
             # Il dipartimento non deve essere già associato (principale o extra)
             already_associated = LaboratorioDipartimenti.objects.filter(
-                Q(data_fine__isnull=True) | Q(data_fine__gte=today),
+                _not_ended(today),
                 laboratorio_dati_base=laboratory,
                 didattica_dipartimento=department,
             ).exists()
@@ -1809,7 +1815,8 @@ def laboratory_approve(
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already visible"))
 
-    # Rendo visibile il laboratorio e ne creo il nuovo snapshot nella stessa transazione
+    # Rendo visibile il laboratorio e pubblico i dati attuali (nuovo snapshot)
+    # nella stessa transazione: da qui l'API mostra la nuova versione
     with transaction.atomic():
         laboratory.visibile = True
         laboratory.user_mod = request.user

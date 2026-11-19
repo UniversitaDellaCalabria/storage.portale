@@ -6,7 +6,6 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.db.models import Q
 from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
-from laboratories_new.snapshot_service import refresh_snapshot
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -22,10 +21,11 @@ RESERVED_ROLES = (
 LOG_REQUESTED_APPROVAL = "Requested approval"
 LOG_APPROVED = "Approved Laboratory"
 
-STATUS_VISIBLE = "visible"
-STATUS_EDIT = "edit"
-STATUS_APPROVAL = "approval"
-STATUS_HIDDEN = "hidden"
+# Stato di lavorazione. Il campo VISIBILE della tabella vale come "approvato":
+# ogni modifica lo mette a False, l'approvazione a True. La versione mostrata
+# all'esterno e' sempre lo snapshot in corso (vedi snapshot_service).
+STATUS_APPROVED = "approved"
+STATUS_TO_APPROVE = "to_approve"
 
 
 # DT_INS/DT_MOD della tabella PERSONALE sono DATE, ma il modello (InsModAbstract)
@@ -74,28 +74,17 @@ def pending_approval_ids(lab_ids):
     return _pending(*_approval_log(lab_ids))
 
 
-def laboratory_statuses(visibility):
+def laboratory_statuses(approved):
     """
-    {id: stato} a partire da {id: visibile}.
+    {id: stato} a partire da {id: visibile (= approvato)}.
 
-    - approval: richiesta di approvazione in attesa
-    - visible:  laboratorio visibile
-    - edit:     non visibile, ma gia' approvato in passato (modificato dopo l'approvazione)
-    - hidden:   non visibile e mai approvato
+    - approved:   i dati nelle tabelle sono quelli approvati
+    - to_approve: ci sono modifiche (o il laboratorio e' nuovo) da approvare
     """
-    last_request, last_approval = _approval_log(visibility)
-    pending = _pending(last_request, last_approval)
-    out = {}
-    for lab_id, visible in visibility.items():
-        if lab_id in pending:
-            out[lab_id] = STATUS_APPROVAL
-        elif visible:
-            out[lab_id] = STATUS_VISIBLE
-        elif lab_id in last_approval:
-            out[lab_id] = STATUS_EDIT
-        else:
-            out[lab_id] = STATUS_HIDDEN
-    return out
+    return {
+        lab_id: STATUS_APPROVED if is_approved else STATUS_TO_APPROVE
+        for lab_id, is_approved in approved.items()
+    }
 
 
 def laboratory_status(laboratory):
@@ -103,11 +92,41 @@ def laboratory_status(laboratory):
     return laboratory_statuses({laboratory.pk: laboratory.visibile})[laboratory.pk]
 
 
-def _still_valid(today=None):
-    """Q per i record in corso (senza data_fine o con data_fine futura)."""
+def approval_requested(laboratory):
+    """True se e' stata inviata una richiesta di approvazione non ancora evasa."""
+    return not laboratory.visibile and laboratory.pk in pending_approval_ids(
+        [laboratory.pk]
+    )
+
+
+def _not_ended(today=None):
+    """
+    Q per i record non ancora chiusi (senza data_fine o con data_fine futura).
+
+    Quando un incarico viene chiuso si imposta data_fine = oggi: da quel momento
+    il record NON e' piu' in corso. Usare sempre questo criterio (e non
+    data_fine >= oggi), altrimenti un incarico appena chiuso risulta ancora attivo
+    fino a fine giornata.
+    """
     today = today or datetime.date.today()
-    return (Q(data_fine__isnull=True) | Q(data_fine__gt=today)) & (
+    return Q(data_fine__isnull=True) | Q(data_fine__gt=today)
+
+
+def _still_valid(today=None):
+    """Q per i record in corso (gia' iniziati e non ancora chiusi)."""
+    today = today or datetime.date.today()
+    return _not_ended(today) & (
         Q(data_inizio__isnull=True) | Q(data_inizio__lte=today)
+    )
+
+
+def is_still_valid(record, today=None):
+    """Come _still_valid, ma su un oggetto gia' caricato (anche da snapshot)."""
+    today = today or datetime.date.today()
+    data_inizio = getattr(record, "data_inizio", None)
+    data_fine = getattr(record, "data_fine", None)
+    return (data_fine is None or data_fine > today) and (
+        data_inizio is None or data_inizio <= today
     )
 
 
@@ -176,8 +195,11 @@ def edit_laboratory(request, laboratory):
     Transazione di modifica di un laboratorio.
 
     - esegue il blocco `with` (le modifiche vanno sulle tabelle);
-    - rende il laboratorio NON visibile, cosi' serve una nuova approvazione;
-    - crea un nuovo snapshot dai dati aggiornati (chiudendo il precedente).
+    - rende il laboratorio NON visibile, cosi' serve una nuova approvazione.
+
+    Lo snapshot NON viene toccato: resta la versione approvata, che l'API
+    continua a mostrare finche' le modifiche non vengono approvate
+    (vedi snapshot_service).
     """
     with transaction.atomic():
         # letta dal DB: il form potrebbe aver gia' modificato l'istanza in memoria
@@ -189,7 +211,6 @@ def edit_laboratory(request, laboratory):
         laboratory.dt_mod = datetime.datetime.now()
         laboratory.visibile = False
         laboratory.save()
-        refresh_snapshot(laboratory.pk, request.user)
 
     if was_visible:
         messages.add_message(

@@ -1,11 +1,7 @@
 {% load i18n %}
-{# Parametri: status (visible | approval | edit | hidden) #}
-{% if status == "visible" %}
-  <span class="badge badge-success">{% trans "Visible" %}</span>
-{% elif status == "approval" %}
-  <span class="badge badge-info">{% trans "Pending approval" %}</span>
-{% elif status == "edit" %}
-  <span class="badge badge-warning">{% trans "Modified - to be re-approved" %}</span>
+{# Parametri: status (approved | to_approve) #}
+{% if status == "approved" %}
+  <span class="badge badge-success">{% trans "Approved" %}</span>
 {% else %}
-  <span class="badge badge-danger">{% trans "Not yet approved" %}</span>
+  <span class="badge badge-warning">{% trans "To be approved" %}</span>
 {% endif %}

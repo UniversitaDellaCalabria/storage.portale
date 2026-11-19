@@ -36,7 +36,8 @@ def _is_tech(a):
     return "tecnic" in descr.lower()
 
 
-def snapshot_to_obj(data: dict):
+def snapshot_to_obj(data: dict, published=False):
+    """published=True: lo snapshot e' quello in corso, cioe' la versione visibile."""
     data = dict(data)
     affiliati = data.get("laboratorioaffiliati_set", [])
     dipartimenti = data.get("laboratoriodipartimenti_set", [])
@@ -56,4 +57,5 @@ def snapshot_to_obj(data: dict):
         [d for d in dipartimenti if d.get("principale")]
     )
     obj.other_dep = to_ns([d for d in dipartimenti if not d.get("principale")])
+    obj.published = published
     return obj
