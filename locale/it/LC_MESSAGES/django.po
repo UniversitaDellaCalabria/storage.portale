@@ -3189,7 +3189,7 @@ msgstr "Responsabile Scientifico"
 #: laboratories/management/views.py:979
 #: laboratories/templates/laboratory.html:1161
 msgid "Safety Manager"
-msgstr "Preposto Sicurezza"
+msgstr "Preposto alla sicurezza"
 
 #: laboratories/management/forms.py:288
 #: laboratories/templates/laboratory.html:895
@@ -3228,7 +3228,7 @@ msgstr "Classificazione ERC - Social Sciences and Humanities"
 
 #: laboratories/management/forms.py:377 laboratories/management/forms.py:388
 msgid "Main Location"
-msgstr "Sede Principale"
+msgstr "Sede principale"
 
 #: laboratories/management/forms.py:386
 #: laboratories/templates/laboratory.html:717
@@ -3296,25 +3296,23 @@ msgstr "Laboratorio"
 #: laboratories/management/views.py:672
 msgid ""
 "Laboratory anagraphic created successfully, please fill in the other fields"
-msgstr ""
-"Anagrafica del Laboratorio creata con successo, si prega di riempire i campi "
-"rimanenti"
+msgstr "Anagrafica del laboratorio creata con successo, compila i campi rimanenti"
 
 #: laboratories/management/views.py:830
 msgid "Laboratory scientific director edited successfully"
-msgstr "Responsabile Scientifico del Laboratorio modificato con successo"
+msgstr "Responsabile scientifico del laboratorio modificato con successo"
 
 #: laboratories/management/views.py:941
 msgid "Laboratory safety manager edited successfully"
-msgstr "Preposto Sicurezza modificato con successo"
+msgstr "Preposto alla sicurezza modificato con successo"
 
 #: laboratories/management/views.py:1004
 msgid "Deleted safety manager"
-msgstr "Eliminato preposto sicurezza"
+msgstr "Eliminato preposto alla sicurezza"
 
 #: laboratories/management/views.py:1008
 msgid "Safety manager removed successfully"
-msgstr "Preposto Sicurezza rimosso con successo"
+msgstr "Preposto alla sicurezza rimosso con successo"
 
 #: laboratories/management/views.py:1023
 msgid "Laboratory removed successfully"
@@ -3328,23 +3326,23 @@ msgstr ""
 
 #: laboratories/management/views.py:1071
 msgid "Added extra department"
-msgstr "Aggiunto Altro Dipartimento"
+msgstr "Aggiunto dipartimento extra"
 
 #: laboratories/management/views.py:1075
 msgid "Extra department added successfully"
-msgstr "Altro Dipartimento aggiunto con successo"
+msgstr "Dipartimento extra aggiunto con successo"
 
 #: laboratories/management/views.py:1100
 msgid "Extra Department"
-msgstr "Altro Dipartimento"
+msgstr "Dipartimento extra"
 
 #: laboratories/management/views.py:1144
 msgid "Deleted extra department"
-msgstr "Eliminato altro dipartimento"
+msgstr "Eliminato dipartimento extra"
 
 #: laboratories/management/views.py:1148
 msgid "Extra department removed successfully"
-msgstr "Altro Dipartimento rimosso con successo"
+msgstr "Dipartimento extra rimosso con successo"
 
 #: laboratories/management/views.py:1208
 msgid "Added piece of equipment"
@@ -3587,7 +3585,7 @@ msgstr "Il laboratorio deve avere almeno una classificazione ERC 1"
 
 #: laboratories/management/views.py:2816
 msgid "Laboratory must have at least one Location"
-msgstr "Il laboratorio deve avere almeno un'ubicazione"
+msgstr "Il laboratorio deve avere almeno una sede"
 
 #: laboratories/management/views.py:2828
 msgid "Laboratory must have at least one Activity"
@@ -3710,11 +3708,11 @@ msgstr "Gestisci"
 
 #: laboratories/templates/laboratory.html:602
 msgid "Do you want to delete this researcher?"
-msgstr "Vuoi davvero eliminare ricercatore selezionato?"
+msgstr "Vuoi davvero eliminare il ricercatore selezionato?"
 
 #: laboratories/templates/laboratory.html:674
 msgid "Do you want to delete this technician?"
-msgstr "Vuoi davvero eliminare i selezionato?"
+msgstr "Vuoi davvero eliminare il tecnico selezionato?"
 
 #: laboratories/templates/laboratory.html:709
 msgid "Endowements Section (Facilities and Equipment)"
@@ -4927,7 +4925,7 @@ msgstr "Nessun personale tecnico"
 
 #: laboratories_new/templates/laboratories_new
 msgid "No locations"
-msgstr "Nessuna ubicazione"
+msgstr "Nessuna sede"
 
 #: laboratories_new/templates/laboratories_new
 msgid "No offered services"
@@ -5075,7 +5073,7 @@ msgstr "Infrastruttura di riferimento"
 
 #: laboratories_new
 msgid "Registered Location"
-msgstr "Ubicazione censita"
+msgstr "Sede censita"
 
 #: laboratories_new
 msgid "Role (en)"
@@ -5128,6 +5126,18 @@ msgstr "Questo campo è obbligatorio."
 #: laboratories_new
 msgid "This role is reserved"
 msgstr "Questo ruolo è riservato"
+
+#: laboratories_new/templates/laboratories_new
+msgid "Approved"
+msgstr "Approvato"
+
+#: laboratories_new
+msgid "Laboratory is already approved"
+msgstr "Il laboratorio è già approvato"
+
+#: laboratories_new
+msgid "Do you want to approve this laboratory? Its current data will become the version visible to the public."
+msgstr "Vuoi approvare questo laboratorio? I dati attuali diventeranno la versione visibile al pubblico."
 
 #~ msgid "Structure selection"
 #~ msgstr "Seleziona procedura"
@@ -5557,7 +5567,3 @@ msgstr "Questo ruolo è riservato"
 
 #~ msgid "Label"
 #~ msgstr "Etichetta"
-
-#: laboratories_new/templates/laboratories_new
-msgid "Approved"
-msgstr "Approvato"

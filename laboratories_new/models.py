@@ -166,6 +166,9 @@ class LaboratorioDatiBase(models.Model):
         related_name="laboratories_new_datibase_set",
     )
 
+    def __str__(self):
+        return self.nome_laboratorio or f"Laboratorio {self.pk}"
+
     class Meta:
         managed = False
         db_table = "LABORATORIO_DATI_BASE"

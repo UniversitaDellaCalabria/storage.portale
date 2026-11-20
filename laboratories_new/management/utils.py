@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 from django.contrib import messages
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.db.models import Q
 from laboratories_new.models import LaboratorioDatiBase, LaboratorioResponsabile
@@ -208,7 +209,7 @@ def edit_laboratory(request, laboratory):
         ).exists()
         yield
         laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
+        laboratory.dt_mod = timezone.now()
         laboratory.visibile = False
         laboratory.save()
 

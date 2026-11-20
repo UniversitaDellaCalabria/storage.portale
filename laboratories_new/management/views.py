@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 from django.db import transaction
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -426,7 +427,7 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
             with transaction.atomic():
                 laboratory = form.save(commit=False)
                 laboratory.user_mod = request.user
-                laboratory.dt_mod = datetime.datetime.now()
+                laboratory.dt_mod = timezone.now()
                 laboratory.visibile = False
                 laboratory.save()
 
@@ -1731,7 +1732,7 @@ def laboratory_request_approval(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     if laboratory.visibile:
-        return custom_message(request, _("Laboratory is already visible"))
+        return custom_message(request, _("Laboratory is already approved"))
 
     # LaboratorioDipartimenti
     if not LaboratorioDipartimenti.objects.filter(
@@ -1813,14 +1814,14 @@ def laboratory_approve(
     if not (request.user.is_superuser or is_validator):
         return custom_message(request, _("Permission denied"))
     if laboratory.visibile:
-        return custom_message(request, _("Laboratory is already visible"))
+        return custom_message(request, _("Laboratory is already approved"))
 
     # Rendo visibile il laboratorio e pubblico i dati attuali (nuovo snapshot)
     # nella stessa transazione: da qui l'API mostra la nuova versione
     with transaction.atomic():
         laboratory.visibile = True
         laboratory.user_mod = request.user
-        laboratory.dt_mod = datetime.datetime.now()
+        laboratory.dt_mod = timezone.now()
         laboratory.save()
         refresh_snapshot(laboratory.pk, request.user)
 

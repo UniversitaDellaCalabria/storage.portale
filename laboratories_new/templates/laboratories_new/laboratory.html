@@ -12,7 +12,7 @@
 
   {% trans "Do you want to permanently delete this laboratory? All its data and snapshots will be removed." as msg_delete_lab %}
   {% trans "Do you want to request approval for this laboratory? The validators will be notified." as msg_request_approval %}
-  {% trans "Do you want to approve this laboratory? It will be visible to the public with its current data." as msg_approve %}
+  {% trans "Do you want to approve this laboratory? Its current data will become the version visible to the public." as msg_approve %}
 
   {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_laboratory" message=msg_delete_lab url=delete_url %}
   {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="ask_to_approve_laboratory" message=msg_request_approval url=request_approval_url %}

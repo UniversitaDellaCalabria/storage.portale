@@ -10,6 +10,7 @@ from .docs import descriptions
 from api_docs import responses
 
 from rest_framework import mixins, viewsets
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -106,6 +107,11 @@ class LaboratoryAccessMixin:
     def _can_see_all_hidden(self):
         return self._access()["staff"]
 
+    def _is_manager(self):
+        """Ha un ruolo nella gestione dei laboratori (staff o responsabile)."""
+        access = self._access()
+        return access["staff"] or bool(access["director_lab_ids"])
+
     def _can_see_hidden(self, lab_id):
         access = self._access()
         return access["staff"] or lab_id in access["director_lab_ids"]
@@ -130,6 +136,11 @@ class LaboratoriesViewSet(
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesSerializer
     filterset_class = LaboratoriesFilters
+    # Sessione: la lista della gestione chiama questa API dal browser (axios,
+    # senza token); senza SessionAuthentication l'utente risulterebbe anonimo e
+    # non vedrebbe ne' i laboratori senza snapshot ne' lo stato di approvazione.
+    # Il ViewSet e' in sola lettura, quindi il controllo CSRF non entra in gioco.
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
     def get_serializer_class(self):
         return LaboratoriesSerializer if self.action == "list" else LaboratorySerializer
@@ -175,17 +186,17 @@ class LaboratoriesViewSet(
         objs = self._snapshot_objs(lab_ids)
         serializer = self.get_serializer(objs, many=True)
 
-        # stato di lavorazione (approvato / da approvare): solo per i laboratori
-        # che l'utente puo' gestire. Si calcola sulle tabelle, dove ci sono le
-        # modifiche non ancora approvate; lo snapshot e' la versione visibile
-        manageable = [obj.id for obj in objs if self._can_see_hidden(obj.id)]
-        visibility = dict(
-            LaboratorioDatiBase.objects.filter(id__in=manageable).values_list(
-                "id", "visibile"
+        # stato di approvazione (approvato / da approvare) per tutti i laboratori
+        # della pagina, solo per chi ha un ruolo nella gestione. Si calcola sulle
+        # tabelle, dove ci sono le modifiche non ancora approvate (lo snapshot e'
+        # la versione visibile). Per gli altri vale il default del serializer.
+        if self._is_manager() and objs:
+            approved = dict(
+                LaboratorioDatiBase.objects.filter(
+                    id__in=[obj.id for obj in objs]
+                ).values_list("id", "visibile")
             )
-        ) if manageable else {}
-        if visibility:
-            statuses = laboratory_statuses(visibility)
+            statuses = laboratory_statuses(approved)
             for obj in objs:
                 if obj.id in statuses:
                     obj.lab_status = statuses[obj.id]
