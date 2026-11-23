@@ -40,7 +40,8 @@
     </div>
     <div class="lab-header-actions">
       {% if not laboratory.visibile %}
-        {% if can_edit and not approval_requested %}
+        {# come in laboratories: la richiesta si puo' reinviare finche' non e' approvato #}
+        {% if can_edit %}
           <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ask_to_approve_laboratory">
             <svg class="icon icon-xs icon-white" aria-hidden="true">
               <use xlink:href="{% static 'svg/sprite.svg' %}#it-horn"></use>

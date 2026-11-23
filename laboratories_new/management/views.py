@@ -41,7 +41,11 @@ from laboratories_new.settings import (
     TO_VALIDATORS_EMAIL_MESSAGE,
     TO_VALIDATORS_EMAIL_SUBJECT,
 )
-from laboratories_new.snapshot_service import refresh_snapshot
+from laboratories_new.snapshot_service import (
+    delete_logo_on_commit,
+    published_logo_names,
+    refresh_snapshot,
+)
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 from research_lines.models import RicercaErc1
 from structures.models import DidatticaDipartimento
@@ -469,7 +473,12 @@ def laboratory_new(request, laboratory=None, my_offices=None, is_validator=False
                     "choosen_scientific_director"
                 )
                 if chosen_code:
-                    person = get_object_or_404(_personale_qs(), id_ab=chosen_code)
+                    # il selettore invia l'alias email (es. "mario.rossi") oppure
+                    # l'id_ab: get_personale_matricola gestisce entrambi i casi
+                    person = get_object_or_404(
+                        _personale_qs(),
+                        matricola=get_personale_matricola(chosen_code),
+                    )
                     for role in roles:
                         LaboratorioResponsabile.objects.create(
                             laboratorio_dati_base=laboratory,
@@ -885,6 +894,10 @@ def laboratory_delete(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
     with transaction.atomic():
+        # il logo pubblicato puo' essere diverso da quello attuale (modifica non
+        # approvata): il signal post_delete cancella solo quello attuale
+        for name in published_logo_names(laboratory.pk):
+            delete_logo_on_commit(name)
         # LaboratorioSnapshot non ha FK verso il laboratorio: va ripulito a mano
         LaboratorioSnapshot.objects.filter(laboratorio_id=laboratory.pk).delete()
         laboratory.delete()

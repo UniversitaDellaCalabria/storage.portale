@@ -63,3 +63,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # from django 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# DidatticaCdsLingua.cdsord is a ForeignKey used as primary_key on an
+# unmanaged legacy table: a CDS can have multiple languages, so the reverse
+# relation must stay a manager (OneToOneField would break it).
+SILENCED_SYSTEM_CHECKS = [
+    *globals().get("SILENCED_SYSTEM_CHECKS", []),
+    "fields.W342",
+]

@@ -5,7 +5,8 @@ from laboratories_new.snapshot_service import create_all_snapshots
 
 class Command(BaseCommand):
     help = (
-        "Crea lo snapshot di tutti i laboratori dai dati attuali delle tabelle "
+        "Crea lo snapshot di tutti i laboratori approvati (visibile=True) dai dati "
+        "attuali delle tabelle "
         "(chiude gli snapshot in corso). Da lanciare una volta a mano."
     )
 

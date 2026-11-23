@@ -19,7 +19,7 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 from generics.api.pagination import PageNumberPagination
 from generics.views import ClearResponseViewSet
 
-from .filters import LaboratoriesFilters
+from .filters import LaboratoriesFilters, snapshot_matches
 from laboratories_new.settings import OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS
 from .serializers import (
     Aster1ListSerializer,
@@ -177,11 +177,54 @@ class LaboratoriesViewSet(
                 objs.append(live[lab_id])
         return objs
 
+    def _filtered_lab_ids(self):
+        """
+        Id dei laboratori da elencare, filtrati e ordinati per nome.
+
+        Per i laboratori approvati le tabelle coincidono con lo snapshot, e per
+        quelli senza snapshot (visibili solo a chi li gestisce) si mostrano le
+        tabelle: in entrambi i casi filtri e ordinamento restano sul DB.
+        Per quelli con modifiche in attesa (snapshot in corso + visibile=False)
+        le tabelle hanno dati non approvati: filtri e nome per l'ordinamento si
+        prendono dallo snapshot, cosi' non si trovano cercando dati non pubblici.
+        """
+        base_qs = self.get_queryset()
+        filtered = self.filter_queryset(base_qs)
+
+        pending_ids = set(
+            LaboratorioDatiBase.objects.filter(
+                self._visibility_query(),
+                visibile=False,
+                id__in=published_lab_ids(),
+            ).values_list("id", flat=True)
+        )
+
+        names = dict(
+            filtered.exclude(id__in=pending_ids).values_list("id", "nome_laboratorio")
+        )
+
+        if pending_ids:
+            # filter_queryset ha gia' validato i parametri (errore 400 se invalidi)
+            filterset = self.filterset_class(
+                self.request.query_params, queryset=base_qs, request=self.request
+            )
+            filterset.is_valid()
+            params = filterset.form.cleaned_data
+            for lab_id, data in current_snapshots(pending_ids).items():
+                if snapshot_matches(data, params):
+                    names[lab_id] = data.get("nome_laboratorio")
+
+        return [
+            lab_id
+            for lab_id, _name in sorted(
+                names.items(), key=lambda kv: ((kv[1] or "").casefold(), kv[0])
+            )
+        ]
+
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        ids_qs = queryset.values_list("id", flat=True)
-        page = self.paginate_queryset(ids_qs)
-        lab_ids = list(page if page is not None else ids_qs)
+        ids = self._filtered_lab_ids()
+        page = self.paginate_queryset(ids)
+        lab_ids = list(page if page is not None else ids)
 
         objs = self._snapshot_objs(lab_ids)
         serializer = self.get_serializer(objs, many=True)
