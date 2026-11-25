@@ -18,6 +18,11 @@
   <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
       <div class="card-body">
+        {% if pending_holder %}
+          <div class="mb-3">
+            {% include "laboratories_new/blocks/pending_holder.html" with change=pending_holder %}
+          </div>
+        {% endif %}
         <form method="post" novalidate>
           <span class="choosen_person">
             {% include "blocks/includes/teacher_tabs.html" with exclude_forms=1 required=1 include_block=including|default:"blocks/crud_addressbook.html" %}

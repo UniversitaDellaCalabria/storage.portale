@@ -1,0 +1,17 @@
+{% load i18n %}
+{# Elenco pubblicato di una sezione, se diverso da quello attuale. Parametri: pending (label, items) #}
+{% if pending %}
+  <div class="pending-change-box mb-3 p-2 border-left border-warning" style="border-left-width: 4px !important; background: #fff8e6;">
+    <span class="badge badge-warning">{% trans "Change awaiting approval" %}</span>
+    <div class="small mt-1">
+      <span class="text-muted">{% trans "Published version" %} ({{ pending.label }}):</span>
+      {% if pending.items %}
+        <ul class="mb-0 pl-3">
+          {% for item in pending.items %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+      {% else %}
+        <em class="text-muted">{% trans "empty" %}</em>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

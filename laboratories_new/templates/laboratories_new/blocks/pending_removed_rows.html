@@ -1,0 +1,11 @@
+{% load i18n %}
+{# Righe tolte ma ancora pubblicate. Parametri: rows (lista di {label, detail}), colspan #}
+{% for row in rows %}
+  <tr class="lab-row-removed">
+    <td colspan="{{ colspan|default:2 }}">
+      <span class="lab-removed-label">{{ row.label }}</span>{% if row.detail %} <small>({{ row.detail }})</small>{% endif %}
+      <span class="badge badge-danger ml-2">{% trans "Removed" %}</span>
+      <small class="text-muted ml-1">{% trans "still published until approval" %}</small>
+    </td>
+  </tr>
+{% endfor %}

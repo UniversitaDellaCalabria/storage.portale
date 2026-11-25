@@ -139,3 +139,21 @@ def current_snapshots(lab_ids):
         except ValueError:
             logger.error("JSON non valido nello snapshot %s", s.pk)
     return out
+
+
+def published_area_ids():
+    """Id degli ambiti S3 prevalenti dei laboratori pubblicati (snapshot in corso)."""
+    ids = set()
+    jsons = LaboratorioSnapshot.objects.filter(
+        data_fine_validita__isnull=True
+    ).values_list("json_laboratorio", flat=True)
+    for j in jsons:
+        try:
+            area = json.loads(j).get("ambito_s3_prevalente")
+        except (ValueError, AttributeError):
+            continue
+        if isinstance(area, dict):
+            area = area.get("id")
+        if area is not None:
+            ids.add(area)
+    return ids

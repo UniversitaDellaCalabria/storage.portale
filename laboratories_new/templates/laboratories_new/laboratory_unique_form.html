@@ -18,6 +18,8 @@
   <div class="card-wrapper card-space">
     <div class="card card-bg no-after">
       <div class="card-body">
+        {% include "laboratories_new/blocks/pending_row_alert.html" with pending_row=pending_row %}
+        {% include "laboratories_new/blocks/pending_list.html" with pending=pending_list %}
         <form method="post" novalidate>
           {% for form in forms %}
             {% include "form_template.html" with form=form %}

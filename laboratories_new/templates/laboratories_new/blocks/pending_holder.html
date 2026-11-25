@@ -1,0 +1,16 @@
+{% load i18n %}
+{# Titolare di un ruolo cambiato rispetto alla versione pubblicata. Parametri: change ({published}) #}
+{% if change %}
+  <div class="pending-change-box mt-2 p-2 border-left border-warning" style="border-left-width: 4px !important; background: #fff8e6;">
+    <span class="badge badge-warning">{% trans "Change awaiting approval" %}</span>
+    <div class="small mt-1">
+      <span class="text-muted">{% trans "Published version" %}:</span>
+      {% if change.published %}
+        {{ change.published.label }}
+        {% if change.published.external %}<span class="badge badge-secondary ml-1">{% trans "External" %}</span>{% endif %}
+      {% else %}
+        <em class="text-muted">{% trans "empty" %}</em>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

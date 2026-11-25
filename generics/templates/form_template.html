@@ -15,7 +15,7 @@
                 {% if field.field.required %}*{% endif %}
             </b>
         </p>
-        <div style="padding: 0 0 1rem">
+        <div style="padding: 0 0 1rem"{% if field.field.pending_change %} class="field-pending-change"{% endif %}>
         {% endif %}
         {% if not field.field.api %}
             {% if field.field.widget.input_type == 'select' %}
@@ -41,6 +41,9 @@
             <small class="form-text text-muted">
                 {{ field.help_text|safe }}
             </small>
+        {% endif %}
+        {% if field.field.pending_change %}
+            {% include "form_field_pending_change.html" with change=field.field.pending_change %}
         {% endif %}
         {% if field.errors and field.field.widget.input_type != 'hidden' %}
             <small class="text-danger">

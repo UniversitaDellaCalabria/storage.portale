@@ -1,0 +1,32 @@
+{% load i18n %}
+{# Stato di una riga rispetto alla versione pubblicata. Parametri: item (con pending_state / published / pending_fields) #}
+{% if item.pending_state == "added" %}
+  <span class="badge badge-success ml-2" title="{% trans 'Not yet published: visible after approval' %}">{% trans "New" %}</span>
+{% elif item.pending_state == "changed" %}
+  <span class="badge badge-warning ml-2">{% trans "Change awaiting approval" %}</span>
+  <div class="small mt-1 lab-pending-fields">
+    <span class="text-muted">{% trans "Published version" %}:</span>
+    {% if item.pending_fields %}
+      <ul class="mb-0 pl-3">
+        {% for change in item.pending_fields %}
+          <li>
+            <span class="text-muted">{{ change.label }}:</span>
+            {% if change.published is None %}
+              <em class="text-muted">{% trans "empty" %}</em>
+            {% elif change.published is True %}
+              {% trans "YES" %}
+            {% elif change.published is False %}
+              {% trans "NO" %}
+            {% elif change.published.year %}
+              {{ change.published|date:"d/m/Y" }}
+            {% else %}
+              {{ change.published|striptags|truncatewords:30 }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      {{ item.published.label }}{% if item.published.detail %} ({{ item.published.detail }}){% endif %}
+    {% endif %}
+  </div>
+{% endif %}

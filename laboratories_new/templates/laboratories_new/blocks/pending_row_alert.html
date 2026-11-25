@@ -1,0 +1,11 @@
+{% load i18n %}
+{# Stato della voce in modifica rispetto alla versione pubblicata. Parametri: pending_row #}
+{% if pending_row.state == "added" %}
+  <div class="alert alert-info" role="alert">
+    {% trans "This item is not published yet: it will be visible after approval." %}
+  </div>
+{% elif pending_row.state == "changed" %}
+  <div class="alert alert-warning" role="alert">
+    {% trans "This item has changes awaiting approval: the highlighted fields show the published version." %}
+  </div>
+{% endif %}

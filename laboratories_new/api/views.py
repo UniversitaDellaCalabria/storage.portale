@@ -55,7 +55,11 @@ from research_lines.models import (
 from django.db.models import Q, Prefetch
 
 from laboratories_new.snapshot_adapter import snapshot_to_obj
-from laboratories_new.snapshot_service import current_snapshots, published_lab_ids
+from laboratories_new.snapshot_service import (
+    current_snapshots,
+    published_area_ids,
+    published_lab_ids,
+)
 from laboratories_new.management.utils import (
     _scientific_directors,
     defer_personale_dates,
@@ -574,12 +578,16 @@ class LaboratoriesAreaViewSet(
     pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     serializer_class = LaboratoriesAreaSerializer
-    queryset = (
-        AmbitiS3.objects.filter(laboratoriodatibase__isnull=False)
-        .only("id", "denominazione_it", "denominazione_en")
-        .distinct()
-        .order_by("denominazione_it", "id")
-    )
+
+    def get_queryset(self):
+        # ambiti dei laboratori pubblicati, letti dagli snapshot in corso: le
+        # tabelle possono contenere modifiche non approvate o laboratori mai
+        # pubblicati
+        return (
+            AmbitiS3.objects.filter(id__in=published_area_ids())
+            .only("id", "denominazione_it", "denominazione_en")
+            .order_by("denominazione_it", "id")
+        )
 
 
 @extend_schema_view(

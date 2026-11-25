@@ -1,0 +1,24 @@
+{% load i18n %}
+{# Modifica in attesa di approvazione su un campo del form. #}
+{# Parametri: change = {"published": valore pubblicato, "url": link al file (opzionale)} #}
+<div class="pending-change-box mt-2 p-2 border-left border-warning" style="border-left-width: 4px !important; background: #fff8e6;">
+  <span class="badge badge-warning">{% trans "Change awaiting approval" %}</span>
+  <div class="small mt-1">
+    <span class="text-muted">{% trans "Published version" %}:</span>
+    {% if change.url %}
+      <a href="{{ change.url }}" target="_blank" rel="noopener">
+        <img src="{{ change.url }}" alt="{% trans 'Published logo' %}" style="max-height: 60px; max-width: 160px;" class="d-block mt-1" />
+      </a>
+    {% elif change.published is None %}
+      <em class="text-muted">{% trans "empty" %}</em>
+    {% elif change.published is True %}
+      {% trans "YES" %}
+    {% elif change.published is False %}
+      {% trans "NO" %}
+    {% elif change.published.year %}
+      {{ change.published|date:"d/m/Y" }}
+    {% else %}
+      <span>{{ change.published|striptags|truncatewords:80 }}</span>
+    {% endif %}
+  </div>
+</div>

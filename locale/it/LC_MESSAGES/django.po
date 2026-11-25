@@ -5567,3 +5567,50 @@ msgstr "Vuoi approvare questo laboratorio? I dati attuali diventeranno la versio
 
 #~ msgid "Label"
 #~ msgstr "Etichetta"
+
+#: generics/templates/form_field_pending_change.html
+#: laboratories_new/templates/laboratories_new/blocks/pending_badge.html
+#: laboratories_new/templates/laboratories_new/blocks/pending_holder.html
+msgid "Change awaiting approval"
+msgstr "Modifica in attesa di approvazione"
+
+#: generics/templates/form_field_pending_change.html
+#: laboratories_new/templates/laboratories_new/blocks/pending_badge.html
+#: laboratories_new/templates/laboratories_new/blocks/pending_holder.html
+msgid "Published version"
+msgstr "Versione pubblicata"
+
+#: generics/templates/form_field_pending_change.html
+msgid "Published logo"
+msgstr "Logo pubblicato"
+
+#: generics/templates/form_field_pending_change.html
+#: laboratories_new/templates/laboratories_new/blocks/pending_holder.html
+msgid "empty"
+msgstr "vuoto"
+
+#: laboratories_new/templates/laboratories_new/blocks/pending_removed_rows.html
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "Removed"
+msgstr "Rimosso"
+
+#: laboratories_new/templates/laboratories_new/blocks/pending_removed_rows.html
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "still published until approval"
+msgstr "resta pubblicato fino all'approvazione"
+
+#: laboratories_new/templates/laboratories_new/blocks/pending_badge.html
+msgid "Not yet published: visible after approval"
+msgstr "Non ancora pubblicato: sarà visibile dopo l'approvazione"
+
+#: laboratories_new/templates/laboratories_new/laboratory.html
+msgid "Highlighted items show the published version next to the change awaiting approval."
+msgstr "Gli elementi evidenziati mostrano la versione pubblicata accanto alla modifica in attesa di approvazione."
+
+#: laboratories_new/templates/laboratories_new/blocks/pending_row_alert.html
+msgid "This item is not published yet: it will be visible after approval."
+msgstr "Questa voce non è ancora pubblicata: sarà visibile dopo l'approvazione."
+
+#: laboratories_new/templates/laboratories_new/blocks/pending_row_alert.html
+msgid "This item has changes awaiting approval: the highlighted fields show the published version."
+msgstr "Questa voce ha modifiche in attesa di approvazione: i campi evidenziati mostrano la versione pubblicata."

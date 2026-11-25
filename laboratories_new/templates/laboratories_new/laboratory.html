@@ -78,6 +78,9 @@
     <div class="alert alert-warning" role="alert">
       {% if published %}
         {% trans "There are changes to be approved: until approval the currently published version remains visible." %}
+        {% if pending.has_changes %}
+          <br /><small>{% trans "Highlighted items show the published version next to the change awaiting approval." %}</small>
+        {% endif %}
       {% else %}
         {% trans "The laboratory is not published yet: it will be visible after approval." %}
       {% endif %}
@@ -137,17 +140,18 @@
             </a>
           {% endif %}
         </div>
-        {% if departments %}
+        {% if departments or pending.departments_removed %}
           <div class="table-responsive">
             <table class="table table-hover lab-table">
               <tbody>
                 {% for department in departments %}
-                  <tr>
+                  <tr{% if department.pending_state %} class="lab-row-{{ department.pending_state }}"{% endif %}>
                     <td>
                       {{ department.descr_dip_lab|default:department.didattica_dipartimento.dip_des_it|default:"-" }}
                       {% if department.principale %}
                         <span class="badge badge-primary ml-2">{% trans "Main Department" %}</span>
                       {% endif %}
+                      {% include "laboratories_new/blocks/pending_badge.html" with item=department %}
                     </td>
                     <td class="lab-row-actions">
                       {% if can_edit and not department.principale %}
@@ -162,6 +166,7 @@
                     </td>
                   </tr>
                 {% endfor %}
+                {% include "laboratories_new/blocks/pending_removed_rows.html" with rows=pending.departments_removed colspan=2 %}
               </tbody>
             </table>
           </div>
@@ -189,11 +194,19 @@
             {% if can_edit %}{% trans "Manage" %}{% else %}{% trans "View" %}{% endif %}
           </a>
         </div>
-        {% if researches_erc1 %}
+        {% if researches_erc1 or pending.researches_erc1_removed %}
           <ul class="list-unstyled mb-0">
             {% for research_erc1 in researches_erc1 %}
-              <li class="py-2{% if not forloop.last %} border-bottom{% endif %}">
+              <li class="py-2 border-bottom{% if research_erc1.pending_state %} lab-row-{{ research_erc1.pending_state }}{% endif %}">
                 {{ research_erc1.ricerca_erc1__descrizione|default:"-" }}
+                {% include "laboratories_new/blocks/pending_badge.html" with item=research_erc1 %}
+              </li>
+            {% endfor %}
+            {% for removed in pending.researches_erc1_removed %}
+              <li class="py-2 border-bottom lab-row-removed">
+                <span class="lab-removed-label">{{ removed.label }}</span>
+                <span class="badge badge-danger ml-2">{% trans "Removed" %}</span>
+                <small class="text-muted ml-1">{% trans "still published until approval" %}</small>
               </li>
             {% endfor %}
           </ul>
@@ -236,6 +249,7 @@
           {% else %}
             <div class="lab-empty">{% trans "No scientific director" %}</div>
           {% endif %}
+          {% include "laboratories_new/blocks/pending_holder.html" with change=pending.scientific_director %}
         </div>
 
         <!-- Research Staff -->
@@ -252,15 +266,16 @@
               </a>
             {% endif %}
           </div>
-          {% if research_staff %}
+          {% if research_staff or pending.research_staff_removed %}
             <div class="table-responsive">
               <table class="table table-hover lab-table">
                 <tbody>
                   {% for researcher in research_staff %}
-                    <tr>
+                    <tr{% if researcher.pending_state %} class="lab-row-{{ researcher.pending_state }}"{% endif %}>
                       <td>
                         {{ researcher.nome_cognome|default:"-" }}
                         {% if not researcher.matricola_personale_id %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+                        {% include "laboratories_new/blocks/pending_badge.html" with item=researcher %}
                       </td>
                       <td class="lab-row-actions">
                         {% if can_edit %}
@@ -275,6 +290,7 @@
                       </td>
                     </tr>
                   {% endfor %}
+                  {% include "laboratories_new/blocks/pending_removed_rows.html" with rows=pending.research_staff_removed colspan=2 %}
                 </tbody>
               </table>
             </div>
@@ -297,7 +313,7 @@
               </a>
             {% endif %}
           </div>
-          {% if technicians %}
+          {% if technicians or pending.technicians_removed %}
             <div class="table-responsive">
               <table class="table table-hover lab-table">
                 <thead>
@@ -309,10 +325,11 @@
                 </thead>
                 <tbody>
                   {% for technician in technicians %}
-                    <tr>
+                    <tr{% if technician.pending_state %} class="lab-row-{{ technician.pending_state }}"{% endif %}>
                       <td>
                         {{ technician.nome_cognome|default:"-" }}
                         {% if not technician.matricola_personale_id %}<span class="badge badge-secondary ml-2">{% trans "External" %}</span>{% endif %}
+                        {% include "laboratories_new/blocks/pending_badge.html" with item=technician %}
                       </td>
                       <td>{{ technician.laboratorio_ruolo.descr_ruolo_it|default:"-" }}</td>
                       <td class="lab-row-actions">
@@ -328,6 +345,7 @@
                       </td>
                     </tr>
                   {% endfor %}
+                  {% include "laboratories_new/blocks/pending_removed_rows.html" with rows=pending.technicians_removed colspan=3 %}
                 </tbody>
               </table>
             </div>
@@ -358,7 +376,7 @@
             </a>
           {% endif %}
         </div>
-        {% if locations %}
+        {% if locations or pending.locations_removed %}
           <div class="table-responsive">
             <table class="table table-hover lab-table">
               <thead>
@@ -372,8 +390,11 @@
               </thead>
               <tbody>
                 {% for location in locations %}
-                  <tr>
-                    <td>{{ location.edificio|default:"-" }}</td>
+                  <tr{% if location.pending_state %} class="lab-row-{{ location.pending_state }}"{% endif %}>
+                    <td>
+                      {{ location.edificio|default:"-" }}
+                      {% include "laboratories_new/blocks/pending_badge.html" with item=location %}
+                    </td>
                     <td>{{ location.piano|default:"-" }}</td>
                     <td>{{ location.sede_principale|default:"-" }}</td>
                     <td>{{ location.note|default:"" }}</td>
@@ -394,6 +415,7 @@
                     </td>
                   </tr>
                 {% endfor %}
+                {% include "laboratories_new/blocks/pending_removed_rows.html" with rows=pending.locations_removed colspan=5 %}
               </tbody>
             </table>
           </div>
@@ -423,7 +445,7 @@
             </a>
           {% endif %}
         </div>
-        {% if services %}
+        {% if services or pending.services_removed %}
           <div class="table-responsive">
             <table class="table table-hover lab-table">
               <thead>
@@ -437,8 +459,11 @@
               </thead>
               <tbody>
                 {% for service in services %}
-                  <tr>
-                    <td>{{ service.laboratorio_anagrafica_servizi.nome_servizio_it|default:"-" }}</td>
+                  <tr{% if service.pending_state %} class="lab-row-{{ service.pending_state }}"{% endif %}>
+                    <td>
+                      {{ service.laboratorio_anagrafica_servizi.nome_servizio_it|default:"-" }}
+                      {% include "laboratories_new/blocks/pending_badge.html" with item=service %}
+                    </td>
                     <td>{{ service.traiettoria_s3.denominazione_it|default:"-" }}</td>
                     <td>{{ service.data_inizio|date:"d/m/Y"|default:"-" }}</td>
                     <td>{{ service.data_fine|date:"d/m/Y"|default:"-" }}</td>
@@ -459,6 +484,7 @@
                     </td>
                   </tr>
                 {% endfor %}
+                {% include "laboratories_new/blocks/pending_removed_rows.html" with rows=pending.services_removed colspan=5 %}
               </tbody>
             </table>
           </div>
@@ -511,6 +537,7 @@
         {% else %}
           <div class="lab-empty mb-2">{% trans "No safety manager" %}</div>
         {% endif %}
+        {% include "laboratories_new/blocks/pending_holder.html" with change=pending.safety_manager %}
         <small class="form-text text-muted">
           {% trans "Provide only if different from Scientific Director" %}
         </small>

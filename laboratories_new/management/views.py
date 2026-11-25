@@ -41,7 +41,14 @@ from laboratories_new.settings import (
     TO_VALIDATORS_EMAIL_MESSAGE,
     TO_VALIDATORS_EMAIL_SUBJECT,
 )
+from laboratories_new.snapshot_diff import (
+    laboratory_pending_changes,
+    published_role_holder,
+    published_section_labels,
+    row_pending_change,
+)
 from laboratories_new.snapshot_service import (
+    current_snapshots,
     delete_logo_on_commit,
     published_logo_names,
     refresh_snapshot,
@@ -57,12 +64,14 @@ from .decorators import (
     check_if_superuser,
 )
 from .forms import (
+    LaboratorioAffiliatiForm,
     LaboratorioAltriDipartimentiForm,
     LaboratorioDatiBaseForm,
     LaboratorioDatiBaseSafetyManagerForm,
     LaboratorioDatiBaseScientificDirectorChoosenPersonForm,
     LaboratorioDatiBaseScientificDirectorForm,
     LaboratorioDatiErc1Form,
+    LaboratorioDipartimentiForm,
     LaboratorioPersonaleForm,
     LaboratorioPersonaleTecnicoForm,
     LaboratorioServiziForm,
@@ -196,6 +205,205 @@ def _get_or_create_role(request, descr_it, descr_en=None, today=None):
     return role
 
 
+# form da cui prendere le etichette dei campi di ogni sezione
+_SECTION_FORMS = {
+    "departments": LaboratorioDipartimentiForm,
+    "locations": LaboratorioUbicazioneForm,
+    "services": LaboratorioServiziForm,
+    "affiliates": LaboratorioAffiliatiForm,
+}
+
+
+def _field_label(section, name):
+    form_cls = _SECTION_FORMS.get(section)
+    field = form_cls.base_fields.get(name) if form_cls else None
+    if field is not None and field.label:
+        return field.label
+    if section == "researches_erc1" and name == "ricerca_erc1":
+        return _("ERC Classification")
+    return name.replace("_", " ").capitalize()
+
+
+def _field_changes_list(section, fields):
+    """[{label, published}] dai campi modificati di una riga, per il template."""
+    return [
+        {"label": _field_label(section, name), "published": value}
+        for name, value in fields.items()
+    ]
+
+
+def _pending_snapshot(laboratory):
+    """
+    Dati dello snapshot in corso se il laboratorio ha modifiche in attesa
+    (pubblicato e non approvato), altrimenti None: senza versione pubblicata
+    o senza modifiche non c'e' niente da confrontare.
+    """
+    if laboratory.visibile:
+        return None
+    return current_snapshots([laboratory.pk]).get(laboratory.pk)
+
+
+def _annotate_form_with_row(form, laboratory, section, obj):
+    """
+    Confronta la riga `obj` con quella pubblicata e annota i campi del form
+    modificati (field.pending_change). Ritorna lo stato della riga per il
+    template: None, {"state": "added"} o {"state": "changed", ...}.
+    """
+    data = _pending_snapshot(laboratory)
+    if data is None:
+        return None
+    # riletta dal DB: dopo un POST non valido l'istanza del form contiene i
+    # valori inviati, non quelli salvati
+    obj = type(obj).objects.filter(pk=obj.pk).first()
+    if obj is None:
+        return None
+    change = row_pending_change(data, section, obj)
+    if change and change["state"] == "changed":
+        for name, value in change["fields"].items():
+            if name in form.fields:
+                form.fields[name].pending_change = {"published": value}
+    return change
+
+
+def _pending_erc1(laboratory):
+    """Classificazione ERC pubblicata, se diversa da quella attuale."""
+    data = _pending_snapshot(laboratory)
+    if data is None:
+        return None
+    published = published_section_labels(data, "researches_erc1")
+    current = list(
+        LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratory)
+        .values_list("ricerca_erc1__descrizione", flat=True)
+    )
+    norm = lambda items: sorted(i or "-" for i in items)  # noqa: E731
+    if norm(published) == norm(current):
+        return None
+    return {"label": _("ERC Classification"), "items": sorted(published)}
+
+
+def _holder_change(current, published):
+    """Titolare pubblicato di un ruolo, se diverso da quello attuale."""
+    cur = current["label"] if current else None
+    pub = published["label"] if published else None
+    if cur == pub:
+        return None
+    return {"published": published}
+
+
+def _pending_holder(laboratory, role_descr):
+    data = _pending_snapshot(laboratory)
+    if data is None:
+        return None
+    return _holder_change(
+        _current_role_holder(laboratory, role_descr),
+        published_role_holder(data, role_descr),
+    )
+
+
+def _pending_changes(
+    laboratory,
+    snapshot_data,
+    *,
+    form,
+    departments,
+    researches_erc1,
+    locations,
+    services,
+    affiliates,
+    reserved_roles,
+    scientific_director,
+    safety_manager,
+):
+    """
+    Confronta tabelle e snapshot in corso e annota cio' che va mostrato:
+
+    - sui campi del form: field.pending_change = {"published": valore pubblicato}
+    - sulle righe (oggetti o dict): pending_state ("added" | "changed") e, per
+      quelle modificate, published (la riga com'e' pubblicata)
+    - le righe tolte ma ancora pubblicate tornano in pending[<sezione>_removed]
+    """
+    erc1_objs = LaboratorioDatiErc1.objects.filter(laboratorio_dati_base=laboratory)
+    # riletto dal DB: dopo un POST non valido il form ha gia' scritto i valori
+    # inviati nell'istanza, che non sono quelli salvati
+    saved = type(laboratory).objects.get(pk=laboratory.pk)
+    diff = laboratory_pending_changes(
+        saved,
+        snapshot_data,
+        {
+            "departments": departments,
+            "researches_erc1": erc1_objs,
+            "locations": locations,
+            "services": services,
+            "affiliates": affiliates,
+        },
+    )
+
+    # campi dell'anagrafica
+    for name, change in diff["fields"].items():
+        if name == "nome_file_logo" and change["published"]:
+            storage = laboratory._meta.get_field("nome_file_logo").storage
+            change["url"] = storage.url(change["published"])
+        if name in form.fields:
+            form.fields[name].pending_change = change
+
+    def _mark(items, section, get_id, set_attr):
+        d = diff[section]
+        for item in items:
+            item_id = get_id(item)
+            if item_id in d["added"]:
+                set_attr(item, "pending_state", "added")
+            elif item_id in d["changed"]:
+                published = d["changed"][item_id]
+                set_attr(item, "pending_state", "changed")
+                set_attr(item, "published", published)
+                set_attr(
+                    item,
+                    "pending_fields",
+                    _field_changes_list(section, published.get("fields", {})),
+                )
+
+    def _obj_set(item, key, value):
+        setattr(item, key, value)
+
+    def _dict_set(item, key, value):
+        item[key] = value
+
+    _mark(departments, "departments", lambda o: o.pk, _obj_set)
+    _mark(locations, "locations", lambda o: o.pk, _obj_set)
+    _mark(services, "services", lambda o: o.pk, _obj_set)
+    _mark(affiliates, "affiliates", lambda o: o.pk, _obj_set)
+    _mark(researches_erc1, "researches_erc1", lambda r: r["id"], _dict_set)
+
+    # personale tolto: diviso come nella pagina (ricerca / tecnico); i titolari
+    # dei ruoli riservati si confrontano a parte
+    removed_staff = diff["affiliates"]["removed"]
+    research_staff_removed = [
+        r for r in removed_staff if r["ruolo"] == ROLE_RESEARCH_STAFF[0]
+    ]
+    technicians_removed = [
+        r
+        for r in removed_staff
+        if r["ruolo"] not in reserved_roles | {ROLE_RESEARCH_STAFF[0]}
+    ]
+
+    # i campi che il form non mostra (es. dipartimenti) sono gia' nelle sezioni
+    shown_fields = {n for n in diff["fields"] if n in form.fields}
+    return {
+        "has_changes": diff["has_changes"],
+        "fields": shown_fields,
+        "departments_removed": diff["departments"]["removed"],
+        "researches_erc1_removed": diff["researches_erc1"]["removed"],
+        "locations_removed": diff["locations"]["removed"],
+        "services_removed": diff["services"]["removed"],
+        "research_staff_removed": research_staff_removed,
+        "technicians_removed": technicians_removed,
+        "scientific_director": _holder_change(
+            scientific_director, diff["scientific_director"]
+        ),
+        "safety_manager": _holder_change(safety_manager, diff["safety_manager"]),
+    }
+
+
 @login_required
 @can_manage_laboratories
 @can_view_laboratories
@@ -312,6 +520,33 @@ def laboratory(
     }
     user_roles = _get_user_roles(request, laboratory, my_offices, is_validator)
 
+    snapshot_data = current_snapshots([laboratory.pk]).get(laboratory.pk)
+    departments = list(lab_departments)
+    researches_erc1 = list(researches_erc1)
+    locations = list(locations)
+    services = list(services)
+    affiliates = list(affiliates)
+    scientific_director = _current_role_holder(laboratory, ROLE_SCIENTIFIC_DIRECTOR[0])
+    safety_manager = _current_role_holder(laboratory, ROLE_SAFETY_MANAGER[0])
+
+    pending = None
+    # modifiche in attesa su un laboratorio gia' pubblicato: si confrontano le
+    # tabelle con lo snapshot per mostrare valore pubblicato e modifica in corso
+    if snapshot_data is not None and not laboratory.visibile:
+        pending = _pending_changes(
+            laboratory,
+            snapshot_data,
+            form=form,
+            departments=departments,
+            researches_erc1=researches_erc1,
+            locations=locations,
+            services=services,
+            affiliates=affiliates,
+            reserved_roles=reserved_roles,
+            scientific_director=scientific_director,
+            safety_manager=safety_manager,
+        )
+
     return render(
         request,
         "laboratories_new/laboratory.html",
@@ -320,22 +555,20 @@ def laboratory(
             "logs": logs,
             "form": form,
             "laboratory": laboratory,
-            "departments": lab_departments,
+            "departments": departments,
             "researches_erc1": researches_erc1,
             "locations": locations,
             "services": services,
-            "scientific_director": _current_role_holder(
-                laboratory, ROLE_SCIENTIFIC_DIRECTOR[0]
-            ),
-            "safety_manager": _current_role_holder(laboratory, ROLE_SAFETY_MANAGER[0]),
+            "scientific_director": scientific_director,
+            "safety_manager": safety_manager,
             "research_staff": research_staff,
             "technicians": technicians,
             "status": laboratory_status(laboratory),
             "approval_requested": approval_requested(laboratory),
             # ha uno snapshot in corso, cioe' una versione visibile all'esterno
-            "published": LaboratorioSnapshot.objects.filter(
-                laboratorio_id=laboratory.pk, data_fine_validita__isnull=True
-            ).exists(),
+            "published": snapshot_data is not None,
+            # differenze tra versione pubblicata e modifiche in attesa (o None)
+            "pending": pending,
             "user_roles": user_roles,
             "can_edit": user_roles["superuser"] or user_roles["operator"],
         },
@@ -682,6 +915,7 @@ def laboratory_scientific_director_edit(
             "internal_form": internal_form,
             "item_label": _("Scientific Director"),
             "edit": 1,
+            "pending_holder": _pending_holder(laboratory, ROLE_SCIENTIFIC_DIRECTOR[0]),
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -831,6 +1065,7 @@ def laboratory_safety_manager_edit(
             "internal_form": internal_form,
             "item_label": _("Safety Manager"),
             "edit": 1,
+            "pending_holder": _pending_holder(laboratory, ROLE_SAFETY_MANAGER[0]),
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -1137,6 +1372,7 @@ def laboratory_researches_erc1_edit(
             "forms": (research_erc1_form,),
             "laboratory": laboratory,
             "erc_form": 1,
+            "pending_list": _pending_erc1(laboratory),
             "item_label": _("ERC classification"),
             "edit": 1,
             "user_roles": _get_user_roles(
@@ -1211,6 +1447,9 @@ def laboratory_locations_edit(
             "item_label": _("Location"),
             "edit": 1,
             "laboratory": laboratory,
+            "pending_row": _annotate_form_with_row(
+                location_form, laboratory, "locations", location
+            ),
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
@@ -1703,6 +1942,9 @@ def laboratory_services_edit(
             "laboratory": laboratory,
             "item_label": _("Service"),
             "edit": 1,
+            "pending_row": _annotate_form_with_row(
+                form, laboratory, "services", service
+            ),
             "user_roles": _get_user_roles(
                 request, laboratory, my_offices, is_validator
             ),
