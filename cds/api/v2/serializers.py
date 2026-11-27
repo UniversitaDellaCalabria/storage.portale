@@ -5,6 +5,7 @@ from addressbook.utils import append_email_addresses, get_contacts
 from drf_spectacular.utils import (
     extend_schema_field,
     extend_schema_serializer,
+    inline_serializer,
 )
 from generics.api.serializers import LanguageAwareMixin, ReadOnlyModelSerializer
 from generics.utils import encrypt, build_media_path, is_nullable
@@ -572,6 +573,7 @@ class StudyActivityModuleSerializer(serializers.Serializer, LanguageAwareMixin):
     StudyActivitySemester = serializers.CharField(source="erog_id__tipo_periodo_did_desc_ita")
     StudyActivityPartitions = serializers.SerializerMethodField()
 
+    @extend_schema_field(StudyActivityModulePartitionSerializer(many=True))
     def get_StudyActivityPartitions(self, obj):
         if not self.moduli_queryset:
             return []
@@ -613,10 +615,10 @@ class StudyActivityHourSerializer(serializers.Serializer):
         self.teacher_name = kwargs.pop('teacher_name', None)
         super().__init__(*args, **kwargs)
 
-    def get_StudyActivityTeacherID(self, obj):
+    def get_StudyActivityTeacherID(self, obj) -> str | None:
         return self.teacher_id
 
-    def get_StudyActivityTeacherName(self, obj):
+    def get_StudyActivityTeacherName(self, obj) -> str | None:
         return self.teacher_name
 
 
@@ -693,19 +695,19 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
     StudyActivityBorrowedFrom = serializers.SerializerMethodField()
     StudyActivityContents = serializers.SerializerMethodField()
 
-    def get_StudyActivityName(self, obj):
+    def get_StudyActivityName(self, obj) -> str | None:
         lang = self._get_lang()
         # ~ if not obj.erog_found:
             # ~ return obj.ana_af_desc_ita if lang == 'it' else (is_nullable(obj.ana_af_desc_eng) or obj.ana_af_desc_ita)
         return obj.mod_off_id.ana_mod_desc_ita if lang == 'it' else (is_nullable(obj.mod_off_id.ana_mod_desc_eng) or obj.mod_off_id.ana_mod_desc_ita)
 
-    def get_StudyActivityPartitionDes(self, obj):
+    def get_StudyActivityPartitionDes(self, obj) -> str | None:
         # ~ if not obj.erog_found: return None
         lang = self._get_lang()
         return obj.part_stu_desc_ita if lang == 'it' else (is_nullable(obj.part_stu_desc_eng) or obj.part_stu_desc_ita)
         # ~ return obj.erog_id.part_stu_desc_ita if lang == 'it' else (is_nullable(obj.erog_id.part_stu_desc_eng) or obj.erog_id.part_stu_desc_ita)
 
-    def get_StudyActivityStudyPlans(self, obj):
+    def get_StudyActivityStudyPlans(self, obj) -> list[str]:
         lang = self._get_lang()
         # ~ if obj.erog_found:
         pds_list = getattr(obj, "pds_list", [])
@@ -717,14 +719,14 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             for pds in pds_list
         ]
 
-    def get_StudyActivityLanguage(self, obj):
+    def get_StudyActivityLanguage(self, obj) -> list[str]:
         lang = self._get_lang()
         # ~ if obj.erog_found:
         val = obj.lingua_did_desc_ita if lang == 'it' else (is_nullable(obj.lingua_did_desc_eng) or obj.lingua_did_desc_ita)
         return [val] if val else []
         # ~ return []
     
-    def get_StudyActivityTeacherID(self, obj):
+    def get_StudyActivityTeacherID(self, obj) -> str | None:
         try:
             af_off = obj.mod_off_id.af_off
             if not is_nullable(af_off.doc_tit_matricola):
@@ -736,7 +738,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         except Exception:
             return None
 
-    def get_StudyActivityTeacherName(self, obj):
+    def get_StudyActivityTeacherName(self, obj) -> str | None:
         try:
             doc = Personale.objects.filter(id_ab=obj.mod_off_id.af_off.doc_tit_id_ab.id_ab).first()
             if doc:
@@ -745,6 +747,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             pass
         return None
 
+    @extend_schema_field(StudyActivityModalitySerializer(many=True))
     def get_StudyActivityModalities(self, obj):
         return StudyActivityModalitySerializer([obj], many=True, context=self.context).data
         
@@ -759,7 +762,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 # ~ unique_moduli.append(modulo)
         # ~ return StudyActivityModalitySerializer(unique_moduli, many=True, context=self.context).data
 
-    def get_StudyActivityECTS(self, obj):
+    def get_StudyActivityECTS(self, obj) -> float | None:
         if not obj.moduli:
             return obj.pds_reference.cfu
         # ~ if not obj.moduli: return obj.cfu
@@ -771,6 +774,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 # ~ cfu += m.cfu
         # ~ return cfu
         
+    @extend_schema_field(StudyActivityModuleSerializer(many=True))
     def get_StudyActivityModules(self, obj):
         # obj.moduli ora è una normale lista Python (es. [mod1, mod2, mod3])
         if not obj.moduli:
@@ -849,6 +853,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
 
         return result
 
+    @extend_schema_field(StudyActivityModulePartitionSerializer(many=True))
     def get_StudyActivityPartitions(self, obj):
         return []
         
@@ -876,6 +881,15 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             # ~ ).data
         # ~ return []
 
+    @extend_schema_field(inline_serializer(
+        name="StudyActivityRoot",
+        fields={
+            "StudyActivityID": serializers.IntegerField(allow_null=True),
+            "StudyActivityName": serializers.CharField(allow_null=True),
+            "StudyActivityCod": serializers.CharField(allow_null=True),
+        },
+        allow_null=True,
+    ))
     def get_StudyActivityRoot(self, obj):
         lang = self._get_lang()
         
@@ -893,6 +907,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             "StudyActivityCod": obj.mod_off_id.af_off.ana_af_cod
         }
         
+    @extend_schema_field(StudyActivityHourSerializer(many=True))
     def get_StudyActivityHours(self, obj):
         # ~ if not obj.erog_found:
             # ~ return []
@@ -938,6 +953,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
             result.extend(serializer.data)
         return result
 
+    @extend_schema_field(StudyActivityBorrowSerializer(many=True))
     def get_StudyActivityBorrows(self, obj):
         mapped_mutuazioni = []
         lang = self._get_lang()
@@ -971,6 +987,18 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
                 # ~ })
         return StudyActivityBorrowSerializer(mapped_mutuazioni, many=True, context=self.context).data
 
+    @extend_schema_field(inline_serializer(
+        name="StudyActivityBorrowedFrom",
+        fields={
+            "StudyActivityID": serializers.IntegerField(allow_null=True),
+            "StudyActivityName": serializers.CharField(allow_null=True),
+            "StudyActivityPartition": serializers.CharField(allow_null=True),
+            "StudyActivityCdSCod": serializers.CharField(allow_null=True),
+            "StudyActivityCdSName": serializers.CharField(allow_null=True),
+            "StudyActivityStudyPlans": serializers.ListField(child=serializers.CharField()),
+        },
+        allow_null=True,
+    ))
     def get_StudyActivityBorrowedFrom(self, obj):
         if not obj.mutuato_da:
             return None
@@ -998,6 +1026,7 @@ class StudyActivitiesDetailSerializer(ReadOnlyModelSerializer, LanguageAwareMixi
         # ~ result["StudyActivityStudyPlans"] = list(set(result["StudyActivityStudyPlans"]))
         return result
 
+    @extend_schema_field(StudyActivityContentSerializer(many=True))
     def get_StudyActivityContents(self, obj):
         # ~ if getattr(obj, "num_erogazioni", 1) > 1 or not obj.erog_found:
             # ~ return []
@@ -1162,12 +1191,21 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
         obj._cached_teacher_data = teacher_info
         return teacher_info
 
-    def get_StudyActivityTeacherID(self, obj):
+    def get_StudyActivityTeacherID(self, obj) -> str | None:
         return self._get_teacher_data(obj)["id"]
 
-    def get_StudyActivityTeacherName(self, obj):
+    def get_StudyActivityTeacherName(self, obj) -> str | None:
         return self._get_teacher_data(obj)["name"]
 
+    @extend_schema_field(inline_serializer(
+        name="StudyActivityFather",
+        fields={
+            "FatherID": serializers.IntegerField(),
+            "FatherName": serializers.CharField(),
+            "RegdidId": serializers.IntegerField(allow_null=True),
+        },
+        many=True,
+    ))
     def get_StudyActivityFathers(self, obj):
         pds_list = getattr(obj, '_pds_list', None)
         if not pds_list:
@@ -1195,7 +1233,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
                 
         return list(unique_fathers.values())
     
-    def get_StudyActivityStudyPlans(self, obj):
+    def get_StudyActivityStudyPlans(self, obj) -> list[str]:
         study_plans = set()
         
         pds_list = getattr(obj, '_pds_list', None)
@@ -1217,19 +1255,19 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             obj._cached_first_pds = self._first_pds(obj)
         return obj._cached_first_pds
 
-    def get_StudyActivityYear(self, obj):
+    def get_StudyActivityYear(self, obj) -> int | None:
         pds = self._get_cached_pds(obj)
         return pds.anno_corso if pds else None
 
-    def get_StudyActivityAcademicYear(self, obj):
+    def get_StudyActivityAcademicYear(self, obj) -> int | None:
         pds = self._get_cached_pds(obj)
         return pds.aa_off_id if pds else None
 
-    def get_StudyActivitySSDCod(self, obj):
+    def get_StudyActivitySSDCod(self, obj) -> str | None:
         pds = self._get_cached_pds(obj)
         return pds.sett_cod if pds else None
 
-    def get_StudyActivitySSD(self, obj):
+    def get_StudyActivitySSD(self, obj) -> str | None:
         # Fix: Qui c'era un bug, chiamava self._first_pds invece del metodo cached!
         pds = self._get_cached_pds(obj)
         if pds:
@@ -1240,7 +1278,7 @@ class StudyActivitiesListSerializer(PdsListMixin, ReadOnlyModelSerializer, Langu
             return set_desc_ita if self._get_lang() == 'it' else set_desc_eng or set_desc_ita
         return None
     
-    def get_StudyActivityRegDidId(self, obj):
+    def get_StudyActivityRegDidId(self, obj) -> int | None:
         pds = self._get_cached_pds(obj)
         return pds.regdid_id if pds else None
 

@@ -193,6 +193,10 @@ class CoveragesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearResp
     filterset_class = CoveragesFilter
 
     def get_queryset(self):
+        # append_email_addresses() evaluates the whole queryset: skip it during schema generation
+        if getattr(self, "swagger_fake_view", False):
+            return Personale.objects.none()
+
         dip_des_it_subquery = DidatticaDipartimento.objects.filter(
             dip_cod=OuterRef("cd_uo_aff_org")
         ).values("dip_des_it")[:1]

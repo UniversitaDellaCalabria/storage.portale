@@ -503,6 +503,14 @@ class CdsViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
         summary=descriptions.STUDYACTIVITY_RETRIEVE_SUMMARY,
         description=descriptions.STUDYACTIVITY_RETRIEVE_DESCRIPTION,
         responses=responses.COMMON_RETRIEVE_RESPONSES(StudyActivitiesDetailSerializer),
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=int,
+                location=OpenApiParameter.PATH,
+                description="A unique value identifying the study activity (erog_id).",
+            )
+        ],
     ),
 )
 
@@ -779,6 +787,9 @@ class StudyPlansActivitiesViewSet(ReadOnlyModelViewSet, ClearResponseViewSet):
     serializer_class = StudyPlansActivitiesSerializer
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return DidatticaPianiStudio.objects.none()
+
         regdid_id = str(self.kwargs["regdidid"])
 
         piani_studio = (
@@ -860,6 +871,9 @@ class StudyPlansViewSet(mixins.ListModelMixin, viewsets.GenericViewSet, ClearRes
     serializer_class = StudyPlansSerializer
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return DidatticaPianiStudio.objects.none()
+
         cds_cod = self.kwargs.get("cds_cod")
         year = self.kwargs.get("year")
 

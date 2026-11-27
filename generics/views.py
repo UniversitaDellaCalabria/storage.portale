@@ -1,3 +1,5 @@
+import functools
+
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.shortcuts import render
@@ -69,14 +71,38 @@ class ApiEndpointList(generics.ListAPIView):
         context.update({"language": self.language})
         return context
     
-    # def get_queryset(self):
-    #     # Skip expensive queryset logic during schema generation
-    #     if getattr(self, 'swagger_fake_view', False):
-    #         return self.queryset if self.queryset is not None else self.model.objects.none()
-    #     return super().get_queryset()
+    def __init_subclass__(cls, **kwargs):
+        """
+        Skip the (expensive) get_queryset() of every subclass while drf-spectacular
+        generates the OpenAPI schema: it only needs the model, and v1 querysets run
+        real queries through the services layer.
+        """
+        super().__init_subclass__(**kwargs)
+        original = cls.__dict__.get("get_queryset")
+        if original is None:
+            return
+
+        @functools.wraps(original)
+        def get_queryset(self, *args, **kwargs):
+            if getattr(self, "swagger_fake_view", False):
+                return self.queryset.none() if self.queryset is not None else []
+            return original(self, *args, **kwargs)
+
+        cls.get_queryset = get_queryset
+
+
+class ApiEndpointDetailSchema(AutoSchema):
+    """Detail endpoints inherit from ListAPIView: use "_retrieve" in their operationId."""
+
+    def get_operation_id(self):
+        operation_id = super().get_operation_id()
+        if operation_id.endswith("_list"):
+            operation_id = operation_id[: -len("_list")] + "_retrieve"
+        return operation_id
 
 
 class ApiEndpointDetail(ApiEndpointList):
+    schema = ApiEndpointDetailSchema()
     renderer_classes = [
         CleanJSONRenderer,
         CleanBrowsableAPIRenderer

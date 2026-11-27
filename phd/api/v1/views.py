@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from generics.views import ApiEndpointDetail, ApiEndpointList
 from rest_framework.response import Response
 from rest_framework.schemas.openapi_agid import AgidAutoSchema
@@ -31,6 +33,7 @@ class ApiPhdCycles(APIView):
     description = "Retrieves a list of PhD cycles."
     #schema = AgidAutoSchema(tags=["public"])
 
+    @extend_schema(responses=OpenApiTypes.OBJECT)
     def get(self, request):
         result = {}
         for cycle in PHD_CYCLES:

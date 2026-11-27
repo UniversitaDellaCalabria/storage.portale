@@ -1,5 +1,7 @@
 from addressbook.api.v1.serializers import SortingContactsSerializer
 from django.utils.text import slugify
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from generics.utils import decrypt
 from generics.views import ApiEndpointDetail, ApiEndpointList, ApiEndpointListSupport
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -120,6 +122,7 @@ class ApiStudyPlanDetail(ApiEndpointDetail):
         return ServiceDidatticaAttivitaFormativa.getStudyPlan(studyplanid=studyplanid)
 
 
+@extend_schema_view(get=extend_schema(operation_id="cds_studyplan_activities_list"))
 class ApiStudyPlanActivitiesList(ApiEndpointList):
     description = "Retrieves a list of courses in a study plan with brief information."
     serializer_class = CdsStudyPlansActivitiesSerializer
@@ -224,6 +227,7 @@ class ApiCdsMorphList(APIView):
 
     description = "Retrieves a list of CDS_COD which contains all the previous CDS_COD."
 
+    @extend_schema(operation_id="cds_morph_list", responses=OpenApiTypes.OBJECT)
     def get(self, request, *args, **kwargs):
         return Response(ServiceDidatticaCds.getPreviousCdsCods())
 
@@ -234,6 +238,7 @@ class ApiCdsMorphDetail(APIView):
 
     description = "Retrieves a list of CDS_COD which, starting from the given one, contains all the previous CDS_COD."
 
+    @extend_schema(responses=OpenApiTypes.OBJECT)
     def get(self, request, *args, **kwargs):
         cds_cod = kwargs.get("cds_cod", None)
         return Response(ServiceDidatticaCds.getPreviousSingleCdsCods(cds_cod))
