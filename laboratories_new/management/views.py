@@ -141,7 +141,8 @@ def laboratories(request, laboratory=None, my_offices=None, is_validator=False):
     }
     context = {
         "breadcrumbs": breadcrumbs,
-        "url": reverse("laboratories_new:apiv2_new:laboratories-list"),
+        # manage=1: solo i laboratori gestibili dall'utente (vedi LaboratoryAccessMixin)
+        "url": f'{reverse("laboratories_new:apiv2_new:laboratories-list")}?manage=1',
     }
     return render(request, "laboratories_new/laboratories.html", context)
 
@@ -571,6 +572,10 @@ def laboratory(
             "pending": pending,
             "user_roles": user_roles,
             "can_edit": user_roles["superuser"] or user_roles["operator"],
+            # il validatore approva direttamente: non richiede l'approvazione
+            "can_request_approval": (
+                user_roles["superuser"] or user_roles["operator"]
+            ) and not user_roles["validator"],
         },
     )
 
@@ -1986,6 +1991,9 @@ def laboratory_services_delete(
 def laboratory_request_approval(
     request, laboratory_id, laboratory=None, my_offices=None, is_validator=False
 ):
+    # il validatore approva direttamente: non richiede l'approvazione
+    if is_validator and not request.user.is_superuser:
+        return custom_message(request, _("Permission denied"))
     if laboratory.visibile:
         return custom_message(request, _("Laboratory is already approved"))
 

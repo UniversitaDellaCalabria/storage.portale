@@ -62,6 +62,7 @@ from laboratories_new.snapshot_service import (
 )
 from laboratories_new.management.utils import (
     _scientific_directors,
+    _still_valid,
     defer_personale_dates,
     laboratory_statuses,
 )
@@ -73,52 +74,77 @@ class LaboratoryAccessMixin:
     """Permessi di visibilita' sui laboratori, calcolati una volta per richiesta."""
 
     def _access(self):
+        """
+        - superuser e validatori: tutti i laboratori, anche nascosti;
+        - operatori (ufficio OFFICE_LABORATORIES): solo i laboratori associati
+          (in corso) al dipartimento del proprio ufficio;
+        - responsabile scientifico (incarico in corso): i propri laboratori.
+        """
         if hasattr(self, "_access_cache"):
             return self._access_cache
 
         user = self.request.user
-        is_staff_role = False  # superuser, operatore, validatore
-        director_lab_ids = frozenset()
+        sees_all = False  # superuser, validatore
+        managed_lab_ids = frozenset()  # operatore del dipartimento, responsabile
 
         if user.is_superuser:
-            is_staff_role = True
+            sees_all = True
         elif user.is_authenticated:
             offices = OrganizationalStructureOfficeEmployee.objects.filter(
                 employee=user,
                 office__is_active=True,
                 office__organizational_structure__is_active=True,
             )
-            is_staff_role = offices.filter(
-                office__name__in=[OFFICE_LABORATORIES, OFFICE_LABORATORY_VALIDATORS]
+            sees_all = offices.filter(
+                office__name=OFFICE_LABORATORY_VALIDATORS
             ).exists()
 
-            # Il responsabile scientifico (incarico in corso) vede i laboratori
-            # nascosti di cui e' responsabile, non tutti
-            taxpayer_id = getattr(user, "taxpayer_id", None)
-            if not is_staff_role and taxpayer_id:
-                director_lab_ids = frozenset(
-                    _scientific_directors(taxpayer_id).values_list(
-                        "laboratorio_dati_base_id", flat=True
+            if not sees_all:
+                department_codes = list(
+                    offices.filter(office__name=OFFICE_LABORATORIES).values_list(
+                        "office__organizational_structure__unique_code", flat=True
                     )
                 )
+                operator_lab_ids = set()
+                if department_codes:
+                    operator_lab_ids = set(
+                        LaboratorioDipartimenti.objects.filter(
+                            _still_valid(),
+                            didattica_dipartimento__dip_cod__in=department_codes,
+                        ).values_list("laboratorio_dati_base_id", flat=True)
+                    )
+
+                director_lab_ids = set()
+                taxpayer_id = getattr(user, "taxpayer_id", None)
+                if taxpayer_id:
+                    director_lab_ids = set(
+                        _scientific_directors(taxpayer_id).values_list(
+                            "laboratorio_dati_base_id", flat=True
+                        )
+                    )
+                managed_lab_ids = frozenset(operator_lab_ids | director_lab_ids)
 
         self._access_cache = {
-            "staff": is_staff_role,
-            "director_lab_ids": director_lab_ids,
+            "sees_all": sees_all,
+            "managed_lab_ids": managed_lab_ids,
         }
         return self._access_cache
 
     def _can_see_all_hidden(self):
-        return self._access()["staff"]
+        return self._access()["sees_all"]
 
     def _is_manager(self):
-        """Ha un ruolo nella gestione dei laboratori (staff o responsabile)."""
+        """Ha un ruolo nella gestione dei laboratori."""
         access = self._access()
-        return access["staff"] or bool(access["director_lab_ids"])
+        return access["sees_all"] or bool(access["managed_lab_ids"])
 
     def _can_see_hidden(self, lab_id):
         access = self._access()
-        return access["staff"] or lab_id in access["director_lab_ids"]
+        return access["sees_all"] or lab_id in access["managed_lab_ids"]
+
+    def _management_scope(self):
+        """True se la richiesta arriva dalla lista della gestione (?manage=1)."""
+        return self.request.query_params.get("manage") in ("1", "true", "True")
 
 
 @extend_schema_view(
@@ -154,12 +180,17 @@ class LaboratoriesViewSet(
         # da approvare (nelle tabelle in quel momento ha visibile=False).
         # I dati si leggono dallo snapshot; i filtri di ricerca restano sulle
         # tabelle.
+        # Nella gestione (?manage=1) si elencano solo i laboratori gestibili
+        # dall'utente: tutti per superuser/validatori, altrimenti quelli del
+        # suo dipartimento o di cui e' responsabile.
         if self._can_see_all_hidden():
             return Q()
+        managed_lab_ids = self._access()["managed_lab_ids"]
+        if self._management_scope():
+            return Q(id__in=managed_lab_ids)
         public = Q(id__in=published_lab_ids())
-        director_lab_ids = self._access()["director_lab_ids"]
-        if director_lab_ids:
-            return public | Q(id__in=director_lab_ids)
+        if managed_lab_ids:
+            return public | Q(id__in=managed_lab_ids)
         return public
 
     def _snapshot_objs(self, lab_ids):

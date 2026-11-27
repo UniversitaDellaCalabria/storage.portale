@@ -14,9 +14,16 @@
   {% trans "Do you want to request approval for this laboratory? The validators will be notified." as msg_request_approval %}
   {% trans "Do you want to approve this laboratory? Its current data will become the version visible to the public." as msg_approve %}
 
-  {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_laboratory" message=msg_delete_lab url=delete_url %}
-  {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="ask_to_approve_laboratory" message=msg_request_approval url=request_approval_url %}
-  {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="approve_laboratory" message=msg_approve url=approve_url %}
+  {# le modali di conferma esistono solo per chi ha il permesso di usarle #}
+  {% if user_roles.superuser %}
+    {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="delete_laboratory" message=msg_delete_lab url=delete_url %}
+  {% endif %}
+  {% if not laboratory.visibile and can_request_approval %}
+    {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="ask_to_approve_laboratory" message=msg_request_approval url=request_approval_url %}
+  {% endif %}
+  {% if not laboratory.visibile and user_roles.superuser or not laboratory.visibile and user_roles.validator %}
+    {% include "laboratories_new/blocks/confirm_modal.html" with modal_id="approve_laboratory" message=msg_approve url=approve_url %}
+  {% endif %}
 
   <!-- Header -->
   <div class="lab-header">
@@ -41,7 +48,7 @@
     <div class="lab-header-actions">
       {% if not laboratory.visibile %}
         {# come in laboratories: la richiesta si puo' reinviare finche' non e' approvato #}
-        {% if can_edit %}
+        {% if can_request_approval %}
           <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ask_to_approve_laboratory">
             <svg class="icon icon-xs icon-white" aria-hidden="true">
               <use xlink:href="{% static 'svg/sprite.svg' %}#it-horn"></use>
